@@ -79,13 +79,80 @@ const Branch = React.memo((props) => {
                 <meta property='og:description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:type' content='website' />
                 <meta property='og:image' content={`${urlMain}/512x512.png`} />
-                <meta property="og:url" content={`${urlMain}/branch/${router.query.id}`} />
+                <meta property='og:url' content={`${urlMain}/branch/${router.query.id}`} />
                 <link rel='canonical' href={`${urlMain}/branch/${router.query.id}`}/>
             </Head>
             <Card className={classes.page}>
-                {
-                    ['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.statistic&&data.object&&data.object._id?
-                        <div className={classes.status}>
+                <div className={classes.status}>
+                    {
+                        router.query.id!=='new'&&profile.role!=='оператор'?
+                            <>
+                            <Menu
+                                key='Quick'
+                                id='menu-appbar'
+                                anchorEl={anchorElQuick}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                open={openQuick}
+                                onClose={handleCloseQuick}
+                            >
+                                <Link href='/users/[id]' as={`/users/${legalObject._id}`}>
+                                    <MenuItem onClick={async()=>{await setBranch({_id: router.query.id, name})}}>
+                                        Сотрудники
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/cashboxes/[id]' as={`/cashboxes/${legalObject._id}`}>
+                                    <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
+                                        Кассы
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/workshifts/[id]' as={`/workshifts/${legalObject._id}`}>
+                                    <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
+                                        Смены
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/sales/[id]' as={`/sales/${legalObject._id}`}>
+                                    <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
+                                        Операции
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/deposithistorys/[id]' as={`/deposithistorys/${legalObject._id}`}>
+                                    <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
+                                        Внесения
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${legalObject._id}`}>
+                                    <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
+                                        Изъятия
+                                    </MenuItem>
+                                </Link>
+                                <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${legalObject._id}?type=X`}>
+                                    <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
+                                        X-Отчет
+                                    </MenuItem>
+                                </Link>
+                                <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${legalObject._id}?type=Z`}>
+                                    <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
+                                        Z-Отчет
+                                    </MenuItem>
+                                </Link>
+                            </Menu>
+                            <Button onClick={handleMenuQuick} color='primary'>
+                                Переход
+                            </Button>
+                            </>
+                            :
+                            null
+                    }
+                    {
+                        ['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.statistic&&data.object&&data.object._id?
+                            <>
                             {
                                 data.object.sync?
                                     <SyncOn color='primary' onClick={async()=>{
@@ -111,12 +178,14 @@ const Branch = React.memo((props) => {
                                     :
                                     null
                             }
-                        </div>
-                        :
-                        null
-                }
+                            </>
+                            :
+                            null
+                    }
+                </div>
                 <CardContent className={classes.column} style={isMobileApp?{}:{justifyContent: 'start', alignItems: 'flex-start'}}>
-                {
+                    <br/>
+                    {
                     data.object!==null?
                         <>
                         {['superadmin', 'admin', 'оператор'].includes(profile.role)&&profile.add?
@@ -352,72 +421,6 @@ const Branch = React.memo((props) => {
                                         }}>
                                             Восстановить
                                         </Button>
-                                    :
-                                    null
-                            }
-                            {
-                                router.query.id!=='new'&&profile.role!=='оператор'?
-                                    <>
-                                    <Menu
-                                        key='Quick'
-                                        id='menu-appbar'
-                                        anchorEl={anchorElQuick}
-                                        anchorOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'right',
-                                        }}
-                                        transformOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'right',
-                                        }}
-                                        open={openQuick}
-                                        onClose={handleCloseQuick}
-                                    >
-                                        <Link href='/users/[id]' as={`/users/${legalObject._id}`}>
-                                            <MenuItem onClick={async()=>{await setBranch({_id: router.query.id, name})}}>
-                                                Сотрудники
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/cashboxes/[id]' as={`/cashboxes/${legalObject._id}`}>
-                                            <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
-                                                Кассы
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/workshifts/[id]' as={`/workshifts/${legalObject._id}`}>
-                                            <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
-                                                Смены
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/sales/[id]' as={`/sales/${legalObject._id}`}>
-                                            <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
-                                                Операции
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/deposithistorys/[id]' as={`/deposithistorys/${legalObject._id}`}>
-                                            <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
-                                                Внесения
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${legalObject._id}`}>
-                                            <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
-                                                Изъятия
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${legalObject._id}?type=X`}>
-                                            <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
-                                                X-Отчет
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${legalObject._id}?type=Z`}>
-                                            <MenuItem onClick={()=>{setBranch({_id: router.query.id, name})}}>
-                                                Z-Отчет
-                                            </MenuItem>
-                                        </Link>
-                                    </Menu>
-                                    <Button onClick={handleMenuQuick} className={classes.quickButton} color='primary'>
-                                        Переходы
-                                    </Button>
-                                    </>
                                     :
                                     null
                             }

@@ -63,35 +63,85 @@ const WorkShift = React.memo((props) => {
                 <meta property='og:description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:type' content='website' />
                 <meta property='og:image' content={`${urlMain}/512x512.png`} />
-                <meta property="og:url" content={`${urlMain}/workshift/${router.query.id}`} />
+                <meta property='og:url' content={`${urlMain}/workshift/${router.query.id}`} />
                 <link rel='canonical' href={`${urlMain}/workshift/${router.query.id}`}/>
             </Head>
             <Card className={classes.page}>
-                {
-                    ['admin', 'superadmin', 'оператор'].includes(profile.role)&&data.object&&data.object._id?
-                        <div className={classes.status}>
-                            {
-                                data.object.sync?
-                                    <SyncOn color={data.object.syncMsg==='Фискальный режим отключен'?'secondary':'primary'} onClick={async()=>{
-                                        if(profile.statistic) {
-                                            setMiniDialog('Синхронизация', <ViewText text={data.object.syncMsg}/>)
-                                            showMiniDialog(true)
-                                        }
-                                    }} className={classes.sync}/>
-                                    :
-                                    <SyncOff color='secondary' onClick={async()=>{
-                                        if(profile.statistic) {
-                                            setMiniDialog('Синхронизация', <ViewText text={data.object.syncMsg}/>)
-                                            showMiniDialog(true)
-                                        }
-                                    }} className={classes.sync}/>
-                            }
-                        </div>
+                <div className={classes.status}>
+                    {
+                        'оператор'!==profile.role?
+                            <>
+                            <Menu
+                                key='Quick'
+                                id='menu-appbar'
+                                anchorEl={anchorElQuick}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                open={openQuick}
+                                onClose={handleCloseQuick}
+                            >
+                                <Link href='/sales/[id]' as={`/sales/${data.object.legalObject._id}`}>
+                                    <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
+                                        Операции
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/deposithistorys/[id]' as={`/deposithistorys/${data.object.legalObject._id}`}>
+                                    <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
+                                        Внесения
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${data.object.legalObject._id}`}>
+                                    <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
+                                        Изъятия
+                                    </MenuItem>
+                                </Link>
+                                <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${data.object.legalObject._id}?type=X`}>
+                                    <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
+                                        X-Отчет
+                                    </MenuItem>
+                                </Link>
+                                <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${data.object.legalObject._id}?type=Z`}>
+                                    <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
+                                        Z-Отчет
+                                    </MenuItem>
+                                </Link>
+                            </Menu>
+                            <Button onClick={handleMenuQuick} color='primary'>
+                                Переходы
+                            </Button>
+                            </>
+                            :
+                            null
+                    }
+                    {
+                        ['admin', 'superadmin', 'оператор'].includes(profile.role)&&data.object&&data.object._id?
+                            data.object.sync?
+                                <SyncOn color={data.object.syncMsg==='Фискальный режим отключен'?'secondary':'primary'} onClick={async()=>{
+                                    if(profile.statistic) {
+                                        setMiniDialog('Синхронизация', <ViewText text={data.object.syncMsg}/>)
+                                        showMiniDialog(true)
+                                    }
+                                }} className={classes.sync}/>
+                                :
+                                <SyncOff color='secondary' onClick={async()=>{
+                                    if(profile.statistic) {
+                                        setMiniDialog('Синхронизация', <ViewText text={data.object.syncMsg}/>)
+                                        showMiniDialog(true)
+                                    }
+                                }} className={classes.sync}/>
                         :
                         null
-                }
+                    }
+                </div>
                 <CardContent className={classes.column} style={isMobileApp?{}:{justifyContent: 'start', alignWorkShifts: 'flex-start'}}>
-                {
+                    <br/>
+                    {
                     data.object!==null?
                        <>
                        {
@@ -458,50 +508,6 @@ const WorkShift = React.memo((props) => {
                                    :
                                    null
                            }
-                           <Menu
-                               key='Quick'
-                               id='menu-appbar'
-                               anchorEl={anchorElQuick}
-                               anchorOrigin={{
-                                   vertical: 'bottom',
-                                   horizontal: 'right',
-                               }}
-                               transformOrigin={{
-                                   vertical: 'bottom',
-                                   horizontal: 'right',
-                               }}
-                               open={openQuick}
-                               onClose={handleCloseQuick}
-                           >
-                               <Link href='/sales/[id]' as={`/sales/${data.object.legalObject._id}`}>
-                                   <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
-                                       Операции
-                                   </MenuItem>
-                               </Link>
-                               <Link href='/deposithistorys/[id]' as={`/deposithistorys/${data.object.legalObject._id}`}>
-                                   <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
-                                       Внесения
-                                   </MenuItem>
-                               </Link>
-                               <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${data.object.legalObject._id}`}>
-                                   <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
-                                       Изъятия
-                                   </MenuItem>
-                               </Link>
-                               <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${data.object.legalObject._id}?type=X`}>
-                                   <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
-                                       X-Отчет
-                                   </MenuItem>
-                               </Link>
-                               <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${data.object.legalObject._id}?type=Z`}>
-                                   <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
-                                       Z-Отчет
-                                   </MenuItem>
-                               </Link>
-                           </Menu>
-                           <Button  onClick={handleMenuQuick} className={classes.quickButton} color='primary'>
-                               Переходы
-                           </Button>
                        </div>
                        </>
                         :

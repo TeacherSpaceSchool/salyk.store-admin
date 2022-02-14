@@ -84,13 +84,13 @@ export default makeStyles({
         fontWeight: 'bold',
         color: 'white',
         fontFamily: 'Roboto',
-        top: 10,
+        top: 0,
         right: 10,
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         gap: 5,
-        position: 'absolute',
-        cursor: 'pointer'
+        alignItems: 'center',
+        position: 'absolute'
     },
     message: {
         flexDirection: 'column',
@@ -218,11 +218,6 @@ export default makeStyles({
         cursor: 'pointer',
         margin: 10,
         padding: 10
-    },
-
-    quickButton: {
-        position: 'fixed !important',
-        right: '5px !important'
     },
 
     nameBasket: {

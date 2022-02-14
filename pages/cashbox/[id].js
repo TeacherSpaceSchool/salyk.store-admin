@@ -70,6 +70,62 @@ const Cashbox = React.memo((props) => {
                     data.object&&data.object._id?
                         <div className={classes.status}>
                             {
+                                router.query.id!=='new'&&profile.role!=='оператор'?
+                                    <>
+                                    <Menu
+                                        key='Quick'
+                                        id='menu-appbar'
+                                        anchorEl={anchorElQuick}
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'right',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'right',
+                                        }}
+                                        open={openQuick}
+                                        onClose={handleCloseQuick}
+                                    >
+                                        <Link href='/workshifts/[id]' as={`/workshifts/${legalObject._id}`}>
+                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
+                                                Смены
+                                            </MenuItem>
+                                        </Link>
+                                        <Link href='/sales/[id]' as={`/sales/${legalObject._id}`}>
+                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
+                                                Операции
+                                            </MenuItem>
+                                        </Link>
+                                        <Link href='/deposithistorys/[id]' as={`/deposithistorys/${legalObject._id}`}>
+                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
+                                                Внесения
+                                            </MenuItem>
+                                        </Link>
+                                        <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${legalObject._id}`}>
+                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
+                                                Изъятия
+                                            </MenuItem>
+                                        </Link>
+                                        <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${legalObject._id}?type=X`}>
+                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
+                                                X-Отчет
+                                            </MenuItem>
+                                        </Link>
+                                        <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${legalObject._id}?type=Z`}>
+                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
+                                                Z-Отчет
+                                            </MenuItem>
+                                        </Link>
+                                    </Menu>
+                                    <Button onClick={handleMenuQuick} color='primary'>
+                                        Переходы
+                                    </Button>
+                                    </>
+                                    :
+                                    null
+                            }
+                            {
                                 data.object.presentCashier?
                                     <div className={classes.status} style={{background: 'green', position: 'initial'}}>Работает</div>
                                     :
@@ -108,6 +164,7 @@ const Cashbox = React.memo((props) => {
                         null
                 }
                 <CardContent className={classes.column} style={isMobileApp?{}:{justifyContent: 'start', alignItems: 'flex-start'}}>
+                    <br/>
                 {
                     data.object!==null?
                         <>
@@ -360,62 +417,6 @@ const Cashbox = React.memo((props) => {
                                     }}>
                                         Восстановить
                                     </Button>
-                            }
-                            {
-                                router.query.id!=='new'&&profile.role!=='оператор'?
-                                    <>
-                                    <Menu
-                                        key='Quick'
-                                        id='menu-appbar'
-                                        anchorEl={anchorElQuick}
-                                        anchorOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'right',
-                                        }}
-                                        transformOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'right',
-                                        }}
-                                        open={openQuick}
-                                        onClose={handleCloseQuick}
-                                    >
-                                        <Link href='/workshifts/[id]' as={`/workshifts/${legalObject._id}`}>
-                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
-                                                Смены
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/sales/[id]' as={`/sales/${legalObject._id}`}>
-                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
-                                                Операции
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/deposithistorys/[id]' as={`/deposithistorys/${legalObject._id}`}>
-                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
-                                                Внесения
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${legalObject._id}`}>
-                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
-                                                Изъятия
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${legalObject._id}?type=X`}>
-                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
-                                                X-Отчет
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${legalObject._id}?type=Z`}>
-                                            <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
-                                                Z-Отчет
-                                            </MenuItem>
-                                        </Link>
-                                    </Menu>
-                                    <Button onClick={handleMenuQuick} className={classes.quickButton} color='primary'>
-                                        Переходы
-                                    </Button>
-                                    </>
-                                    :
-                                    null
                             }
                         </div>
                         </>

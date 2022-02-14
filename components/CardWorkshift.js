@@ -18,7 +18,6 @@ import Router from 'next/router'
 import {generateReportX} from '../src/gql/report'
 import SyncOn from '@material-ui/icons/Sync';
 import SyncOff from '@material-ui/icons/SyncDisabled';
-import PointofsaleIcon from '../icons/pointofsale.svg';
 
 const CardWorkshift = React.memo((props) => {
     const { profile } = props.user;

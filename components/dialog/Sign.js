@@ -56,7 +56,7 @@ const Sign =  React.memo(
                     <InputLabel>Пароль</InputLabel>
                     <Input
                         type='text'
-                        style={hide?{'text-security': 'disc', '-webkit-text-security': 'disc'}:{}}
+                        style={hide?{textSecurity: 'disc', WebkitTextSecurity: 'disc'}:{}}
                         value={passEnter}
                         onChange={handlePassEnter}
                         onKeyPress={event => {

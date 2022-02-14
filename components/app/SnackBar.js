@@ -23,7 +23,7 @@ const MyDialog =  React.memo(
                 }}
                 message={<span id="message-id">{title}</span>}
                 action={[
-                    <Button key="undo" color="secondary" size="small" onClick={closeSnackBar}>
+                    <Button key="undo" color="secondary" onClick={closeSnackBar}>
                         Закрыть
                     </Button>
                 ]}

@@ -132,16 +132,49 @@ const User = React.memo((props) => {
                 <link rel='canonical' href={`${urlMain}/user/${router.query.id}`}/>
             </Head>
             <Card className={classes.page}>
-                {
-                    ['admin', 'superadmin'].includes(profile.role)&&profile.statistic&&data.object&&data.object._id?
-                        <div className={classes.status} onClick={async()=>{
-                            setMiniDialog('История', <History where={data.object._id}/>)
-                            showMiniDialog(true)
-                        }}><HistoryIcon style={{ color: '#10183D', cursor: 'pointer' }}/></div>
-                        :
-                        null
-                }
+                <div className={classes.status}>
+                    {
+                        router.query.id!=='new'&&role==='кассир'&&!['кассир', 'оператор'].includes(profile.role)?
+                            <>
+                            <Menu
+                                key='Quick'
+                                id='menu-appbar'
+                                anchorEl={anchorElQuick}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                open={openQuick}
+                                onClose={handleCloseQuick}
+                            >
+                                <Link href='/workshifts/[id]' as={`/workshifts/${legalObject._id}`}>
+                                    <MenuItem onClick={()=>{setCashier({_id: router.query.id, name})}}>
+                                        Смены
+                                    </MenuItem>
+                                </Link>
+                            </Menu>
+                            <Button onClick={handleMenuQuick} color='primary'>
+                                Переходы
+                            </Button>
+                            </>
+                            :
+                            null
+                    }
+                    {
+                        ['admin', 'superadmin'].includes(profile.role)&&profile.statistic&&data.object&&data.object._id?
+                            <HistoryIcon onClick={async()=>{
+                                setMiniDialog('История', <History where={data.object._id}/>)
+                                showMiniDialog(true)
+                            }} style={{ color: '#10183D', cursor: 'pointer' }}/>
+                            :
+                            null
+                    }</div>
                 <CardContent className={classes.column} style={isMobileApp?{}:{justifyContent: 'start', alignItems: 'flex-start'}}>
+                    <br/>
                     {
                         data.object!==null?
                             ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)||profile._id===router.query.id?
@@ -369,7 +402,8 @@ const User = React.memo((props) => {
                                             className={classes.input}
                                             onChange={(event)=>{setLogin(event.target.value)}}
                                             onBlur={async()=>{
-                                                setErrorLogin((await checkLogin({login}))!=='OK')
+                                                if(login!==data.object.login)
+                                                    setErrorLogin((await checkLogin({login}))!=='OK')
                                             }}
                                         />
                                         :
@@ -389,10 +423,7 @@ const User = React.memo((props) => {
                                             placeholder='Новый пароль'
                                             autoComplete='new-password'
                                             type='text'
-                                            style={hide ? {
-                                                'text-security': 'disc',
-                                                '-webkit-text-security': 'disc'
-                                            } : {}}
+                                            style={hide ? {textSecurity: 'disc', WebkitTextSecurity: 'disc'} : {}}
                                             value={password}
                                             onChange={(event) => {
                                                 setPassword(event.target.value)
@@ -605,37 +636,6 @@ const User = React.memo((props) => {
                                                 }}>
                                                     Восстановить
                                                 </Button>
-                                            :
-                                            null
-                                    }
-                                    {
-                                        router.query.id!=='new'&&role==='кассир'&&!['кассир', 'оператор'].includes(profile.role)?
-                                            <>
-                                            <Menu
-                                                key='Quick'
-                                                id='menu-appbar'
-                                                anchorEl={anchorElQuick}
-                                                anchorOrigin={{
-                                                    vertical: 'bottom',
-                                                    horizontal: 'right',
-                                                }}
-                                                transformOrigin={{
-                                                    vertical: 'bottom',
-                                                    horizontal: 'right',
-                                                }}
-                                                open={openQuick}
-                                                onClose={handleCloseQuick}
-                                            >
-                                                <Link href='/workshifts/[id]' as={`/workshifts/${legalObject._id}`}>
-                                                    <MenuItem onClick={()=>{setCashier({_id: router.query.id, name})}}>
-                                                        Смены
-                                                    </MenuItem>
-                                                </Link>
-                                            </Menu>
-                                            <Button onClick={handleMenuQuick} className={classes.quickButton} color='primary'>
-                                                Переходы
-                                            </Button>
-                                            </>
                                             :
                                             null
                                     }

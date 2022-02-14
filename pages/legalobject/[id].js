@@ -119,9 +119,96 @@ const LegalObject = React.memo((props) => {
                 <link rel='canonical' href={`${urlMain}/legalobject/${router.query.id}`}/>
             </Head>
             <Card className={classes.page}>
-                {
+                <div className={classes.status}>
+
+                    {
+                        router.query.id!=='new'&&'оператор'!==profile.role?
+                            <>
+                            <Menu
+                                key='Quick'
+                                id='menu-appbar'
+                                anchorEl={anchorElQuick}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                open={openQuick}
+                                onClose={handleCloseQuick}
+                            >
+                                <Link href='/branchs/[id]' as={`/branchs/${router.query.id}`}>
+                                    <MenuItem>
+                                        Объекты
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/cashboxes/[id]' as={`/cashboxes/${router.query.id}`}>
+                                    <MenuItem>
+                                        Кассы
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/users/[id]' as={`/users/${router.query.id}`}>
+                                    <MenuItem>
+                                        Сотрудники
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/items/[id]' as={`/items/${router.query.id}`}>
+                                    <MenuItem>
+                                        Товары
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/districts/[id]' as={`/districts/${router.query.id}`}>
+                                    <MenuItem>
+                                        Районы
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/clients/[id]' as={`/clients/${router.query.id}`}>
+                                    <MenuItem>
+                                        Клиенты
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/workshifts/[id]' as={`/workshifts/${router.query.id}`}>
+                                    <MenuItem>
+                                        Смены
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/sales/[id]' as={`/sales/${router.query.id}`}>
+                                    <MenuItem>
+                                        Операции
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/deposithistorys/[id]' as={`/deposithistorys/${router.query._id}`}>
+                                    <MenuItem>
+                                        Внесения
+                                    </MenuItem>
+                                </Link>
+                                <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${router.query._id}`}>
+                                    <MenuItem>
+                                        Изъятия
+                                    </MenuItem>
+                                </Link>
+                                <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${router.query._id}?type=X`}>
+                                    <MenuItem>
+                                        X-Отчет
+                                    </MenuItem>
+                                </Link>
+                                <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${router.query._id}?type=Z`}>
+                                    <MenuItem>
+                                        Z-Отчет
+                                    </MenuItem>
+                                </Link>
+                            </Menu>
+                            <Button onClick={handleMenuQuick} color='primary'>
+                                Переходы
+                            </Button>
+                            </>
+                            :
+                            null
+                    } {
                     ['admin', 'superadmin', 'оператор'].includes(profile.role)&&data.object&&data.object._id?
-                        <div className={classes.status}>
+                        <>
                             {
                                 data.object.sync?
                                     <SyncOn color='primary' onClick={async()=>{
@@ -147,11 +234,13 @@ const LegalObject = React.memo((props) => {
                                     :
                                     null
                             }
-                        </div>
+                            </>
                         :
                         null
                 }
+                </div>
                 <CardContent className={classes.column} style={isMobileApp?{}:{justifyContent: 'start', alignItems: 'flex-start'}}>
+                    <br/>
                 {
                     data.object?
                         <>
@@ -527,92 +616,6 @@ const LegalObject = React.memo((props) => {
                                         }}>
                                             Восстановить
                                         </Button>
-                                    :
-                                    null
-                            }
-                            {
-                                router.query.id!=='new'&&'оператор'!==profile.role?
-                                    <>
-                                    <Menu
-                                        key='Quick'
-                                        id='menu-appbar'
-                                        anchorEl={anchorElQuick}
-                                        anchorOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'right',
-                                        }}
-                                        transformOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'right',
-                                        }}
-                                        open={openQuick}
-                                        onClose={handleCloseQuick}
-                                    >
-                                        <Link href='/branchs/[id]' as={`/branchs/${router.query.id}`}>
-                                            <MenuItem>
-                                                Объекты
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/cashboxes/[id]' as={`/cashboxes/${router.query.id}`}>
-                                            <MenuItem>
-                                                Кассы
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/users/[id]' as={`/users/${router.query.id}`}>
-                                            <MenuItem>
-                                                Сотрудники
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/items/[id]' as={`/items/${router.query.id}`}>
-                                            <MenuItem>
-                                                Товары
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/districts/[id]' as={`/districts/${router.query.id}`}>
-                                            <MenuItem>
-                                                Районы
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/clients/[id]' as={`/clients/${router.query.id}`}>
-                                            <MenuItem>
-                                                Клиенты
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/workshifts/[id]' as={`/workshifts/${router.query.id}`}>
-                                            <MenuItem>
-                                                Смены
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/sales/[id]' as={`/sales/${router.query.id}`}>
-                                            <MenuItem>
-                                                Операции
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/deposithistorys/[id]' as={`/deposithistorys/${router.query._id}`}>
-                                            <MenuItem>
-                                                Внесения
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${router.query._id}`}>
-                                            <MenuItem>
-                                                Изъятия
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${router.query._id}?type=X`}>
-                                            <MenuItem>
-                                                X-Отчет
-                                            </MenuItem>
-                                        </Link>
-                                        <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${router.query._id}?type=Z`}>
-                                            <MenuItem>
-                                                Z-Отчет
-                                            </MenuItem>
-                                        </Link>
-                                    </Menu>
-                                    <Button onClick={handleMenuQuick} className={classes.quickButton} color='primary'>
-                                        Переходы
-                                    </Button>
-                                    </>
                                     :
                                     null
                             }

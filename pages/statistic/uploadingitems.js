@@ -39,7 +39,7 @@ const UploadingItems = React.memo((props) => {
                 <meta property='og:description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:type' content='website' />
                 <meta property='og:image' content={`${urlMain}/static/512x512.png`} />
-                <meta property="og:url" content={`${urlMain}/statistic/uploadingitems`} />
+                <meta property='og:url' content={`${urlMain}/statistic/uploadingitems`} />
                 <link rel='canonical' href={`${urlMain}/statistic/uploadingitems`}/>
             </Head>
             <Card className={classes.page}>

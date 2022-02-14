@@ -107,386 +107,392 @@ const Client = React.memo((props) => {
                 <link rel='canonical' href={`${urlMain}/client/${router.query.id}`}/>
             </Head>
             <Card className={classes.page}>
-                <CardContent className={classes.column} style={isMobileApp?{}:{justifyContent: 'start', alignItems: 'flex-start'}}>
                 {
-                    data.object!==null?
-                        !profile.add?
-                            <>
-                            <div className={classes.row}>
-                                <div className={classes.nameField}>
-                                    Регистрация:&nbsp;
-                                </div>
-                                <div className={classes.value}>
-                                    {pdDDMMYYHHMM(data.object.createdAt)}
-                                </div>
-                            </div>
-                            {
-                                ['admin', 'superadmin'].includes(profile.role)?
-                                    <Link href='/legalobject/[id]' as={`/legalobject/${data.object.legalObject._id}`}>
-                                        <a>
-                                            <div className={classes.row}>
-                                                <div className={classes.nameField}>
-                                                    Налогоплательщик:&nbsp;
-                                                </div>
-                                                <div className={classes.value}>
-                                                    {data.object.legalObject.name}
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </Link>
-                                    :
-                                    null
-                            }
-                            <div className={classes.row}>
-                                <div className={classes.nameField}>
-                                    Имя:&nbsp;
-                                </div>
-                                <div className={classes.value}>
-                                    {name}
-                                </div>
-                            </div>
-                            {
-                                inn.length?
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>
-                                            ИНН:&nbsp;
-                                        </div>
-                                        <div className={classes.value}>
-                                            {inn}
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-                            {
-                                address.length?
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>
-                                            Адрес:&nbsp;
-                                        </div>
-                                        <div className={classes.value}>
-                                            {address}
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-                            {
-                                phone.length?
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>
-                                            Телефон:&nbsp;
-                                        </div>
-                                        <div>
-                                            {phone.map((phone, idx)=><div key={`phone${idx}`} className={classes.value}>{phone}</div>)}
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-                            {
-                                email.length?
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>
-                                            Email:&nbsp;
-                                        </div>
-                                        <div>
-                                            {email.map((email, idx)=>
-                                                idx<4?
-                                                    <div key={`email${idx}`} className={classes.value}>
-                                                        {email}
-                                                    </div>
-                                                    :
-                                                    idx===4?
-                                                        '...'
-                                                        :
-                                                        null
-                                            )}
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-                            {
-                                files.length?
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>Документы:</div>
-                                        <div className={classes.noteImageList}>
-                                            {files.map((element, idx) => <div className={classes.noteImageDiv}>
-                                                <img className={classes.noteImage} src={element}
-                                                     onClick={() => {
-                                                         setShowAppBar(false)
-                                                         setShowLightbox(true)
-                                                         setImagesLightbox(files)
-                                                         setIndexLightbox(idx)
-                                                     }}
-                                                />
-                                            </div>)}
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-                            {
-                                info.length?
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>
-                                            Информация:&nbsp;
-                                        </div>
-                                        <div className={classes.value}>
-                                            {info}
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-                            <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
-                                <Menu
-                                    key='Quick'
-                                    id='menu-appbar'
-                                    anchorEl={anchorElQuick}
-                                    anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'right',
-                                    }}
-                                    transformOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'right',
-                                    }}
-                                    open={openQuick}
-                                    onClose={handleCloseQuick}
-                                >
-                                    <Link href='/sales/[id]' as={`/sales/${data.object.legalObject._id}`}>
-                                        <MenuItem onClick={()=>{props.appActions.setClient({_id: router.query.id, name})}}>
-                                            Операции
-                                        </MenuItem>
-                                    </Link>
-                                </Menu>
-                                <Button onClick={handleMenuQuick} className={classes.quickButton} color='primary'>
-                                    Переходы
-                                </Button>
-                            </div>
-                            </>
-                            :
-                            <>
-                            {
-                                router.query.id!=='new'?
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>
-                                            Регистрация:&nbsp;
-                                        </div>
-                                        <div className={classes.value}>
-                                            {pdDDMMYYHHMM(data.object.createdAt)}
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-                            {
-                                ['admin', 'superadmin'].includes(profile.role)?router.query.id==='new'?
-                                    <AutocomplectOnline
-                                        error={!legalObject||!legalObject._id}
-                                        setElement={setLegalObject}
-                                        getElements={async (search)=>{return await getLegalObjects({search})}}
-                                        label={'налогоплательщика'}
-                                    />
-                                    :
-                                    <Link href='/legalobject/[id]' as={`/legalobject/${legalObject._id}`}>
-                                        <a>
-                                            <div className={classes.row}>
-                                                <div className={classes.nameField}>
-                                                    Налогоплательщик:&nbsp;
-                                                </div>
-                                                <div className={classes.value}>
-                                                    {data.object.legalObject.name}
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </Link>
-                                    :
-                                    null
-                            }
-                            <TextField
-                                className={classes.input}
-                                label='Имя'
-                                margin='normal'
-                                value={name}
-                                onChange={(event)=>{setName(event.target.value)}}
-                            />
-                            <TextField
-                                className={classes.input}
-                                label='ИНН'
-                                margin='normal'
-                                value={inn}
-                                onChange={(event)=>{setInn(event.target.value)}}
-                            />
-                            <TextField
-                                label='Адрес'
-                                className={classes.input}
-                                margin='normal'
-                                value={address}
-                                onChange={(event)=>{setAddress(event.target.value)}}
-                            />
-                            {phone?phone.map((element, idx)=>
-                                <FormControl key={`phone${idx}`} className={classes.input}>
-                                    <InputLabel error={!validPhone1(element)}>Телефон. Формат: +996556899871</InputLabel>
-                                    <Input
-                                        startAdornment={<InputAdornment position='start'>+996</InputAdornment>}
-                                        error={!validPhone1(element)}
-                                        placeholder='Телефон. Формат: +996556899871'
-                                        value={element}
-                                        className={classes.input}
-                                        onChange={(event)=>{editPhone(event, idx)}}
-                                        endAdornment={
-                                            <InputAdornment position='end'>
-                                                <IconButton
-                                                    onClick={()=>{
-                                                        deletePhone(idx)
-                                                    }}
-                                                    aria-label='toggle password visibility'
-                                                >
-                                                    <Remove/>
-                                                </IconButton>
-                                            </InputAdornment>
-                                        }
-                                    />
-                                </FormControl>
-                            ): null}
-                            <Button onClick={async()=>{
-                                addPhone()
-                            }} color='primary'>
-                                Добавить телефон
+                    router.query.id!=='new'?
+                        <div className={classes.status}>
+                            <Menu
+                                key='Quick'
+                                id='menu-appbar'
+                                anchorEl={anchorElQuick}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right',
+                                }}
+                                open={openQuick}
+                                onClose={handleCloseQuick}
+                            >
+                                <Link href='/sales/[id]' as={`/sales/${data.object.legalObject._id}`}>
+                                    <MenuItem onClick={()=>{props.appActions.setClient({_id: router.query.id, name})}}>
+                                        Операции
+                                    </MenuItem>
+                                </Link>
+                            </Menu>
+                            <Button onClick={handleMenuQuick} color='primary'>
+                                Переходы
                             </Button>
-                            {email?email.map((element, idx)=>
-                                <FormControl key={`email${idx}`} className={classes.input}>
-                                    <InputLabel error={!validMail(element)}>Email</InputLabel>
-                                    <Input
-                                        error={!validMail(element)}
-                                        placeholder='Email'
-                                        value={element}
-                                        className={classes.input}
-                                        onChange={(event)=>{editEmail(event, idx)}}
-                                        endAdornment={
-                                            <InputAdornment position='end'>
-                                                <IconButton
-                                                    onClick={()=>{
-                                                        deleteEmail(idx)
-                                                    }}
-                                                    aria-label='toggle password visibility'
-                                                >
-                                                    <Remove/>
-                                                </IconButton>
-                                            </InputAdornment>
-                                        }
-                                    />
-                                </FormControl>
-                            ): null}
-                            <Button onClick={async()=>{
-                                addEmail()
-                            }} color='primary'>
-                                Добавить email
-                            </Button>
-                            <br/>
-                            <div className={classes.row}>
-                                <div className={classes.nameField}>Документы:</div>
-                                <div className={classes.noteImageList}>
-                                    <img className={classes.noteImage} src='/add.png' onClick={()=>{fileRef.current.click()}} />
-                                    {files.map((element, idx)=> <div className={classes.noteImageDiv}>
-                                        <img className={classes.noteImage} src={element} onClick={()=>{
-                                            setShowAppBar(false)
-                                            setShowLightbox(true)
-                                            setImagesLightbox(files)
-                                            setIndexLightbox(idx)
-                                        }}/>
-                                        <div className={classes.noteImageButton} style={{background: 'red'}} onClick={()=>{
-                                            files.splice(idx, 1)
-                                            setFiles([...files])
-                                        }}>X</div>
-                                    </div>)}
+                        </div>
+                        :
+                        null
+                }
+                <CardContent className={classes.column} style={isMobileApp?{}:{justifyContent: 'start', alignItems: 'flex-start'}}>
+                    <br/>
+                    {
+                        data.object!==null?
+                            !profile.add?
+                                <>
+                                <div className={classes.row}>
+                                    <div className={classes.nameField}>
+                                        Регистрация:&nbsp;
+                                    </div>
+                                    <div className={classes.value}>
+                                        {pdDDMMYYHHMM(data.object.createdAt)}
+                                    </div>
                                 </div>
-                            </div>
-                            <TextField
-                                multiline={true}
-                                label='Информация'
-                                value={info}
-                                className={classes.input}
-                                onChange={(event)=>{setInfo(event.target.value)}}
-                            />
-                            <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
-                                <Button color='primary' onClick={()=>{
-                                    if (name.length&&legalObject) {
-                                        const action = async() => {
-                                            if(router.query.id==='new') {
-                                                await addClient({legalObject: legalObject._id, phone, name, inn, uploads, email, address, info})
-                                                Router.push(`/clients/${legalObject._id}`)
-                                            }
-                                            else {
-                                                let element = {_id: router.query.id, }
-                                                if (name!==data.object.name) element.name = name
-                                                if (inn!==data.object.inn) element.inn = inn
-                                                if (address!==data.object.address) element.address = address
-                                                if (info!==data.object.info) element.info = info
-                                                if (JSON.stringify(phone)!==JSON.stringify(data.object.phone)) element.phone = phone
-                                                if (JSON.stringify(email)!==JSON.stringify(data.object.email)) element.email = email
-                                                if (JSON.stringify(files)!==JSON.stringify(data.object.files)) element.files = files
-                                                if (uploads.length) element.uploads = uploads
-                                                await setClient(element)
-                                                Router.reload()
-                                            }
-                                        }
-                                        setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                        showMiniDialog(true)
-                                    } else
-                                        showSnackBar('Заполните все поля')
-                                }}>
-                                    Сохранить
-                                </Button>
                                 {
-                                    router.query.id!=='new'?
-                                        <>
-                                        <Button color='secondary' onClick={()=>{
-                                            const action = async() => {
-                                                await deleteClient(router.query.id)
-                                                Router.push(`/clients/${data.object.legalObject._id}`)
-                                            }
-                                            setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                            showMiniDialog(true)
-                                        }}>
-                                            Удалить
-                                        </Button>
-                                        <Menu
-                                            key='Quick'
-                                            id='menu-appbar'
-                                            anchorEl={anchorElQuick}
-                                            anchorOrigin={{
-                                                vertical: 'bottom',
-                                                horizontal: 'right',
-                                            }}
-                                            transformOrigin={{
-                                                vertical: 'bottom',
-                                                horizontal: 'right',
-                                            }}
-                                            open={openQuick}
-                                            onClose={handleCloseQuick}
-                                        >
-                                            <Link href='/sales/[id]' as={`/sales/${data.object.legalObject._id}`}>
-                                                <MenuItem onClick={()=>{props.appActions.setClient({_id: router.query.id, name})}}>
-                                                    Операции
-                                                </MenuItem>
-                                            </Link>
-                                        </Menu>
-                                        <Button onClick={handleMenuQuick} className={classes.quickButton} color='primary'>
-                                            Переходы
-                                        </Button>
-                                        </>
+                                    ['admin', 'superadmin'].includes(profile.role)?
+                                        <Link href='/legalobject/[id]' as={`/legalobject/${data.object.legalObject._id}`}>
+                                            <a>
+                                                <div className={classes.row}>
+                                                    <div className={classes.nameField}>
+                                                        Налогоплательщик:&nbsp;
+                                                    </div>
+                                                    <div className={classes.value}>
+                                                        {data.object.legalObject.name}
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </Link>
                                         :
                                         null
                                 }
-                            </div>
-                            </>
-                        :
-                        'Ничего не найдено'
-                }
+                                <div className={classes.row}>
+                                    <div className={classes.nameField}>
+                                        Имя:&nbsp;
+                                    </div>
+                                    <div className={classes.value}>
+                                        {name}
+                                    </div>
+                                </div>
+                                {
+                                    inn.length?
+                                        <div className={classes.row}>
+                                            <div className={classes.nameField}>
+                                                ИНН:&nbsp;
+                                            </div>
+                                            <div className={classes.value}>
+                                                {inn}
+                                            </div>
+                                        </div>
+                                        :
+                                        null
+                                }
+                                {
+                                    address.length?
+                                        <div className={classes.row}>
+                                            <div className={classes.nameField}>
+                                                Адрес:&nbsp;
+                                            </div>
+                                            <div className={classes.value}>
+                                                {address}
+                                            </div>
+                                        </div>
+                                        :
+                                        null
+                                }
+                                {
+                                    phone.length?
+                                        <div className={classes.row}>
+                                            <div className={classes.nameField}>
+                                                Телефон:&nbsp;
+                                            </div>
+                                            <div>
+                                                {phone.map((phone, idx)=><div key={`phone${idx}`} className={classes.value}>{phone}</div>)}
+                                            </div>
+                                        </div>
+                                        :
+                                        null
+                                }
+                                {
+                                    email.length?
+                                        <div className={classes.row}>
+                                            <div className={classes.nameField}>
+                                                Email:&nbsp;
+                                            </div>
+                                            <div>
+                                                {email.map((email, idx)=>
+                                                    idx<4?
+                                                        <div key={`email${idx}`} className={classes.value}>
+                                                            {email}
+                                                        </div>
+                                                        :
+                                                        idx===4?
+                                                            '...'
+                                                            :
+                                                            null
+                                                )}
+                                            </div>
+                                        </div>
+                                        :
+                                        null
+                                }
+                                {
+                                    files.length?
+                                        <div className={classes.row}>
+                                            <div className={classes.nameField}>Документы:</div>
+                                            <div className={classes.noteImageList}>
+                                                {files.map((element, idx) => <div className={classes.noteImageDiv}>
+                                                    <img className={classes.noteImage} src={element}
+                                                         onClick={() => {
+                                                             setShowAppBar(false)
+                                                             setShowLightbox(true)
+                                                             setImagesLightbox(files)
+                                                             setIndexLightbox(idx)
+                                                         }}
+                                                    />
+                                                </div>)}
+                                            </div>
+                                        </div>
+                                        :
+                                        null
+                                }
+                                {
+                                    info.length?
+                                        <div className={classes.row}>
+                                            <div className={classes.nameField}>
+                                                Информация:&nbsp;
+                                            </div>
+                                            <div className={classes.value}>
+                                                {info}
+                                            </div>
+                                        </div>
+                                        :
+                                        null
+                                }
+                                <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
+                                    <Menu
+                                        key='Quick'
+                                        id='menu-appbar'
+                                        anchorEl={anchorElQuick}
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'right',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'right',
+                                        }}
+                                        open={openQuick}
+                                        onClose={handleCloseQuick}
+                                    >
+                                        <Link href='/sales/[id]' as={`/sales/${data.object.legalObject._id}`}>
+                                            <MenuItem onClick={()=>{props.appActions.setClient({_id: router.query.id, name})}}>
+                                                Операции
+                                            </MenuItem>
+                                        </Link>
+                                    </Menu>
+                                    <Button onClick={handleMenuQuick} color='primary'>
+                                        Переходы
+                                    </Button>
+                                </div>
+                                </>
+                                :
+                                <>
+                                {
+                                    router.query.id!=='new'?
+                                        <div className={classes.row}>
+                                            <div className={classes.nameField}>
+                                                Регистрация:&nbsp;
+                                            </div>
+                                            <div className={classes.value}>
+                                                {pdDDMMYYHHMM(data.object.createdAt)}
+                                            </div>
+                                        </div>
+                                        :
+                                        null
+                                }
+                                {
+                                    ['admin', 'superadmin'].includes(profile.role)?router.query.id==='new'?
+                                        <AutocomplectOnline
+                                            error={!legalObject||!legalObject._id}
+                                            setElement={setLegalObject}
+                                            getElements={async (search)=>{return await getLegalObjects({search})}}
+                                            label={'налогоплательщика'}
+                                        />
+                                        :
+                                        <Link href='/legalobject/[id]' as={`/legalobject/${legalObject._id}`}>
+                                            <a>
+                                                <div className={classes.row}>
+                                                    <div className={classes.nameField}>
+                                                        Налогоплательщик:&nbsp;
+                                                    </div>
+                                                    <div className={classes.value}>
+                                                        {data.object.legalObject.name}
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </Link>
+                                        :
+                                        null
+                                }
+                                <TextField
+                                    className={classes.input}
+                                    label='Имя'
+                                    margin='normal'
+                                    value={name}
+                                    onChange={(event)=>{setName(event.target.value)}}
+                                />
+                                <TextField
+                                    className={classes.input}
+                                    label='ИНН'
+                                    margin='normal'
+                                    value={inn}
+                                    onChange={(event)=>{setInn(event.target.value)}}
+                                />
+                                <TextField
+                                    label='Адрес'
+                                    className={classes.input}
+                                    margin='normal'
+                                    value={address}
+                                    onChange={(event)=>{setAddress(event.target.value)}}
+                                />
+                                {phone?phone.map((element, idx)=>
+                                    <FormControl key={`phone${idx}`} className={classes.input}>
+                                        <InputLabel error={!validPhone1(element)}>Телефон. Формат: +996556899871</InputLabel>
+                                        <Input
+                                            startAdornment={<InputAdornment position='start'>+996</InputAdornment>}
+                                            error={!validPhone1(element)}
+                                            placeholder='Телефон. Формат: +996556899871'
+                                            value={element}
+                                            className={classes.input}
+                                            onChange={(event)=>{editPhone(event, idx)}}
+                                            endAdornment={
+                                                <InputAdornment position='end'>
+                                                    <IconButton
+                                                        onClick={()=>{
+                                                            deletePhone(idx)
+                                                        }}
+                                                        aria-label='toggle password visibility'
+                                                    >
+                                                        <Remove/>
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            }
+                                        />
+                                    </FormControl>
+                                ): null}
+                                <Button onClick={async()=>{
+                                    addPhone()
+                                }} color='primary'>
+                                    Добавить телефон
+                                </Button>
+                                {email?email.map((element, idx)=>
+                                    <FormControl key={`email${idx}`} className={classes.input}>
+                                        <InputLabel error={!validMail(element)}>Email</InputLabel>
+                                        <Input
+                                            error={!validMail(element)}
+                                            placeholder='Email'
+                                            value={element}
+                                            className={classes.input}
+                                            onChange={(event)=>{editEmail(event, idx)}}
+                                            endAdornment={
+                                                <InputAdornment position='end'>
+                                                    <IconButton
+                                                        onClick={()=>{
+                                                            deleteEmail(idx)
+                                                        }}
+                                                        aria-label='toggle password visibility'
+                                                    >
+                                                        <Remove/>
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            }
+                                        />
+                                    </FormControl>
+                                ): null}
+                                <Button onClick={async()=>{
+                                    addEmail()
+                                }} color='primary'>
+                                    Добавить email
+                                </Button>
+                                <br/>
+                                <div className={classes.row}>
+                                    <div className={classes.nameField}>Документы:</div>
+                                    <div className={classes.noteImageList}>
+                                        <img className={classes.noteImage} src='/add.png' onClick={()=>{fileRef.current.click()}} />
+                                        {files.map((element, idx)=> <div className={classes.noteImageDiv}>
+                                            <img className={classes.noteImage} src={element} onClick={()=>{
+                                                setShowAppBar(false)
+                                                setShowLightbox(true)
+                                                setImagesLightbox(files)
+                                                setIndexLightbox(idx)
+                                            }}/>
+                                            <div className={classes.noteImageButton} style={{background: 'red'}} onClick={()=>{
+                                                files.splice(idx, 1)
+                                                setFiles([...files])
+                                            }}>X</div>
+                                        </div>)}
+                                    </div>
+                                </div>
+                                <TextField
+                                    multiline={true}
+                                    label='Информация'
+                                    value={info}
+                                    className={classes.input}
+                                    onChange={(event)=>{setInfo(event.target.value)}}
+                                />
+                                <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
+                                    <Button color='primary' onClick={()=>{
+                                        if (name.length&&legalObject) {
+                                            const action = async() => {
+                                                if(router.query.id==='new') {
+                                                    await addClient({legalObject: legalObject._id, phone, name, inn, uploads, email, address, info})
+                                                    Router.push(`/clients/${legalObject._id}`)
+                                                }
+                                                else {
+                                                    let element = {_id: router.query.id, }
+                                                    if (name!==data.object.name) element.name = name
+                                                    if (inn!==data.object.inn) element.inn = inn
+                                                    if (address!==data.object.address) element.address = address
+                                                    if (info!==data.object.info) element.info = info
+                                                    if (JSON.stringify(phone)!==JSON.stringify(data.object.phone)) element.phone = phone
+                                                    if (JSON.stringify(email)!==JSON.stringify(data.object.email)) element.email = email
+                                                    if (JSON.stringify(files)!==JSON.stringify(data.object.files)) element.files = files
+                                                    if (uploads.length) element.uploads = uploads
+                                                    await setClient(element)
+                                                    Router.reload()
+                                                }
+                                            }
+                                            setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                            showMiniDialog(true)
+                                        } else
+                                            showSnackBar('Заполните все поля')
+                                    }}>
+                                        Сохранить
+                                    </Button>
+                                    {
+                                        router.query.id!=='new'?
+                                            <Button color='secondary' onClick={()=>{
+                                                const action = async() => {
+                                                    await deleteClient(router.query.id)
+                                                    Router.push(`/clients/${data.object.legalObject._id}`)
+                                                }
+                                                setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                showMiniDialog(true)
+                                            }}>
+                                                Удалить
+                                            </Button>
+                                            :
+                                            null
+                                    }
+                                </div>
+                                </>
+                            :
+                            'Ничего не найдено'
+                    }
                 </CardContent>
             </Card>
             <input
