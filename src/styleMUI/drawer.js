@@ -1,4 +1,4 @@
-export default theme => ({
+const drawer =  theme => ({
     drawer: {
         width: 300,
         flexShrink: 0,
@@ -16,3 +16,5 @@ export default theme => ({
     },
     toolbar: theme.mixins.toolbar,
 });
+
+export default drawer
