@@ -17,6 +17,8 @@ import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 import * as snackbarActions from '../redux/actions/snackbar'
 import { start } from '../src/service/idb'
 import Lightbox from 'react-awesome-lightbox';
+import * as mini_dialogActions from '../redux/actions/mini_dialog'
+
 export const mainWindow = React.createRef();
 export const alert = React.createRef();
 export let containerRef;
@@ -27,10 +29,11 @@ const App = React.memo(props => {
     const { profile, authenticated } = props.user;
     const { load, search, showAppBar, filter, showLightbox, imagesLightbox, indexLightbox } = props.app;
     let { checkPagination, sorts, filters, pageName, dates, searchShow, setList, list, defaultOpenSearch, filterShow } = props;
-    const router = useRouter();
     const [unread, setUnread] = useState({});
+    const { showMiniDialog, showFullDialog } = props.mini_dialogActions;
     const [reloadPage, setReloadPage] = useState(false);
     const { showSnackBar } = props.snackbarActions;
+    const { showFull, show  } = props.mini_dialog;
     useEffect( ()=>{
         if(authenticated&&!profile.role)
             setProfile()
@@ -51,7 +54,7 @@ const App = React.memo(props => {
     },[process.browser])
 
     useEffect( ()=>{
-        const routeChangeStart = (url)=>{
+        /*const routeChangeStart = (url)=>{
             setReloadPage(true)
             if (sessionStorage.scrollPostionName&&!(
                     url.includes('item')&&sessionStorage.scrollPostionName.includes('item')
@@ -84,7 +87,7 @@ const App = React.memo(props => {
         return () => {
             Router.events.off('routeChangeStart', routeChangeStart)
             Router.events.off('routeChangeComplete', routeChangeComplete)
-        }
+        }*/
     },[])
 
     containerRef = useBottomScrollListener(async()=>{
@@ -110,6 +113,26 @@ const App = React.memo(props => {
 
         }
     },[subscriptionDataRes.data])
+    const router = useRouter();
+    useEffect(() => {
+        if(process.browser) {
+            router.beforePopState(() => {
+                if (show || showFull) {
+                    history.go(1)
+                    showMiniDialog(false)
+                    showFullDialog(false)
+                    return false
+                }
+                else
+                    return true
+            })
+            return () => {
+                router.beforePopState(() => {
+                    return true
+                })
+            }
+        }
+    }, [process.browser, show, showFull]);
     return(
         <div ref={mainWindow} className='App'>
             {
@@ -152,7 +175,8 @@ const App = React.memo(props => {
 function mapStateToProps (state) {
     return {
         user: state.user,
-        app: state.app
+        app: state.app,
+        mini_dialog: state.mini_dialog
     }
 }
 
@@ -161,6 +185,7 @@ function mapDispatchToProps(dispatch) {
         userActions: bindActionCreators(userActions, dispatch),
         appActions: bindActionCreators(appActions, dispatch),
         snackbarActions: bindActionCreators(snackbarActions, dispatch),
+        mini_dialogActions: bindActionCreators(mini_dialogActions, dispatch),
     }
 }
 

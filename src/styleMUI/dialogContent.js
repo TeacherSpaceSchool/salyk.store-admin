@@ -116,7 +116,7 @@ const theme = theme => ({
         right: 35
     },
     geo: {
-        width: 180,
+        width: 190,
         textAlign: 'center',
         marginTop: -5,
         marginBottom: 10,

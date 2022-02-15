@@ -16,6 +16,17 @@ export default makeStyles({
         color: '#10183D',
         cursor: 'pointer'
     },
+    geo: {
+        color: '#10183D',
+        width: 190,
+        textAlign: 'center',
+        marginBottom: 10,
+        fontSize: '0.9375rem',
+        fontFamily: 'Roboto',
+        whiteSpace: 'pre-wrap',
+        cursor: 'pointer',
+        borderBottom: '1px dashed #10183D'
+    },
     bottomDivD: {
         width: 'calc(100vw - 300px)',
         borderTop: '1px #aeaeae solid',

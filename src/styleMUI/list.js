@@ -116,7 +116,7 @@ export default makeStyles({
         flexWrap: 'wrap'
     },
     geo: {
-        width: 180,
+        width: 190,
         textAlign: 'center',
         marginBottom: 10,
         fontSize: '0.9375rem',
