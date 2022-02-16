@@ -8,9 +8,9 @@ export const openScanner = ({idx, path})=>{
     let now = new Date()
     window.location = `salykscanner://path?idx=${idx}&path=${path}`
     setTimeout(()=>{
-        if (new Date() - now > 600) return;
+        if (new Date() - now > 100) return;
         window.location = 'https://play.google.com/store/apps/details?id=com.salyk.scanner'
-    },500)
+    },25)
 }
 
 export const getJWT = (cookie)=>{
