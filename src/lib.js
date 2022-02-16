@@ -5,11 +5,8 @@ export const checkMobile = (ua)=>{
 }
 
 export const openScanner = ({idx, path})=>{
-    let now = new Date()
-    setTimeout(()=>{
-        if (new Date() - now > 1000) return;
-        window.location = 'https://play.google.com/store/apps/details?id=com.salyk.scanner'
-    },1000)
+    let timeout = setTimeout(()=>window.location = 'https://play.google.com/store/apps/details?id=com.salyk.scanner',1000)
+    window.addEventListener('blur',()=>window.clearTimeout(timeout))
     window.location = `salykscanner://path?idx=${idx}&path=${path}`
 }
 
