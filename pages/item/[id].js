@@ -33,6 +33,7 @@ import ControlCamera from '../../icons/barcode-scanner.svg';
 import Link from 'next/link';
 import AutocomplectOnline from '../../components/app/AutocomplectOnline'
 import {getLegalObjects} from '../../src/gql/legalObject'
+import { openScanner } from '../../src/lib';
 const types = ['товары', 'услуги']
 
 const Item = React.memo((props) => {
@@ -267,11 +268,11 @@ const Item = React.memo((props) => {
                                     endAdornment={
                                         isMobileApp?
                                             <InputAdornment position='end'>
-                                                <a href={`salykscanner://path?idx=0&path=item/${router.query.id}`} target='_blank'>
-                                                    <IconButton aria-label='scanner'>
-                                                        <ControlCamera/>
-                                                    </IconButton>
-                                                </a>
+                                                <IconButton aria-label='scanner' onClick={()=>{
+                                                    openScanner({_idx: 0, path: `item/${router.query.id}`})
+                                                }}>
+                                                    <ControlCamera/>
+                                                </IconButton>
                                             </InputAdornment>
                                             :
                                             null

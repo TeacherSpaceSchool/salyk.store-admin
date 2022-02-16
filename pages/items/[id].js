@@ -20,6 +20,7 @@ import * as appActions from '../../redux/actions/app'
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import { bindActionCreators } from 'redux'
 import ControlCamera from '../../icons/barcode-scanner.svg';
+import { openScanner } from '../../src/lib';
 const filters = [
     {
         name: 'Все',
@@ -170,11 +171,11 @@ const Items = React.memo((props) => {
                 isMobileApp?
                     <>
                     <div style={{height: 90}}/>
-                    <a href={`salykscanner://path?idx=0&path=items/${router.query.id}`} target='_blank'>
-                        <Fab color='primary' aria-label='add' className={classes.fab2}>
-                            <ControlCamera/>
-                        </Fab>
-                    </a>
+                    <Fab color='primary' aria-label='add' className={classes.fab2} onClick={()=>{
+                        openScanner({_idx: 0, path: `items/${router.query.id}`})
+                    }}>
+                        <ControlCamera/>
+                    </Fab>
                     </>
                     :
                     null

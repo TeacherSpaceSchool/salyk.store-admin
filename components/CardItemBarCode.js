@@ -19,6 +19,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import ControlCamera from '../icons/barcode-scanner.svg';
 import Input from '@material-ui/core/Input';
+import { openScanner } from '../src/lib';
 
 const CardItemBarCode = React.memo((props) => {
     const classes = cardItemBarCodeStyle();
@@ -58,11 +59,11 @@ const CardItemBarCode = React.memo((props) => {
                                 endAdornment={
                                     !element&&isMobileApp?
                                         <InputAdornment position='end'>
-                                            <a href={`salykscanner://path?idx=${idx?idx:0}&path=statistic/itembarcodes`} target='_blank'>
-                                                <IconButton aria-label='scanner'>
-                                                    <ControlCamera/>
-                                                </IconButton>
-                                            </a>
+                                            <IconButton aria-label='scanner' onClick={()=>{
+                                                openScanner({_idx: idx?idx:0, path: 'statistic/itembarcodes'})
+                                            }}>
+                                                <ControlCamera/>
+                                            </IconButton>
                                         </InputAdornment>
                                         :
                                         null

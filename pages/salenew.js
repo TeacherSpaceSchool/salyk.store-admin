@@ -42,6 +42,7 @@ import { mainWindow } from '../layouts/App'
 import Clear from '@material-ui/icons/Clear';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import BarcodeScannerIcon from '../icons/barcode-scanner.svg';
+import { openScanner } from '../src/lib';
 
 const types = ['Продажа', 'Возврат продажи', 'Погашение кредита', 'Аванс', 'Возврат аванса', 'Покупка', 'Возврат покупки']
 
@@ -408,11 +409,11 @@ const Selnew = React.memo((props) => {
                                         />
                                         {
                                             isMobileApp&&type==='Продажа'?
-                                                <a href={`salykscanner://path?idx=0&path=salenew`} target='_blank'>
-                                                    <IconButton aria-label='scanner'>
-                                                        <BarcodeScannerIcon color='inherit'/>
-                                                    </IconButton>
-                                                </a>
+                                                <IconButton aria-label='scanner' onClick={()=>{
+                                                    openScanner({_idx: 0, path: 'salenew'})
+                                                }}>
+                                                    <BarcodeScannerIcon color='inherit'/>
+                                                </IconButton>
                                                 :
                                                 null
                                         }
