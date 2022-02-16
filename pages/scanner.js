@@ -17,6 +17,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import ControlCamera from '../icons/barcode-scanner.svg';
 import Router from 'next/router'
+import { openScanner } from '../src/lib';
 
 const Scanner = React.memo((props) => {
     const classes = pageListStyle();
@@ -50,9 +51,9 @@ const Scanner = React.memo((props) => {
                                 <div className={classes.value}>1) <a href='https://play.google.com/store/apps/details?id=com.salyk.scanner' style={{color: '#10183D', fontWeight: 'bold'}}>Скачать SALYK.SCANNER c Google Play</a></div>
                                 <div className={classes.row} style={{alignItems: 'center', marginBottom: 10}}>
                                     <div className={classes.value} style={{marginBottom: 0}}>2) Во время работы SALYK.STORE, нажмите на иконку:</div>
-                                    <a href={`salykscanner://path?idx=0&path=scanner`} target='_blank' style={{height: 30}}>
-                                            <ControlCamera/>
-                                    </a>
+                                    <ControlCamera style={{height: 30}} onClick={()=>{
+                                        openScanner({_idx: 0, path: 'scanner'})
+                                    }}/>
                                 </div>
                                 <div className={classes.value}>3) Наведите сканнер на штрихкод</div>
                                 <div className={classes.value}>4) Поставьте галочку напротив "Запомнить выбор" и нажмите на иконку SALYK.STORE</div>
