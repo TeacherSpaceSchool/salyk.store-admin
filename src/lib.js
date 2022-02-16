@@ -6,11 +6,11 @@ export const checkMobile = (ua)=>{
 
 export const openScanner = ({idx, path})=>{
     let now = new Date()
+    window.location = `salykscanner://path?idx=${idx}&path=${path}`
     setTimeout(()=>{
-        if (new Date() - now > 600) return;
+        if (new Date() - now > 500) return;
         window.location = 'https://play.google.com/store/apps/details?id=com.salyk.scanner'
     },500)
-    window.location = `salykscanner://path?idx=${idx}&path=${path}`
 }
 
 export const getJWT = (cookie)=>{
