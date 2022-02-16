@@ -6,9 +6,9 @@ export const checkMobile = (ua)=>{
 
 export const openScanner = ({idx, path})=>{
     setTimeout(()=>{
-        window.open('https://play.google.com/store/apps/details?id=com.salyk.scanner', '_blank')
+        window.location = 'https://play.google.com/store/apps/details?id=com.salyk.scanner'
     },25)
-    window.open(`salykscanner://path?idx=${idx}&path=${path}`, '_blank')
+    window.location = `salykscanner://path?idx=${idx}&path=${path}`
 }
 
 export const getJWT = (cookie)=>{
