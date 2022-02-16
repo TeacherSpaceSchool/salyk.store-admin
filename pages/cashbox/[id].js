@@ -223,28 +223,31 @@ const Cashbox = React.memo((props) => {
                                 null
                         }
                         {
-                            ['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.add?
-                                <Link href='/payment/[id]' as={'/payment/new'}>
-                                    <a>
-                                        <div className={classes.row}>
-                                            <div className={classes.nameField}>
-                                                Оплачен до:&nbsp;
+                            router.query.id!=='new'?
+                                ['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.add?
+                                    <Link href='/payment/[id]' as={'/payment/new'}>
+                                        <a>
+                                            <div className={classes.row}>
+                                                <div className={classes.nameField}>
+                                                    Оплачен до:&nbsp;
+                                                </div>
+                                                <div className={classes.value} style={{color: data.object.endPayment&&data.object.endPayment>=new Date()?'green':'red'}}>
+                                                    {data.object.endPayment?pdDDMMYYHHMM(data.object.endPayment):'не оплачен'}
+                                                </div>
                                             </div>
-                                            <div className={classes.value} style={{color: data.object.endPayment&&data.object.endPayment>=new Date()?'green':'red'}}>
-                                                {data.object.endPayment?pdDDMMYYHHMM(data.object.endPayment):'не оплачен'}
-                                            </div>
+                                        </a>
+                                    </Link>
+                                    :
+                                    <div className={classes.row}>
+                                        <div className={classes.nameField}>
+                                            Оплачен до:&nbsp;
                                         </div>
-                                    </a>
-                                </Link>
+                                        <div className={classes.value} style={{color: data.object.endPayment&&data.object.endPayment>=new Date()?'green':'red'}}>
+                                            {data.object.endPayment?pdDDMMYYHHMM(data.object.endPayment):'не оплачен'}
+                                        </div>
+                                    </div>
                                 :
-                                <div className={classes.row}>
-                                    <div className={classes.nameField}>
-                                        Оплачен до:&nbsp;
-                                    </div>
-                                    <div className={classes.value} style={{color: data.object.endPayment&&data.object.endPayment>=new Date()?'green':'red'}}>
-                                        {data.object.endPayment?pdDDMMYYHHMM(data.object.endPayment):'не оплачен'}
-                                    </div>
-                                </div>
+                                null
                         }
                         {
                             legalObject&&legalObject._id?
@@ -338,7 +341,7 @@ const Cashbox = React.memo((props) => {
                                                 if(report)
                                                     Router.push(`/report/${report}?type=X`)
                                                 else
-                                                    showSnackBar('Смена просрочена')
+                                                    showSnackBar('Смена просрочена', 'error')
                                                 /*const action = async() => {
                                                 }
                                                 setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
@@ -369,8 +372,9 @@ const Cashbox = React.memo((props) => {
                                                 if(name.length&&legalObject&&branch) {
                                                     const action = async() => {
                                                         if(router.query.id==='new') {
-                                                            await addCashbox({name, legalObject: legalObject._id, branch: branch._id})
-                                                            Router.push(`/cashboxes/${legalObject._id}`)
+                                                            let res = await addCashbox({name, legalObject: legalObject._id, branch: branch._id})
+                                                            Router.push(`/cashbox/${res}`)
+                                                            showSnackBar('Успешно', 'success')
                                                         }
                                                         else {
                                                             let element = {_id: router.query.id}

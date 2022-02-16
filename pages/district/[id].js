@@ -231,8 +231,9 @@ const District = React.memo((props) => {
                                                 if (legalObject&&name.length) {
                                                     const action = async() => {
                                                         if(router.query.id==='new') {
-                                                            await addDistrict({legalObject: legalObject._id, name, branchs: branchs.map(elem=>elem._id), cashiers: cashiers.map(elem=>elem._id), supervisors: supervisors.map(elem=>elem._id)})
-                                                            Router.push(`/districts/${legalObject._id}`)
+                                                            let res = await addDistrict({legalObject: legalObject._id, name, branchs: branchs.map(elem=>elem._id), cashiers: cashiers.map(elem=>elem._id), supervisors: supervisors.map(elem=>elem._id)})
+                                                            Router.push(`/district/${res}`)
+                                                            showSnackBar('Успешно', 'success')
                                                         }
                                                         else {
                                                             let element = {_id: router.query.id}

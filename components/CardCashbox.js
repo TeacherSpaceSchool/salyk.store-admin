@@ -132,7 +132,7 @@ const CardCashbox = React.memo((props) => {
                             if(report)
                                 Router.push(`/report/${report}?type=X`)
                             else
-                                showSnackBar('Смена просрочена')
+                                showSnackBar('Смена просрочена', 'error')
                             /*const action = () => {
                             }
                             setMiniDialog('Вы уверены?', <Confirmation action={action}/>)

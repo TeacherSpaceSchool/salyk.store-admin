@@ -491,7 +491,7 @@ const WorkShift = React.memo((props) => {
                                    }
                                    {
                                        profile.role!=='admin'||profile.add||expired?
-                                           <Button color='primary' onClick={()=>{
+                                           <Button color='secondary' onClick={()=>{
                                                const action = async() => {
                                                    let report = await endWorkShift(...['управляющий', 'супервайзер', 'admin', 'superadmin'].includes(profile.role)?[router.query.id]:[])
                                                    Router.push(`/report/${report}?type=Z`)

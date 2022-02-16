@@ -36,6 +36,7 @@ import HistoryIcon from '@material-ui/icons/History';
 import SyncOn from '@material-ui/icons/Sync';
 import SyncOff from '@material-ui/icons/SyncDisabled';
 import ViewText from '../../components/dialog/ViewText';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const Branch = React.memo((props) => {
     const { profile } = props.user;
@@ -48,17 +49,8 @@ const Branch = React.memo((props) => {
     let [address, setAddress] = useState(data.object?data.object.address:'');
     let [geo, setGeo] = useState(data.object&&data.object.geo?cloneObject(data.object.geo):undefined);
     let [ugns, setUgns] = useState(data.object?data.object.ugns:'');
-    let handleUgns = (event) => {
-        setUgns(event.target.value)
-    };
     let [bType, setBType] = useState(data.object?data.object.bType:'');
-    let handleBType = (event) => {
-        setBType(event.target.value)
-    };
     let [pType, setPType] = useState(data.object?data.object.pType:'');
-    let handlePType = (event) => {
-        setPType(event.target.value)
-    };
     let [legalObject, setLegalObject] = useState(data.object?data.object.legalObject:undefined);
     const { setMiniDialog, showMiniDialog, setFullDialog, showFullDialog } = props.mini_dialogActions;
     const router = useRouter()
@@ -232,30 +224,39 @@ const Branch = React.memo((props) => {
                                 className={classes.input}
                                 onChange={(event)=>{setName(event.target.value)}}
                             />
-                            <FormControl className={classes.input}>
-                                <InputLabel error={!ugns}>Налоговый орган</InputLabel>
-                                <Select error={!ugns} value={ugns} onChange={handleUgns}>
-                                    {Object.keys(ugnsTypes).map((element)=>
-                                        <MenuItem key={element} value={element}>{element}</MenuItem>
-                                    )}
-                                </Select>
-                            </FormControl>
-                            <FormControl className={classes.input}>
-                                <InputLabel error={!pType}>Тип</InputLabel>
-                                <Select value={pType} error={!pType} onChange={handlePType}>
-                                    {pTypes.map((element)=>
-                                        <MenuItem key={element} value={element}>{element}</MenuItem>
-                                    )}
-                                </Select>
-                            </FormControl>
-                            <FormControl className={classes.input}>
-                                <InputLabel error={!bType}>Тип бизнеса</InputLabel>
-                                <Select value={bType} error={!bType} onChange={handleBType}>
-                                    {bTypes.map((element)=>
-                                        <MenuItem key={element} value={element}>{element}</MenuItem>
-                                    )}
-                                </Select>
-                            </FormControl>
+                            <Autocomplete
+                                className={classes.input}
+                                options={Object.keys(ugnsTypes)}
+                                value={ugns}
+                                getOptionLabel={option => option}
+                                noOptionsText='Ничего не найдено'
+                                onChange={(event, newValue) => {
+                                    setUgns(newValue)
+                                }}
+                                renderInput={(params) => <TextField error={!ugns} {...params} label='Налоговый орган' variant='standard' />}
+                            />
+                            <Autocomplete
+                                className={classes.input}
+                                options={pTypes}
+                                value={pType}
+                                getOptionLabel={option => option}
+                                noOptionsText='Ничего не найдено'
+                                onChange={(event, newValue) => {
+                                    setPType(newValue)
+                                }}
+                                renderInput={(params) => <TextField error={!pType} {...params} label='Тип' variant='standard' />}
+                            />
+                            <Autocomplete
+                                className={classes.input}
+                                options={bTypes}
+                                value={bType}
+                                getOptionLabel={option => option}
+                                noOptionsText='Ничего не найдено'
+                                onChange={(event, newValue) => {
+                                    setBType(newValue)
+                                }}
+                                renderInput={(params) => <TextField error={!bType} {...params} label='Тип бизнеса' variant='standard' />}
+                            />
                             <TextField
                                 error={!address}
                                 label='Адрес'
@@ -372,8 +373,9 @@ const Branch = React.memo((props) => {
                                             if (legalObject&&name.length&&address.length&&pType.length&&bType.length&&ugns.length) {
                                                 const action = async() => {
                                                     if(router.query.id==='new') {
-                                                        await addBranch({legalObject: legalObject._id, bType, pType, ugns, name, address, geo})
-                                                        Router.push(`/branchs/${legalObject._id}`)
+                                                        let res = await addBranch({legalObject: legalObject._id, bType, pType, ugns, name, address, geo})
+                                                        Router.push(`/branch/${res}`)
+                                                        showSnackBar('Успешно', 'success')
                                                     }
                                                     else {
                                                         let element = {_id: router.query.id}

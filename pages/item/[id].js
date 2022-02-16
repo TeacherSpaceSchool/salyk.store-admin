@@ -352,7 +352,7 @@ const Item = React.memo((props) => {
                                             if(router.query.id==='new') {
                                                 price = checkFloat(price)
                                                 if(checkFloat(price)||editedPrice) {
-                                                    await addItem({
+                                                    let res = await addItem({
                                                         legalObject: legalObject._id,
                                                         category: category ? category._id : category,
                                                         priority: checkInt(priority),
@@ -366,7 +366,8 @@ const Item = React.memo((props) => {
                                                         mark,
                                                         quick
                                                     })
-                                                    Router.push(`/items/${legalObject._id}`)
+                                                    Router.push(`/item/${res}`)
+                                                    showSnackBar('Успешно', 'success')
                                                 }
                                                 else
                                                     showSnackBar('Укажите цену')

@@ -150,6 +150,7 @@ const Integration = React.memo((props) => {
                                         </>
                                         :
                                         <AutocomplectOnline
+                                            error={!legalObject}
                                             setElement={setLegalObject}
                                             getElements={async (search)=>{return await getLegalObjectsForIntegrations({search})}}
                                             label={'налогоплательщика'}
@@ -162,6 +163,7 @@ const Integration = React.memo((props) => {
                                     onChange={(event)=>{setIP(event.target.value)}}
                                 />
                                 <TextField
+                                    error={!password}
                                     label='Пароль'
                                     value={password}
                                     className={classes.input}
@@ -173,8 +175,9 @@ const Integration = React.memo((props) => {
                                         if (legalObject&&password.length) {
                                             const action = async() => {
                                                 if(router.query.id==='new') {
-                                                    await addIntegration({legalObject: legalObject._id, IP, password})
-                                                    Router.push('/statistic/integrations')
+                                                    let res = await addIntegration({legalObject: legalObject._id, IP, password})
+                                                    Router.push(`/statistic/integration/${res}`)
+                                                    showSnackBar('Успешно', 'success')
                                                 }
                                                 else {
                                                     let element = {_id: router.query.id}

@@ -143,7 +143,7 @@ export const addBranch = async(element)=>{
                     mutation ($legalObject: ID!, $bType: String!, $pType: String!, $ugns: String!, $name: String!, $address: String!, $geo: [Float]) {
                         addBranch(legalObject: $legalObject, bType: $bType, pType: $pType, ugns: $ugns, name: $name, address: $address, geo: $geo)
                     }`})
-        return res.data
+        return res.data.addBranch
     } catch(err){
         console.error(err)
     }

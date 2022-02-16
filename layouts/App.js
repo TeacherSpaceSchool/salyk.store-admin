@@ -49,12 +49,12 @@ const App = React.memo(props => {
     useEffect( ()=>{
         if(process.browser) {
             start()
-            window.addEventListener('offline', ()=>{showSnackBar('Нет подключения к УНО и ОФД')})
+            window.addEventListener('offline', ()=>{showSnackBar('Нет подключения к УНО и ОФД', 'error')})
         }
     },[process.browser])
 
     useEffect( ()=>{
-        /*const routeChangeStart = (url)=>{
+        const routeChangeStart = (url)=>{
             setReloadPage(true)
             if (sessionStorage.scrollPostionName&&!(
                     url.includes('item')&&sessionStorage.scrollPostionName.includes('item')
@@ -87,7 +87,7 @@ const App = React.memo(props => {
         return () => {
             Router.events.off('routeChangeStart', routeChangeStart)
             Router.events.off('routeChangeComplete', routeChangeComplete)
-        }*/
+        }
     },[])
 
     containerRef = useBottomScrollListener(async()=>{

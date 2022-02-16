@@ -156,7 +156,7 @@ export const addCashbox = async(element)=>{
                     mutation ($legalObject: ID!, $name: String!, $branch: ID!) {
                         addCashbox(legalObject: $legalObject, name: $name, branch: $branch)
                     }`})
-        return res.data
+        return res.data.addCashbox
     } catch(err){
         console.error(err)
     }

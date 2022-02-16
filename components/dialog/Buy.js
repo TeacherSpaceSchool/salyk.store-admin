@@ -17,7 +17,7 @@ const BuyBasket =  React.memo(
     (props) =>{
         const { isMobileApp } = props.app;
         const { profile } = props.user;
-        let { classes, client, amountStart, _setComment, cashbox, items, allNsp, allNds, ndsPrecent, nspPrecent, type, usedPrepayment, consignation, sale, setItems, setType, setClient, setSale } = props;
+        let { classes, client, amountStart, _setComment, cashbox, items, allNsp, allNds, ndsPrecent, nspPrecent, type, usedPrepayment, consignation, sale, setItems, setType, setClient, setSale, setAllAmount } = props;
         const { showMiniDialog } = props.mini_dialogActions;
         const { showSnackBar } = props.snackbarActions;
         const width = isMobileApp? (window.innerWidth-112) : 500
@@ -26,12 +26,12 @@ const BuyBasket =  React.memo(
         let [discount, setDiscount] = useState('');
         let [amountEnd, setAmountEnd] = useState(amountStart);
         let [paid, setPaid] = useState(0);
-        let [discountType, setDiscountType] = useState('сом');
+        let [discountType, setDiscountType] = useState('%');
         let [comment, setComment] = useState('');
         let [commentShow, setCommentShow] = useState(false);
         let [extra, setExtra] = useState('');
         let [change, setChange] = useState('');
-        let [extraType, setExtraType] = useState('сом');
+        let [extraType, setExtraType] = useState('%');
         useEffect(() => {
             amountEnd = amountStart + (extraType==='%'?amountStart/100*extra:checkFloat(extra)) - (discountType==='%'?amountStart/100*discount:discount) - consignation
             if(typePayment==='Безналичный'&&type==='Продажа')
@@ -93,13 +93,23 @@ const BuyBasket =  React.memo(
                                                     setDiscount(discount)
                                                 }
                                             }}>–</div>
-                                            <input type={isMobileApp?'number':'text'} className={classes.counternmbr}
-                                                   value={discount} onChange={(event) => {
-                                                if('Продажа'===type) {
-                                                    discount = inputFloat(event.target.value)
-                                                    setDiscount(discount)
-                                                }
-                                            }}/>
+                                            <input
+                                                type={isMobileApp?'number':'text'}
+                                                className={classes.counternmbr}
+                                                value={discount}
+                                                onChange={(event) => {
+                                                    if('Продажа'===type) {
+                                                        discount = inputFloat(event.target.value)
+                                                        setDiscount(discount)
+                                                    }
+                                                }}
+                                                onFocus={()=>{
+                                                    if('Продажа'===type) {
+                                                        discount = inputFloat('')
+                                                        setDiscount(discount)
+                                                    }
+                                                }}
+                                            />
                                             <div className={classes.counterbtn} onClick={() => {
                                                 discount = checkFloat(checkFloat(discount) + 1)
                                                 setDiscount(discount)
@@ -124,11 +134,19 @@ const BuyBasket =  React.memo(
                                                             setExtra(extra)
                                                         }
                                                     }}>–</div>
-                                                    <input type={isMobileApp?'number':'text'} className={classes.counternmbr}
-                                                           value={extra} onChange={(event) => {
-                                                        extra = inputFloat(event.target.value)
-                                                        setExtra(extra)
-                                                    }}/>
+                                                    <input
+                                                        type={isMobileApp?'number':'text'}
+                                                        className={classes.counternmbr}
+                                                        value={extra}
+                                                        onChange={(event) => {
+                                                            extra = inputFloat(event.target.value)
+                                                            setExtra(extra)
+                                                        }}
+                                                        onFocus={()=>{
+                                                            extra = inputFloat('')
+                                                            setExtra(extra)
+                                                        }}
+                                                    />
                                                     <div className={classes.counterbtn} onClick={() => {
                                                         extra = checkFloat(checkFloat(extra) + 1)
                                                         setExtra(extra)
@@ -181,17 +199,31 @@ const BuyBasket =  React.memo(
                                     setChange(change)
                                     setPaid(paid)
                                 }}>–</div>
-                                <input type={isMobileApp?'number':'text'} className={classes.counternmbr}
-                                       value={paid} onChange={(event) => {
-                                    paid = inputFloat(event.target.value)
-                                    change = (checkFloat(paid)+('Продажа'===type?usedPrepayment:0)) - amountEnd
-                                    if(change<0)
-                                        change = Math.ceil(change*-1)*-1
-                                    else
-                                        change = parseInt(change)
-                                    setChange(change)
-                                    setPaid(paid)
-                                }}/>
+                                <input
+                                    type={isMobileApp?'number':'text'}
+                                    className={classes.counternmbr}
+                                    value={paid}
+                                    onChange={(event) => {
+                                        paid = inputFloat(event.target.value)
+                                        change = (checkFloat(paid)+('Продажа'===type?usedPrepayment:0)) - amountEnd
+                                        if(change<0)
+                                            change = Math.ceil(change*-1)*-1
+                                        else
+                                            change = parseInt(change)
+                                        setChange(change)
+                                        setPaid(paid)
+                                    }}
+                                    onFocus={()=>{
+                                        paid = inputFloat('')
+                                        change = (checkFloat(paid)+('Продажа'===type?usedPrepayment:0)) - amountEnd
+                                        if(change<0)
+                                            change = Math.ceil(change*-1)*-1
+                                        else
+                                            change = parseInt(change)
+                                        setChange(change)
+                                        setPaid(paid)
+                                    }}
+                                />
                                 <div className={classes.counterbtn} onClick={() => {
                                     paid = checkFloat(checkFloat(paid) + 5)
                                     change = (checkFloat(paid)+('Продажа'===type?usedPrepayment:0)) - amountEnd
@@ -335,9 +367,11 @@ const BuyBasket =  React.memo(
                                                     setSale(undefined)
                                                 if(_setComment)
                                                     _setComment('')
+                                                if(setAllAmount)
+                                                    setAllAmount('')
                                             }
                                             else
-                                                showSnackBar('Ошибка')
+                                                showSnackBar('Ошибка', 'error')
                                         }
                                     }
                                 }

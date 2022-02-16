@@ -166,7 +166,7 @@ const CardConnectionApplication = React.memo((props) => {
                                             setPhone('')
                                             setWhereKnow('')
                                             setAddress('')
-                                            showSnackBar('Заявка отправлена')
+                                            showSnackBar('Заявка отправлена', 'success')
                                         }
                                         setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
                                         showMiniDialog(true)

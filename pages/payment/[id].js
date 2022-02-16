@@ -392,7 +392,7 @@ const Payment = React.memo((props) => {
                                                         cashboxes: cashboxes.map(elem=>elem._id)
                                                     })
                                                     if(res==='Ошибка')
-                                                        showSnackBar('Ошибка платежа')
+                                                        showSnackBar('Ошибка платежа', 'error')
                                                     else
                                                         Router.push(`/payment/receipt/${res}`)
                                                 }
@@ -410,7 +410,7 @@ const Payment = React.memo((props) => {
                                                 })
                                                 showLoad(false)
                                                 if(res==='Ошибка')
-                                                    showSnackBar('Ошибка платежа')
+                                                    showSnackBar('Ошибка платежа', 'error')
                                                 else
                                                     window.open(res, '_blank')
                                             }
@@ -445,7 +445,7 @@ const Payment = React.memo((props) => {
                                             if(res==='OK')
                                                 Router.push(`/payments`)
                                             else
-                                                showSnackBar('Ошибка')
+                                                showSnackBar('Ошибка', 'error')
                                            }
                                         setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
                                         showMiniDialog(true)

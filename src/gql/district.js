@@ -163,7 +163,7 @@ export const addDistrict = async(element)=>{
                     mutation ($legalObject: ID!, $name: String!, $branchs: [ID]!, $cashiers: [ID]!, $supervisors: [ID]!) {
                         addDistrict(legalObject: $legalObject, name: $name, branchs: $branchs, cashiers: $cashiers, supervisors: $supervisors)
                     }`})
-        return res.data
+        return res.data.addDistrict
     } catch(err){
         console.error(err)
     }

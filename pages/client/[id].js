@@ -449,8 +449,9 @@ const Client = React.memo((props) => {
                                         if (name.length&&legalObject) {
                                             const action = async() => {
                                                 if(router.query.id==='new') {
-                                                    await addClient({legalObject: legalObject._id, phone, name, inn, uploads, email, address, info})
-                                                    Router.push(`/clients/${legalObject._id}`)
+                                                    let res = await addClient({legalObject: legalObject._id, phone, name, inn, uploads, email, address, info})
+                                                    Router.push(`/client/${res._id}`)
+                                                    showSnackBar('Успешно', 'success')
                                                 }
                                                 else {
                                                     let element = {_id: router.query.id, }

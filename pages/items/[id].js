@@ -216,7 +216,7 @@ Items.getInitialProps = async function(ctx) {
             } else
                 Router.push(`/item/${scanItems[0]._id}`)
         }
-        else if(profile.add) {if(ctx.res) {
+        else if(ctx.store.getState().user.profile.add) {if(ctx.res) {
             ctx.res.writeHead(302, {
                 Location: `/item/new?barcode=${ctx.query.barcode}`
             })

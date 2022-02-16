@@ -60,7 +60,7 @@ const UploadingClients = React.memo((props) => {
                                         document
                                     });
                                     if(res==='OK')
-                                        showSnackBar('Все данные загруженны')
+                                        showSnackBar('Все данные загруженны', 'success')
                                 }
                                 setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
                                 showMiniDialog(true)

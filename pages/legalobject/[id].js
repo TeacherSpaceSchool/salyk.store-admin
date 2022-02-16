@@ -27,7 +27,7 @@ import TextField from '@material-ui/core/TextField';
 import Confirmation from '../../components/dialog/Confirmation'
 import { urlMain } from '../../redux/constants/other'
 import { getClientGqlSsr } from '../../src/getClientGQL'
-import { taxpayerTypes, ugnsTypes, ugnsTypesByNmr, rateTaxes } from '../../src/const'
+import { taxpayerTypes, ugnsTypesByNmr, rateTaxes } from '../../src/const'
 import { ndsTypes, nspTypes } from '../../src/const'
 import { pdDDMMYYHHMM, validPhone1, validPhones1, validMail, validMails, cloneObject, inputPhone } from '../../src/lib'
 import Menu from '@material-ui/core/Menu';
@@ -301,11 +301,11 @@ const LegalObject = React.memo((props) => {
                                                         setUgns(ugnsTypesByNmr[_inn.rayonCode])
                                                     }
                                                     else
-                                                        showSnackBar(_inn.message)
+                                                        showSnackBar(_inn.message, 'error')
                                                     await showLoad(false)
                                                 }
                                                 else
-                                                    showSnackBar('Неверный ИНН')
+                                                    showSnackBar('Неверный ИНН', 'error')
                                             }}>
                                                 <Check/>
                                             </IconButton>
@@ -420,14 +420,12 @@ const LegalObject = React.memo((props) => {
                                     )}
                                 </Select>
                             </FormControl>
-                            <FormControl className={classes.input}>
-                                <InputLabel error={!ugns}>Налоговый орган</InputLabel>
-                                <Select value={ugns} error={!ugns}>
-                                    {Object.keys(ugnsTypes).map((element)=>
-                                        <MenuItem key={element} value={element}>{element}</MenuItem>
-                                    )}
-                                </Select>
-                            </FormControl>
+                            <TextField
+                                error={!ugns}
+                                label='Налоговый орган'
+                                value={ugns}
+                                className={classes.input}
+                            />
                             </>
                             :
                             <>
@@ -550,8 +548,9 @@ const LegalObject = React.memo((props) => {
                                             if (ndsType&&nspType&&rateTaxe&&name.length&&inn.length&&address.length&&checkPhone&&checkMail&&taxpayerType.length&&ugns.length&&responsiblePerson.length) {
                                                 const action = async() => {
                                                     if(router.query.id==='new') {
-                                                        await addLegalObject({rateTaxe, name, inn, ofd, address, ndsType, nspType, phone, email, taxpayerType, ugns, responsiblePerson})
-                                                        Router.push(`/legalobjects`)
+                                                        let res = await addLegalObject({rateTaxe, name, inn, ofd, address, ndsType, nspType, phone, email, taxpayerType, ugns, responsiblePerson})
+                                                        Router.push(`/legalobject/${res}`)
+                                                        showSnackBar('Успешно', 'success')
                                                     }
                                                     else {
                                                         let element = {_id: router.query.id}

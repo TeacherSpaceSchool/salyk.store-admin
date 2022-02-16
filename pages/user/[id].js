@@ -1,6 +1,6 @@
 import initialApp from '../../src/initialApp'
 import Head from 'next/head';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import App from '../../layouts/App';
 import { connect } from 'react-redux'
 import {getUser, setUser, addUser, deleteUser, restoreUser, onoffUser, checkLogin} from '../../src/gql/user'
@@ -50,6 +50,7 @@ const User = React.memo((props) => {
     let [statistic, setStatistic] = useState(data.object?data.object.statistic:false);
     let [add, setAdd] = useState(data.object?data.object.add:router.query.id==='new');
     let [credit, setCredit] = useState(data.object?data.object.credit:router.query.id==='new');
+    const checkLoginTimeout = useRef(false);
     let [payment, setPayment] = useState(data.object?data.object.payment:false);
     let [login, setLogin] = useState(data.object?data.object.login:'');
     let [password, setPassword] = useState(data.object&&data.object.password?data.object.password:'');
@@ -400,10 +401,15 @@ const User = React.memo((props) => {
                                             label='Логин'
                                             value={login}
                                             className={classes.input}
-                                            onChange={(event)=>{setLogin(event.target.value)}}
-                                            onBlur={async()=>{
-                                                if(login!==data.object.login)
-                                                    setErrorLogin((await checkLogin({login}))!=='OK')
+                                            onChange={(event)=>{
+                                                login = event.target.value
+                                                setLogin(event.target.value)
+
+                                                if(checkLoginTimeout.current)
+                                                    clearTimeout(checkLoginTimeout.current)
+                                                if(login!==data.object.login&&login)
+                                                    checkLoginTimeout.current = setTimeout(async()=>setErrorLogin(await checkLogin({login})!=='OK'), 1000)
+
                                             }}
                                         />
                                         :

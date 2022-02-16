@@ -49,10 +49,10 @@ const GetSale =  React.memo(
                                 showMiniDialog(false)
                             }
                             else
-                                showSnackBar('Чек не найден')
+                                showSnackBar('Чек не найден', 'error')
                         }
                         else
-                            showSnackBar('Проверьте правильность')
+                            showSnackBar('Заполните все поля')
                     }} className={classes.button}>
                         Найти
                     </Button>

@@ -103,12 +103,13 @@ export const deleteIntegration = async(_id)=>{
 export const addIntegration = async({legalObject, IP, password})=>{
     try{
         const client = new SingletonApolloClient().getClient()
-        await client.mutate({
+        let res = await client.mutate({
             variables: {legalObject, IP, password},
             mutation : gql`
                     mutation ($legalObject: ID!, $IP: String!, $password: String!) {
                         addIntegration(legalObject: $legalObject, IP: $IP, password: $password)
                     }`})
+        return res.data.addIntegration
     } catch(err){
         console.error(err)
     }

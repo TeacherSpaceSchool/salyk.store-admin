@@ -182,12 +182,13 @@ export const restoreLegalObject = async(_id)=>{
 export const addLegalObject = async(element)=>{
     try{
         const client = new SingletonApolloClient().getClient()
-        await client.mutate({
+        let res = await client.mutate({
             variables: element,
             mutation : gql`
                     mutation ($name: String!, $rateTaxe: String!, $ofd: Boolean!, $ndsType: String!, $nspType: String!, $inn: String!, $email: [String]!, $address: String!, $phone: [String]!, $taxpayerType: String!, $ugns: String!, $responsiblePerson: String!) {
                         addLegalObject(name: $name, ofd: $ofd, rateTaxe: $rateTaxe, inn: $inn, ndsType: $ndsType, nspType: $nspType, email: $email, address: $address, phone: $phone, taxpayerType: $taxpayerType, ugns: $ugns, responsiblePerson: $responsiblePerson)
                     }`})
+        return res.data.addLegalObject
     } catch(err){
         console.error(err)
     }

@@ -43,7 +43,7 @@ const Index = React.memo((props) => {
         if(list.length&&'кассир'===profile.role){
             expired = ((new Date()-list[0].start)/1000/60/60)>24
             if(expired)
-                showSnackBar('Cмена просрочена')
+                showSnackBar('Cмена просрочена', 'error')
             setExpired(expired)
         }
     }, []);
@@ -268,6 +268,7 @@ const Index = React.memo((props) => {
                                                             label='Сумма к оплате'
                                                             value={allAmount?allAmount:''}
                                                             className={classes.input}
+                                                            onFocus={()=>setAllAmount('')}
                                                             onChange={(event)=>{
                                                                 setAllAmount(inputFloat(event.target.value))
                                                             }}
@@ -297,6 +298,7 @@ const Index = React.memo((props) => {
                                                                         setMiniDialog('Оплата', <Buy
                                                                             ndsPrecent={ndsTypes[legalObject.ndsType]}
                                                                             nspPrecent={nspTypes[legalObject.nspType]}
+                                                                            setAllAmount={setAllAmount}
                                                                             amountStart={allAmount}
                                                                             items={items}
                                                                             allNsp={allNsp}
@@ -337,6 +339,7 @@ const Index = React.memo((props) => {
                                                                                              ndsPrecent={ndsTypes[legalObject.ndsType]}
                                                                                              nspPrecent={nspTypes[legalObject.nspType]}
                                                                                              amountStart={allAmount}
+                                                                                             setAllAmount={setAllAmount}
                                                                                              items={items}
                                                                                              allNsp={allNsp}
                                                                                              allNds={allNds}
@@ -377,7 +380,7 @@ const Index = React.memo((props) => {
                                                                     if(list)
                                                                         setList([list])
                                                                     else
-                                                                        showSnackBar('Ошибка')
+                                                                        showSnackBar('Ошибка', 'error')
                                                                 }}>
                                                                     Начать смену
                                                                 </Button>

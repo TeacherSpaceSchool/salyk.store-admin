@@ -4,6 +4,13 @@ export const checkMobile = (ua)=>{
     return regexpUA.exec(ua)!==null
 }
 
+export const openScanner = ({idx, path})=>{
+    setTimeout(()=>{
+        window.open('https://play.google.com/store/apps/details?id=com.salyk.scanner', '_blank')
+    },25)
+    window.open(`salykscanner://path?idx=${idx}&path=${path}`, '_blank')
+}
+
 export const getJWT = (cookie)=>{
     let name = 'jwt=';
     let decodedCookie = decodeURIComponent(cookie);

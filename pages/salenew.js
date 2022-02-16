@@ -102,9 +102,9 @@ const Selnew = React.memo((props) => {
                     count: 1,
                     price: item.price,
                     discount: '',
-                    discountType: 'сом',
+                    discountType: '%',
                     extra: '',
-                    extraType: 'сом',
+                    extraType: '%',
                     amountStart: item.price,
                     amountEnd: item.price,
                     nds: checkFloat(item.price / allPrecent * ndsTypes[ndsType]),
@@ -214,9 +214,9 @@ const Selnew = React.memo((props) => {
                                 count: 1,
                                 price: scanItems[0].price,
                                 discount: '',
-                                discountType: 'сом',
+                                discountType: '%',
                                 extra: '',
-                                extraType: 'сом',
+                                extraType: '%',
                                 amountStart: scanItems[0].price,
                                 amountEnd: scanItems[0].price,
                                 nds: checkFloat(scanItems[0].price / allPrecent * ndsTypes[ndsType]),
@@ -326,9 +326,9 @@ const Selnew = React.memo((props) => {
                                                                 count: item.count,
                                                                 price: checkFloat(item.amountEnd / item.count),
                                                                 discount: '',
-                                                                discountType: 'сом',
+                                                                discountType: '%',
                                                                 extra: '',
-                                                                extraType: 'сом',
+                                                                extraType: '%',
                                                                 amountStart: item.amountEnd,
                                                                 amountEnd: item.amountEnd,
                                                                 nds: item.nds,
@@ -472,13 +472,23 @@ const Selnew = React.memo((props) => {
                                                                         setItems([...items])
                                                                     }
                                                                 }}>–</div>
-                                                                <input type={isMobileApp?'number':'text'} className={classes.counternmbrBasket} value={item.count} onChange={(event) => {
-                                                                    if(['Покупка', 'Продажа'].includes(type)) {
-                                                                        items[idx].count = inputFloat(event.target.value)
+                                                                <input
+                                                                    type={isMobileApp?'number':'text'}
+                                                                    className={classes.counternmbrBasket}
+                                                                    value={item.count}
+                                                                    onChange={(event) => {
+                                                                        if(['Покупка', 'Продажа'].includes(type)) {
+                                                                            items[idx].count = inputFloat(event.target.value)
+                                                                            calculateAmountItem(items[idx])
+                                                                            setItems([...items])
+                                                                        }
+                                                                    }}
+                                                                    onFocus={()=>{
+                                                                        items[idx].count = inputFloat('')
                                                                         calculateAmountItem(items[idx])
                                                                         setItems([...items])
-                                                                    }
-                                                                }}/>
+                                                                    }}
+                                                                />
                                                                 <div className={classes.counterbtnBasket} onClick={() => {
                                                                     if(['Покупка', 'Продажа'].includes(type)||items[idx].count<sale.items[idx].count) {
                                                                         items[idx].count = checkFloat(checkFloat(items[idx].count) + 1)
@@ -519,12 +529,21 @@ const Selnew = React.memo((props) => {
                                                                                             setItems([...items])
                                                                                         }
                                                                                     }}>–</div>
-                                                                                    <input type={isMobileApp?'number':'text'} className={classes.counternmbrBasket}
-                                                                                           value={item.discount} onChange={(event) => {
-                                                                                        items[idx].discount = inputFloat(event.target.value)
-                                                                                        calculateAmountItem(items[idx])
-                                                                                        setItems([...items])
-                                                                                    }}/>
+                                                                                    <input
+                                                                                        type={isMobileApp?'number':'text'}
+                                                                                        className={classes.counternmbrBasket}
+                                                                                        value={item.discount}
+                                                                                        onChange={(event) => {
+                                                                                            items[idx].discount = inputFloat(event.target.value)
+                                                                                            calculateAmountItem(items[idx])
+                                                                                            setItems([...items])
+                                                                                        }}
+                                                                                        onFocus={()=>{
+                                                                                            items[idx].discount = inputFloat('')
+                                                                                            calculateAmountItem(items[idx])
+                                                                                            setItems([...items])
+                                                                                        }}
+                                                                                    />
                                                                                     <div className={classes.counterbtnBasket} onClick={() => {
                                                                                         items[idx].discount = checkFloat(checkFloat(items[idx].discount) + 1)
                                                                                         calculateAmountItem(items[idx])
@@ -567,12 +586,21 @@ const Selnew = React.memo((props) => {
                                                                                             setItems([...items])
                                                                                         }
                                                                                     }}>–</div>
-                                                                                    <input type={isMobileApp?'number':'text'} className={classes.counternmbrBasket}
-                                                                                           value={item.extra} onChange={(event) => {
-                                                                                        items[idx].extra = inputFloat(event.target.value)
-                                                                                        calculateAmountItem(items[idx])
-                                                                                        setItems([...items])
-                                                                                    }}/>
+                                                                                    <input
+                                                                                        type={isMobileApp?'number':'text'}
+                                                                                        className={classes.counternmbrBasket}
+                                                                                        value={item.extra}
+                                                                                        onChange={(event) => {
+                                                                                            items[idx].extra = inputFloat(event.target.value)
+                                                                                            calculateAmountItem(items[idx])
+                                                                                            setItems([...items])
+                                                                                        }}
+                                                                                        onFocus={()=>{
+                                                                                            items[idx].extra = inputFloat('')
+                                                                                            calculateAmountItem(items[idx])
+                                                                                            setItems([...items])
+                                                                                        }}
+                                                                                    />
                                                                                     <div className={classes.counterbtnBasket} onClick={() => {
                                                                                         items[idx].extra = checkFloat(checkFloat(items[idx].extra) + 1)
                                                                                         calculateAmountItem(items[idx])
@@ -632,6 +660,7 @@ const Selnew = React.memo((props) => {
                                         <TextField
                                             type={isMobileApp?'number':'text'}
                                             label='Сумма'
+                                            onFocus={()=>setAllAmount('')}
                                             value={allAmount?allAmount:''}
                                             className={classes.input}
                                             onChange={(event)=>{
@@ -653,9 +682,9 @@ const Selnew = React.memo((props) => {
                                                             price: allAmount,
                                                             amountStart: allAmount,
                                                             discount: '',
-                                                            discountType: 'сом',
+                                                            discountType: '%',
                                                             extra: '',
-                                                            extraType: 'сом',
+                                                            extraType: '%',
                                                             amountEnd: allAmount,
                                                             nds: allNds,
                                                             nsp: allNsp,
@@ -754,6 +783,7 @@ const Selnew = React.memo((props) => {
                                     type={isMobileApp?'number':'text'}
                                     label='Сумма'
                                     value={allAmount?allAmount:''}
+                                    onFocus={()=>setAllAmount('')}
                                     className={classes.input}
                                     onChange={(event)=>{
                                         setAllAmount(inputFloat(event.target.value))
@@ -787,9 +817,9 @@ const Selnew = React.memo((props) => {
                                                 price: allAmount,
                                                 amountStart: allAmount,
                                                 discount: '',
-                                                discountType: 'сом',
+                                                discountType: '%',
                                                 extra: '',
-                                                extraType: 'сом',
+                                                extraType: '%',
                                                 amountEnd: allAmount,
                                                 nds: 0,
                                                 nsp: 0
@@ -811,9 +841,9 @@ const Selnew = React.memo((props) => {
                                                 price: allAmount,
                                                 amountStart: allAmount,
                                                 discount: '',
-                                                discountType: 'сом',
+                                                discountType: '%',
                                                 extra: '',
-                                                extraType: 'сом',
+                                                extraType: '%',
                                                 amountEnd: allAmount,
                                                 nds: allNds,
                                                 nsp: allNsp,
