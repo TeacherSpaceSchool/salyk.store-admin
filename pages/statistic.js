@@ -15,8 +15,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 const list = {
     statisticSalykStore: [
         {
-            name: 'Статистика платежей',
-            link: '/statistic/statisticpayment',
+            name: 'Отложенная синхронизация ККМ',
+            link: '/statistic/statisticsynckkm',
             role: ['admin', 'superadmin']
         },
         {
@@ -25,13 +25,13 @@ const list = {
             role: ['admin', 'superadmin']
         },
         {
-            name: 'Отложенная синхронизация ККМ',
-            link: '/statistic/statisticsynckkm',
+            name: 'Просроченные смены',
+            link: '/statistic/statisticexpiredworkshifts',
             role: ['admin', 'superadmin']
         },
         {
-            name: 'Просроченные смены',
-            link: '/statistic/statisticexpiredworkshifts',
+            name: 'Статистика платежей',
+            link: '/statistic/statisticpayment',
             role: ['admin', 'superadmin']
         },
     ],
@@ -49,9 +49,9 @@ const list = {
             role: ['superadmin']
         },
         {
-            name: 'Целостность системы',
-            link: '/statistic/checkintegrity',
-            role: ['admin', 'superadmin', 'инспектор']
+            name: 'Полное удаление налогоплательщика',
+            link: '/statistic/fulldeletelegalobject',
+            role: ['superadmin']
         },
         {
             name: 'Пуш-уведомления',
@@ -69,11 +69,6 @@ const list = {
             role: ['кассир']
         },
         {
-            name: 'Полное удаление налогоплательщика',
-            link: '/statistic/fulldeletelegalobject',
-            role: ['superadmin']
-        },
-        {
             name: 'Тарифы',
             link: '/statistic/tariffs',
             role: ['admin', 'superadmin']
@@ -87,6 +82,11 @@ const list = {
             name: 'Хранилище коллекций',
             link: '/statistic/statisticstoragesize',
             role: ['admin', 'superadmin']
+        },
+        {
+            name: 'Целостность системы',
+            link: '/statistic/checkintegrity',
+            role: ['admin', 'superadmin', 'инспектор']
         },
         {
             name: 'Штрих-коды',

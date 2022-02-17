@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import App from '../layouts/App';
 import { connect } from 'react-redux'
 import pageListStyle from '../src/styleMUI/list'
@@ -47,6 +47,18 @@ const Index = React.memo((props) => {
             setExpired(expired)
         }
     }, []);
+    useEffect(() => {
+        import('react-facebook-pixel')
+            .then((x) => x.default)
+            .then((ReactPixel) => {
+                ReactPixel.init('1054641005122488', null, {
+                    autoConfig: true,
+                    debug: false
+                })
+                ReactPixel.pageView()
+            })
+    }, [])
+
     return (
         <App pageName='Главная'>
             <Head>
@@ -261,8 +273,11 @@ const Index = React.memo((props) => {
                                         }
                                         {
                                             'кассир'===profile.role&&!expired?
-                                                <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD} style={{height: 80}}>
-                                                    <div className={classes.row}>
+                                                <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD} style={{height: 80, justifyContent: 'center'}}>
+                                                    <div className={classes.row} style={{
+                                                        width: '100%',
+                                                        maxWidth: 400
+                                                    }}>
                                                         <TextField
                                                             type={isMobileApp?'number':'text'}
                                                             label='Сумма к оплате'

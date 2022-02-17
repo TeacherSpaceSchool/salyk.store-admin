@@ -422,10 +422,20 @@ const Selnew = React.memo((props) => {
                                     null
                             }
                             {
-                                isMobileApp?
-                                    <Divider/>
+                                sale&&'Продажа'===type?
+                                    <div className={classes.row}>
+                                        <div className={classes.nameField}>
+                                            Аванс операции:&nbsp;
+                                        </div>
+                                        <div className={classes.value}>
+                                            {sale.amountEnd} сом
+                                        </div>
+                                    </div>
                                     :
-                                    null
+                                    isMobileApp?
+                                        <Divider/>
+                                        :
+                                        null
                             }
                             {
                                 items.length?

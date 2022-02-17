@@ -43,7 +43,7 @@ const Fulldeletelegalobject = React.memo((props) => {
                         if(legalObject) {
                             showLoad(true)
                             let res = await fullDeleteLegalObject({_id: legalObject._id})
-                            if(res!=='OK')
+                            if(res!=='Данные успешно удалены')
                                 showSnackBar(res, 'error')
                             else
                                 showSnackBar(res, 'success')

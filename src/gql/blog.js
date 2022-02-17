@@ -11,7 +11,6 @@ export const getBlogs = async({search, skip}, client)=>{
                     query ($skip: Int, $search: String) {
                         blogs(skip: $skip, search: $search) {
                             _id
-                            image
                             text
                             name
                             createdAt
@@ -44,10 +43,9 @@ export const addBlog = async(element)=>{
         let res = await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($image: Upload!, $text: String!, $name: String!) {
-                        addBlog(image: $image, text: $text, name: $name) {
+                    mutation ($text: String!, $name: String!) {
+                        addBlog(text: $text, name: $name) {
                             _id
-                            image
                             text
                             name
                             createdAt
@@ -65,8 +63,8 @@ export const setBlog = async(element)=>{
         await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($_id: ID!, $image: Upload, $text: String, $name: String) {
-                        setBlog(_id: $_id, image: $image, text: $text, name: $name) 
+                    mutation ($_id: ID!, $text: String, $name: String) {
+                        setBlog(_id: $_id, text: $text, name: $name) 
                     }`})
     } catch(err){
         console.error(err)

@@ -20,7 +20,6 @@ export const getClient = async({_id}, client)=>{
                             address
                             email
                             inn 
-                            files
                             del
                             info
                         }
@@ -97,8 +96,8 @@ export const setClient = async(element, client)=>{
         await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($_id: ID!, $phone: [String], $name: String, $inn: String, $files: [String], $uploads: [Upload], $email: [String], $address: String, $info: String) {
-                        setClient(_id: $_id, phone: $phone, inn: $inn, files: $files, uploads: $uploads, name: $name, email: $email, address: $address, info: $info) 
+                    mutation ($_id: ID!, $phone: [String], $name: String, $inn: String, $email: [String], $address: String, $info: String) {
+                        setClient(_id: $_id, phone: $phone, inn: $inn, name: $name, email: $email, address: $address, info: $info) 
                     }`})
     } catch(err){
         console.error(err)
@@ -111,8 +110,8 @@ export const addClient = async(element)=>{
         let res = await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($legalObject: ID!, $phone: [String]!, $name: String!, $inn: String!, $uploads: [Upload]!, $email: [String]!, $address: String!, $info: String!) {
-                        addClient(legalObject: $legalObject, phone: $phone, name: $name, inn: $inn, uploads: $uploads, email: $email, address: $address, info: $info) {
+                    mutation ($legalObject: ID!, $phone: [String]!, $name: String!, $inn: String!, $email: [String]!, $address: String!, $info: String!) {
+                        addClient(legalObject: $legalObject, phone: $phone, name: $name, inn: $inn, email: $email, address: $address, info: $info) {
                             _id
                             createdAt
                             name
@@ -121,7 +120,6 @@ export const addClient = async(element)=>{
                             address
                             email
                             inn 
-                            files
                             del
                             info
                         }

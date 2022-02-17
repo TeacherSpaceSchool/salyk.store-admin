@@ -1,6 +1,6 @@
 import initialApp from '../../src/initialApp'
 import Head from 'next/head';
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import App from '../../layouts/App';
 import { connect } from 'react-redux'
 import {getClient, setClient, addClient, deleteClient} from '../../src/gql/client'
@@ -38,13 +38,10 @@ const Client = React.memo((props) => {
     const { isMobileApp } = props.app;
     const { showSnackBar } = props.snackbarActions;
     const { setMiniDialog, showMiniDialog } = props.mini_dialogActions;
-    const { setShowAppBar, setShowLightbox, setImagesLightbox, setIndexLightbox } = props.appActions;
     let [name, setName] = useState(data.object?data.object.name:'');
     let [legalObject, setLegalObject] = useState(data.object?data.object.legalObject:undefined);
     let [info, setInfo] = useState(data.object?data.object.info:'');
     let [inn, setInn] = useState(data.object?data.object.inn:'');
-    let [files, setFiles] = useState(data.object?[...data.object.files]:[]);
-    let [uploads, setUploads] = useState([]);
     let [address, setAddress] = useState(data.object?data.object.address:'');
     let [phone, setPhone] = useState(data.object?data.object.phone:[]);
     let addPhone = ()=>{
@@ -73,19 +70,6 @@ const Client = React.memo((props) => {
         setEmail([...email])
     };
     const router = useRouter()
-    let fileRef = useRef(null);
-    let handleChangeFile = (async (event) => {
-        if(files.length<5) {
-            if(event.target.files[0]&&event.target.files[0].size / 1024 / 1024 < 50) {
-                setUploads([event.target.files[0], ...uploads])
-                setFiles([URL.createObjectURL(event.target.files[0]), ...files])
-            } else {
-                showSnackBar('Файл слишком большой')
-            }
-        } else {
-            showSnackBar('Cлишком много документов')
-        }
-    })
     const [anchorElQuick, setAnchorElQuick] = useState(null);
     const openQuick = Boolean(anchorElQuick);
     let handleMenuQuick = (event) => {
@@ -234,26 +218,6 @@ const Client = React.memo((props) => {
                                                             :
                                                             null
                                                 )}
-                                            </div>
-                                        </div>
-                                        :
-                                        null
-                                }
-                                {
-                                    files.length?
-                                        <div className={classes.row}>
-                                            <div className={classes.nameField}>Документы:</div>
-                                            <div className={classes.noteImageList}>
-                                                {files.map((element, idx) => <div className={classes.noteImageDiv}>
-                                                    <img className={classes.noteImage} src={element}
-                                                         onClick={() => {
-                                                             setShowAppBar(false)
-                                                             setShowLightbox(true)
-                                                             setImagesLightbox(files)
-                                                             setIndexLightbox(idx)
-                                                         }}
-                                                    />
-                                                </div>)}
                                             </div>
                                         </div>
                                         :
@@ -418,25 +382,6 @@ const Client = React.memo((props) => {
                                 }} color='primary'>
                                     Добавить email
                                 </Button>
-                                <br/>
-                                <div className={classes.row}>
-                                    <div className={classes.nameField}>Документы:</div>
-                                    <div className={classes.noteImageList}>
-                                        <img className={classes.noteImage} src='/add.png' onClick={()=>{fileRef.current.click()}} />
-                                        {files.map((element, idx)=> <div className={classes.noteImageDiv}>
-                                            <img className={classes.noteImage} src={element} onClick={()=>{
-                                                setShowAppBar(false)
-                                                setShowLightbox(true)
-                                                setImagesLightbox(files)
-                                                setIndexLightbox(idx)
-                                            }}/>
-                                            <div className={classes.noteImageButton} style={{background: 'red'}} onClick={()=>{
-                                                files.splice(idx, 1)
-                                                setFiles([...files])
-                                            }}>X</div>
-                                        </div>)}
-                                    </div>
-                                </div>
                                 <TextField
                                     multiline={true}
                                     label='Информация'
@@ -449,7 +394,7 @@ const Client = React.memo((props) => {
                                         if (name.length&&legalObject) {
                                             const action = async() => {
                                                 if(router.query.id==='new') {
-                                                    let res = await addClient({legalObject: legalObject._id, phone, name, inn, uploads, email, address, info})
+                                                    let res = await addClient({legalObject: legalObject._id, phone, name, inn, email, address, info})
                                                     Router.push(`/client/${res._id}`)
                                                     showSnackBar('Успешно', 'success')
                                                 }
@@ -461,8 +406,6 @@ const Client = React.memo((props) => {
                                                     if (info!==data.object.info) element.info = info
                                                     if (JSON.stringify(phone)!==JSON.stringify(data.object.phone)) element.phone = phone
                                                     if (JSON.stringify(email)!==JSON.stringify(data.object.email)) element.email = email
-                                                    if (JSON.stringify(files)!==JSON.stringify(data.object.files)) element.files = files
-                                                    if (uploads.length) element.uploads = uploads
                                                     await setClient(element)
                                                     Router.reload()
                                                 }
@@ -496,14 +439,6 @@ const Client = React.memo((props) => {
                     }
                 </CardContent>
             </Card>
-            <input
-                ref={fileRef}
-                accept='image/*'
-                style={{ display: 'none' }}
-                id='contained-button-file'
-                type='file'
-                onChange={handleChangeFile}
-            />
         </App>
     )
 })
@@ -527,8 +462,7 @@ Client.getInitialProps = async function(ctx) {
                 address: '',
                 email: [],
                 info: '',
-                inn: '',
-                files: []
+                inn: ''
             }
         }
     };

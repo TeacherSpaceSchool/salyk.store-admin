@@ -1,6 +1,5 @@
 import { gql } from 'apollo-boost';
 import { SingletonApolloClient } from '../singleton/client';
-import { SingletonStore } from '../singleton/store';
 
 export const getNotificationStatistics = async({skip, search}, client)=>{
     try{
@@ -19,7 +18,6 @@ export const getNotificationStatistics = async({skip, search}, client)=>{
                             failed
                             tag
                             url
-                            icon
                             click
                         }
                     }`,
@@ -63,7 +61,6 @@ export const addNotificationStatistic = async(element)=>{
                             failed
                             tag
                             url
-                            icon
                             click
                         }
                     }`})

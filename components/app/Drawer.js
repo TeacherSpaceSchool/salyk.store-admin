@@ -446,7 +446,7 @@ const MyDrawer = React.memo((props) => {
                         <Link href='/blog'>
                             <ListItem style={{background: router.pathname==='/blog'?'#f5f5f5':'#ffffff'}} button onClick={()=>{showDrawer(false)}}>
                                 <ListItemIcon><ArtTrackIcon color='inherit'/></ListItemIcon>
-                                <ListItemText primary='Блог' />
+                                <ListItemText primary='Новости' />
                             </ListItem>
                         </Link>
                         <Divider/>

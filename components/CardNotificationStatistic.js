@@ -20,7 +20,7 @@ const NotificationStatistic = React.memo((props) => {
     const { element, setList, list } = props;
     const { isMobileApp } = props.app;
     //addCard
-    let [preview, setPreview] = useState(element?element.icon:'/add.png');
+    let [preview, setPreview] = useState('/add.png');
     let [icon, setIcon] = useState(undefined);
     let handleChangeIcon = ((event) => {
         if(event.target.files[0]&&event.target.files[0].size/1024/1024<50){
@@ -123,15 +123,6 @@ const NotificationStatistic = React.memo((props) => {
                     </Card>
                     :
                     <Card className={isMobileApp?classes.cardM:classes.cardD}>
-                    {
-                            element.icon?
-                                <img
-                                    className={isMobileApp?classes.mediaM:classes.mediaD}
-                                    src={preview}
-                                    alt={element.title}
-                                />
-                                :null
-                        }
                         <CardContent>
                             <CardActionArea>
                                 <div className={classes.row}>

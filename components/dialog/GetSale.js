@@ -47,6 +47,7 @@ const GetSale =  React.memo(
                             if(sale) {
                                 setSale(sale)
                                 showMiniDialog(false)
+                                showSnackBar('Чек найден', 'success')
                             }
                             else
                                 showSnackBar('Чек не найден', 'error')

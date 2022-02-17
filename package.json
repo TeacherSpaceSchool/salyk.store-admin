@@ -55,6 +55,7 @@
     "react-bottom-scroll-listener": "^3.0.0",
     "react-charts": "^2.0.0-beta.7",
     "react-dom": "^16.14.0",
+    "react-facebook-pixel": "^1.0.4",
     "react-ga": "^2.7.0",
     "react-image-file-resizer": "^0.4.3",
     "react-lazyload": "^2.6.9",

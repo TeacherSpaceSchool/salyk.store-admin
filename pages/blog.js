@@ -52,11 +52,11 @@ const Blog = React.memo((props) => {
         })()
     },[search])
     return (
-        <App checkPagination={checkPagination} searchShow={true} pageName='Блог'>
+        <App checkPagination={checkPagination} searchShow={true} pageName='Новости'>
             <Head>
-                <title>Блог</title>
+                <title>Новости</title>
                 <meta name='description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
-                <meta property='og:title' content='Блог' />
+                <meta property='og:title' content='Новости' />
                 <meta property='og:description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:type' content='website' />
                 <meta property='og:image' content={`${urlMain}/512x512.png`} />

@@ -22,16 +22,6 @@ const CardBlog = React.memo((props) => {
     const { profile } = props.user;
     const { isMobileApp } = props.app;
     //addCard
-    let [preview, setPreview] = useState(element?element.image:'/add.png');
-    let [image, setImage] = useState(undefined);
-    let handleChangeImage = ((event) => {
-        if(event.target.files[0]&&event.target.files[0].size/1024/1024<50){
-            setImage(event.target.files[0])
-            setPreview(URL.createObjectURL(event.target.files[0]))
-        } else {
-            showSnackBar('Файл слишком большой')
-        }
-    })
     let [name, setName] = useState(element?element.name:'');
     let handleName =  (event) => {
         setName(event.target.value)
@@ -53,13 +43,6 @@ const CardBlog = React.memo((props) => {
                         subheader={date}
                     />
                     <CardActionArea>
-                        <label htmlFor={element?element._id:'add'}>
-                            <img
-                                className={isMobileApp?classes.mediaM:classes.mediaD}
-                                src={preview}
-                                alt={'Изменить'}
-                            />
-                        </label>
                         <CardContent>
                             <TextField
                                 style={{width: '100%'}}
@@ -88,7 +71,6 @@ const CardBlog = React.memo((props) => {
                                     let editElement = {_id: element._id}
                                     if(name.length>0&&name!==element.name)editElement.name = name
                                     if(text.length>0&&text!==element.text)editElement.text = text
-                                    if(image!==undefined)editElement.image = image
                                     const action = async() => {
                                         await setBlog(editElement)
                                     }
@@ -112,14 +94,12 @@ const CardBlog = React.memo((props) => {
                                 </>
                                 :
                                 <Button onClick={async()=> {
-                                    if (image !== undefined && text.length > 0 && name.length > 0) {
-                                        setImage(undefined)
-                                        setPreview('/add.png')
+                                    if (text.length > 0 && name.length > 0) {
                                         setName('')
                                         setText('')
                                         const action = async() => {
                                             setList([
-                                                await addBlog({image: image, text: text, name: name}),
+                                                await addBlog({text, name}),
                                                 ...list
                                             ])
                                         }
@@ -134,22 +114,10 @@ const CardBlog = React.memo((props) => {
                                 </Button>
                         }
                     </CardActions>
-                    <input
-                        accept='image/*'
-                        style={{ display: 'none' }}
-                        id={element?element._id:'add'}
-                        type='file'
-                        onChange={handleChangeImage}
-                    />
                     </>
                     :
                     element!==undefined?
                         <>
-                            <img
-                                className={isMobileApp?classes.mediaM:classes.mediaD}
-                                src={element.image}
-                                alt={element.name}
-                            />
                             <div className={classes.shapka}>
                                 <div className={classes.title}>{element.name}</div>
                                 <div className={classes.date}>{date}</div>
