@@ -86,6 +86,8 @@ const User = React.memo((props) => {
         setRole(event.target.value)
         if(!payment&&['admin', 'superadmin', 'оператор', 'управляющий'].includes(event.target.value))
             setPayment(true)
+        if(!['superadmin', 'admin', 'оператор', 'управляющий'].includes(role)&&statistic)
+            setStatistic(false)
     };
     let [legalObject, setLegalObject] = useState(data.object?data.object.legalObject:undefined);
     let [branch, setBranch] = useState(data.object?data.object.branch:undefined);
@@ -289,22 +291,31 @@ const User = React.memo((props) => {
                                             null
                                     }
                                     {
-                                        'superadmin'===profile.role
+                                            'superadmin'===profile.role
                                         ||
-                                        ('admin'===profile.role||'управляющий'===profile.role&&'управляющий'!==data.object.role
-                                            ||
-                                            'оператор'===profile.role&&'оператор'!==data.object.role)&&!['superadmin', 'admin'].includes(data.object.role)&&profile.add?
+                                            (
+                                                'admin'===profile.role
+                                                ||
+                                                'управляющий'===profile.role&&'управляющий'!==role
+                                                ||
+                                                'оператор'===profile.role&&'оператор'!==role
+                                            )&&!['superadmin', 'admin'].includes(role)&&profile.add?
                                             <>
-                                            <div className={classes.row}>
-                                                <div className={classes.nameField}>
-                                                    Статистика:&nbsp;
-                                                </div>
-                                                <Switch
-                                                    checked={statistic}
-                                                    onChange={()=>setStatistic(!statistic)}
-                                                    color='primary'
-                                                />
-                                            </div>
+                                            {
+                                                ['superadmin', 'admin', 'оператор', 'управляющий'].includes(role)?
+                                                    <div className={classes.row}>
+                                                        <div className={classes.nameField}>
+                                                            Статистика:&nbsp;
+                                                        </div>
+                                                        <Switch
+                                                            checked={statistic}
+                                                            onChange={()=>setStatistic(!statistic)}
+                                                            color='primary'
+                                                        />
+                                                    </div>
+                                                    :
+                                                    null
+                                            }
                                             <div className={classes.row}>
                                                 <div className={classes.nameField}>
                                                     Добавлять/Изменять:&nbsp;
@@ -390,7 +401,7 @@ const User = React.memo((props) => {
                                                 Роль:&nbsp;
                                             </div>
                                             <div className={classes.value}>
-                                                {data.object.role}
+                                                {role}
                                             </div>
                                         </div>
                                 }
@@ -601,7 +612,7 @@ const User = React.memo((props) => {
                                                     Сохранить
                                                 </Button>
                                                 {
-                                                    router.query.id!=='new'&&('superadmin'===profile.role||'admin'===profile.role&&data.object.role!=='admin'||'управляющий'===profile.role&&data.object.role!=='управляющий')?
+                                                    router.query.id!=='new'&&('superadmin'===profile.role||'admin'===profile.role&&role!=='admin'||'управляющий'===profile.role&&role!=='управляющий')?
                                                         <Button color={status==='active'?'primary':'secondary'} onClick={()=>{
                                                             const action = async() => {
                                                                 await onoffUser(router.query.id)
@@ -616,7 +627,7 @@ const User = React.memo((props) => {
                                                         null
                                                 }
                                                 {
-                                                    router.query.id!=='new'&&('superadmin'===profile.role||'admin'===profile.role&&data.object.role!=='admin')?
+                                                    router.query.id!=='new'&&('superadmin'===profile.role||'admin'===profile.role&&role!=='admin')?
                                                         <Button color='secondary' onClick={()=>{
                                                             const action = async() => {
                                                                 await deleteUser(router.query.id)

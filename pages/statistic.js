@@ -69,6 +69,11 @@ const list = {
             role: ['кассир']
         },
         {
+            name: 'Полное удаление налогоплательщика',
+            link: '/statistic/fulldeletelegalobject',
+            role: ['superadmin']
+        },
+        {
             name: 'Тарифы',
             link: '/statistic/tariffs',
             role: ['admin', 'superadmin']

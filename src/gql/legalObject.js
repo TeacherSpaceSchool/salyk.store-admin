@@ -179,6 +179,21 @@ export const restoreLegalObject = async(_id)=>{
     }
 }
 
+export const fullDeleteLegalObject = async(element)=>{
+    try{
+        const client = new SingletonApolloClient().getClient()
+        let res = await client.mutate({
+            variables: element,
+            mutation : gql`
+                    mutation ($_id: ID!) {
+                        fullDeleteLegalObject(_id: $_id)
+                    }`})
+        return res.data.fullDeleteLegalObject
+    } catch(err){
+        console.error(err)
+    }
+}
+
 export const addLegalObject = async(element)=>{
     try{
         const client = new SingletonApolloClient().getClient()

@@ -15,7 +15,6 @@ import { bindActionCreators } from 'redux'
 import * as appActions from '../../redux/actions/app'
 
 const StatisticStorageSize = React.memo((props) => {
-
     const classes = pageListStyle();
     const { data } = props;
     const { isMobileApp } = props.app;
