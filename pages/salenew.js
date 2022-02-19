@@ -438,288 +438,224 @@ const Selnew = React.memo((props) => {
                                         null
                             }
                             {
-                                items.length?
-                                    items.map((item, idx) => {
-                                        return(
-                                            <LazyLoad scrollContainer={'.App-body'} key={item._id} offset={[186, 0]} debounce={0} once={true}  placeholder={<CardPlaceholder/>}>
-                                                <div className={classes.column}>
-                                                    <div className={classes.row} style={{alignItems: 'end'}}>
-                                                        <div className={classes.nameBasket}>
-                                                            {item.name}
-                                                        </div>
-                                                        <CloseIcon className={classes.closeNameBasket} onClick={() => {
-                                                            items.splice(idx, 1)
-                                                            setItems([...items])
-                                                        }}/>
+                                items.map((item, idx) => {
+                                    return(
+                                        <LazyLoad scrollContainer={'.App-body'} key={item._id} offset={[186, 0]} debounce={0} once={true}  placeholder={<CardPlaceholder/>}>
+                                            <div className={classes.column}>
+                                                <div className={classes.row} style={{alignItems: 'end'}}>
+                                                    <div className={classes.nameBasket}>
+                                                        {item.name}
                                                     </div>
-                                                    <div className={classes.row}>
-                                                        <div className={classes.columnBasket} style={{width: '100%'}}>
-                                                            <div className={classes.nameFieldBasket}>
-                                                                Цена(сом)
-                                                            </div>
-                                                            {
-                                                                item.editedPrice?
-                                                                    <input style={{width: 100, textAlign: 'left'}} type={isMobileApp?'number':'text'} className={classes.counternmbrBasket} value={item.price} onChange={(event) => {
-                                                                        items[idx].price = inputFloat(event.target.value)
-                                                                        calculateAmountItem(items[idx])
-                                                                        setItems([...items])
-                                                                    }}/>
-                                                                    :
-                                                                    <div className={classes.valueFieldBasket} style={{width: '100%'}}>
-                                                                        {item.price}
-                                                                    </div>
-
-                                                            }
-                                                        </div>
-                                                        <div className={classes.columnBasket} style={{textAlign: 'center'}}>
-                                                            <div className={classes.nameFieldBasket}>
-                                                                Кол-во
-                                                            </div>
-                                                            <div className={classes.counterBasket}>
-                                                                <div className={classes.counterbtnBasket} onClick={() => {
-                                                                    if(items[idx].count>1) {
-                                                                        items[idx].count = checkFloat(items[idx].count - 1)
-                                                                        calculateAmountItem(items[idx])
-                                                                        setItems([...items])
-                                                                    }
-                                                                }}>–</div>
-                                                                <input
-                                                                    type={isMobileApp?'number':'text'}
-                                                                    className={classes.counternmbrBasket}
-                                                                    value={item.count}
-                                                                    onChange={(event) => {
-                                                                        if(['Покупка', 'Продажа'].includes(type)) {
-                                                                            items[idx].count = inputFloat(event.target.value)
-                                                                            calculateAmountItem(items[idx])
-                                                                            setItems([...items])
-                                                                        }
-                                                                    }}
-                                                                    onFocus={()=>{
-                                                                        items[idx].count = inputFloat('')
-                                                                        calculateAmountItem(items[idx])
-                                                                        setItems([...items])
-                                                                    }}
-                                                                />
-                                                                <div className={classes.counterbtnBasket} onClick={() => {
-                                                                    if(['Покупка', 'Продажа'].includes(type)||items[idx].count<sale.items[idx].count) {
-                                                                        items[idx].count = checkFloat(checkFloat(items[idx].count) + 1)
-                                                                        calculateAmountItem(items[idx])
-                                                                        setItems([...items])
-                                                                    }
-                                                                }}>+
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className={classes.columnBasket} style={{width: '100%', textAlign: 'end'}}>
-                                                            <div className={classes.nameFieldBasket}>
-                                                                Сумма(сом)
-                                                            </div>
-                                                            <div className={classes.valueFieldBasket} style={{width: '100%', justifyContent: 'flex-end'}}>
-                                                                {item.amountStart}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className={classes.row}>
-                                                        {
-                                                            ['Продажа', 'Возврат продажи', 'Возврат покупки'].includes(type)?
-                                                                <div className={classes.column}>
-                                                                    <div className={classes.showBasket} style={{color: item.discountShow||item.discount?'#10183D':'black', ...item.discountShow||item.discount?{margin: '5px 0 10px 0'}:{margin: '5px 0 5px 0'}, textAlign: 'start'}} onClick={()=>{
-                                                                        items[idx].discountShow = !items[idx].discountShow
-                                                                        setItems([...items])
-                                                                    }}>
-                                                                        {'Продажа'===type?'Скидка':'Уценка'}
-                                                                    </div>
-                                                                    {
-                                                                        item.discountShow||item.discount&&item.discount!=='0'?
-                                                                            <div className={classes.row}>
-                                                                                <div className={classes.counterBasket}>
-                                                                                    <div className={classes.counterbtnBasket} onClick={() => {
-                                                                                        if(items[idx].discount>0) {
-                                                                                            items[idx].discount = checkFloat(items[idx].discount - 1)
-                                                                                            calculateAmountItem(items[idx])
-                                                                                            setItems([...items])
-                                                                                        }
-                                                                                    }}>–</div>
-                                                                                    <input
-                                                                                        type={isMobileApp?'number':'text'}
-                                                                                        className={classes.counternmbrBasket}
-                                                                                        value={item.discount}
-                                                                                        onChange={(event) => {
-                                                                                            items[idx].discount = inputFloat(event.target.value)
-                                                                                            calculateAmountItem(items[idx])
-                                                                                            setItems([...items])
-                                                                                        }}
-                                                                                        onFocus={()=>{
-                                                                                            items[idx].discount = inputFloat('')
-                                                                                            calculateAmountItem(items[idx])
-                                                                                            setItems([...items])
-                                                                                        }}
-                                                                                    />
-                                                                                    <div className={classes.counterbtnBasket} onClick={() => {
-                                                                                        items[idx].discount = checkFloat(checkFloat(items[idx].discount) + 1)
-                                                                                        calculateAmountItem(items[idx])
-                                                                                        setItems([...items])
-                                                                                    }}>+
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div className={classes.typeShowBasket} onClick={()=>{
-                                                                                    items[idx].discountType = items[idx].discountType==='%'?'сом':'%'
-                                                                                    calculateAmountItem(items[idx])
-                                                                                    setItems([...items])
-                                                                                }}>
-                                                                                    {item.discountType}
-                                                                                </div>
-                                                                            </div>
-                                                                            :
-                                                                            null
-                                                                    }
-                                                                </div>
-                                                                :
-                                                                null
-                                                        }
-                                                        {
-                                                            'Продажа'===type?
-                                                                <div className={classes.column}>
-                                                                    <div className={classes.showBasket} style={{color: item.extraShow||item.extra&&item.extra!=='0'?'#10183D':'black', ...item.extraShow||item.extra?{margin: '5px 0 10px 0'}:{margin: '5px 0 5px 0'}, textAlign: 'end'}} onClick={()=>{
-                                                                        items[idx].extraShow = !items[idx].extraShow
-                                                                        setItems([...items])
-                                                                    }}>
-                                                                        Наценка
-                                                                    </div>
-                                                                    {
-                                                                        item.extraShow||item.extra&&item.extra!=='0'?
-                                                                            <div className={classes.row} style={{justifyContent: 'flex-end'}}>
-                                                                                <div className={classes.counterBasket}>
-                                                                                    <div className={classes.counterbtnBasket} onClick={() => {
-                                                                                        if(items[idx].extra>0) {
-                                                                                            items[idx].extra = checkFloat(items[idx].extra - 1)
-                                                                                            calculateAmountItem(items[idx])
-                                                                                            setItems([...items])
-                                                                                        }
-                                                                                    }}>–</div>
-                                                                                    <input
-                                                                                        type={isMobileApp?'number':'text'}
-                                                                                        className={classes.counternmbrBasket}
-                                                                                        value={item.extra}
-                                                                                        onChange={(event) => {
-                                                                                            items[idx].extra = inputFloat(event.target.value)
-                                                                                            calculateAmountItem(items[idx])
-                                                                                            setItems([...items])
-                                                                                        }}
-                                                                                        onFocus={()=>{
-                                                                                            items[idx].extra = inputFloat('')
-                                                                                            calculateAmountItem(items[idx])
-                                                                                            setItems([...items])
-                                                                                        }}
-                                                                                    />
-                                                                                    <div className={classes.counterbtnBasket} onClick={() => {
-                                                                                        items[idx].extra = checkFloat(checkFloat(items[idx].extra) + 1)
-                                                                                        calculateAmountItem(items[idx])
-                                                                                        setItems([...items])
-                                                                                    }}>+
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div className={classes.typeShowBasket} onClick={()=>{
-                                                                                    items[idx].extraType = items[idx].extraType==='%'?'сом':'%'
-                                                                                    calculateAmountItem(items[idx])
-                                                                                    setItems([...items])
-                                                                                }}>
-                                                                                    {item.extraType}
-                                                                                </div>
-                                                                            </div>
-                                                                            :
-                                                                            null
-                                                                    }
-                                                                </div>
-                                                                :
-                                                                null
-                                                        }
-                                                    </div>
-                                                    {
-                                                        item.amountEnd!==item.amountStart?
-                                                            <>
-                                                            <br/>
-                                                            <div className={classes.row}>
-                                                                <div className={classes.nameFieldBasket}>
-                                                                    Итого:&nbsp;
-                                                                </div>
-                                                                <div className={classes.valueFieldBasket}>
-                                                                    {item.amountEnd} сом
-                                                                </div>
-                                                            </div>
-                                                            </>
-                                                            :
-                                                            <br/>
-                                                    }
-                                                    <Divider/>
-                                                    <br/>
+                                                    <CloseIcon className={classes.closeNameBasket} onClick={() => {
+                                                        items.splice(idx, 1)
+                                                        setItems([...items])
+                                                    }}/>
                                                 </div>
-                                            </LazyLoad>
-                                        )
-                                    })
-                                    :
-                                    ['Продажа', 'Покупка'].includes(type)?
-                                        <>
-                                        <TextField
-                                            label='Позиция (не обязательно)'
-                                            value={comment}
-                                            className={classes.input}
-                                            onChange={(event)=>{
-                                                setComment(event.target.value)
-                                            }}
-                                        />
-                                        <TextField
-                                            type={isMobileApp?'number':'text'}
-                                            label='Сумма'
-                                            onFocus={()=>setAllAmount('')}
-                                            value={allAmount?allAmount:''}
-                                            className={classes.input}
-                                            onChange={(event)=>{
-                                                setAllAmount(inputFloat(event.target.value))
-                                            }}
-                                            onKeyPress={event => {
-                                                if (event.key === 'Enter') {
-                                                    allAmount = checkFloat(allAmount)
-                                                    if (allAmount > 0) {
-                                                        let ndsType = legalObject.ndsType
-                                                        let nspType = legalObject.nspType
-                                                        let allPrecent = 100 + ndsTypes[ndsType] + nspTypes[nspType]
-                                                        let allNds = checkFloat(allAmount / allPrecent * ndsTypes[ndsType])
-                                                        let allNsp = checkFloat(allAmount / allPrecent * nspTypes[nspType])
-                                                        let items = [{
-                                                            name: '',
-                                                            unit: 'шт',
-                                                            count: 1,
-                                                            price: allAmount,
-                                                            amountStart: allAmount,
-                                                            discount: '',
-                                                            discountType: '%',
-                                                            extra: '',
-                                                            extraType: '%',
-                                                            amountEnd: allAmount,
-                                                            nds: allNds,
-                                                            nsp: allNsp,
-                                                            ndsType,
-                                                            nspType
-                                                        }]
-                                                        setMiniDialog('Оплата', <Buy
-                                                            ndsPrecent={ndsTypes[legalObject.ndsType]}
-                                                            nspPrecent={nspTypes[legalObject.nspType]}
-                                                            amountStart={allAmount}
-                                                            items={items}
-                                                            allNsp={allNsp}
-                                                            allNds={allNds}
-                                                            consignation={0}
-                                                            usedPrepayment={0}
-                                                            type='Продажа'/>)
-                                                        showMiniDialog(true)
+                                                <div className={classes.row}>
+                                                    <div className={classes.columnBasket} style={{width: '100%'}}>
+                                                        <div className={classes.nameFieldBasket}>
+                                                            Цена(сом)
+                                                        </div>
+                                                        {
+                                                            item.editedPrice?
+                                                                <input style={{width: 100, textAlign: 'left'}} type={isMobileApp?'number':'text'} className={classes.counternmbrBasket} value={item.price} onChange={(event) => {
+                                                                    items[idx].price = inputFloat(event.target.value)
+                                                                    calculateAmountItem(items[idx])
+                                                                    setItems([...items])
+                                                                }}/>
+                                                                :
+                                                                <div className={classes.valueFieldBasket} style={{width: '100%'}}>
+                                                                    {item.price}
+                                                                </div>
+
+                                                        }
+                                                    </div>
+                                                    <div className={classes.columnBasket} style={{textAlign: 'center'}}>
+                                                        <div className={classes.nameFieldBasket}>
+                                                            Кол-во
+                                                        </div>
+                                                        <div className={classes.counterBasket}>
+                                                            <div className={classes.counterbtnBasket} onClick={() => {
+                                                                if(items[idx].count>1) {
+                                                                    items[idx].count = checkFloat(items[idx].count - 1)
+                                                                    calculateAmountItem(items[idx])
+                                                                    setItems([...items])
+                                                                }
+                                                            }}>–</div>
+                                                            <input
+                                                                type={isMobileApp?'number':'text'}
+                                                                className={classes.counternmbrBasket}
+                                                                value={item.count}
+                                                                onChange={(event) => {
+                                                                    if(['Покупка', 'Продажа'].includes(type)) {
+                                                                        items[idx].count = inputFloat(event.target.value)
+                                                                        calculateAmountItem(items[idx])
+                                                                        setItems([...items])
+                                                                    }
+                                                                }}
+                                                                onFocus={()=>{
+                                                                    items[idx].count = inputFloat('')
+                                                                    calculateAmountItem(items[idx])
+                                                                    setItems([...items])
+                                                                }}
+                                                            />
+                                                            <div className={classes.counterbtnBasket} onClick={() => {
+                                                                if(['Покупка', 'Продажа'].includes(type)||items[idx].count<sale.items[idx].count) {
+                                                                    items[idx].count = checkFloat(checkFloat(items[idx].count) + 1)
+                                                                    calculateAmountItem(items[idx])
+                                                                    setItems([...items])
+                                                                }
+                                                            }}>+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className={classes.columnBasket} style={{width: '100%', textAlign: 'end'}}>
+                                                        <div className={classes.nameFieldBasket}>
+                                                            Сумма(сом)
+                                                        </div>
+                                                        <div className={classes.valueFieldBasket} style={{width: '100%', justifyContent: 'flex-end'}}>
+                                                            {item.amountStart}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className={classes.row}>
+                                                    {
+                                                        ['Продажа', 'Возврат продажи', 'Возврат покупки'].includes(type)?
+                                                            <div className={classes.column}>
+                                                                <div className={classes.showBasket} style={{color: item.discountShow||item.discount?'#10183D':'black', ...item.discountShow||item.discount?{margin: '5px 0 10px 0'}:{margin: '5px 0 5px 0'}, textAlign: 'start'}} onClick={()=>{
+                                                                    items[idx].discountShow = !items[idx].discountShow
+                                                                    setItems([...items])
+                                                                }}>
+                                                                    {'Продажа'===type?'Скидка':'Уценка'}
+                                                                </div>
+                                                                {
+                                                                    item.discountShow||item.discount&&item.discount!=='0'?
+                                                                        <div className={classes.row}>
+                                                                            <div className={classes.counterBasket}>
+                                                                                <div className={classes.counterbtnBasket} onClick={() => {
+                                                                                    if(items[idx].discount>0) {
+                                                                                        items[idx].discount = checkFloat(items[idx].discount - 1)
+                                                                                        calculateAmountItem(items[idx])
+                                                                                        setItems([...items])
+                                                                                    }
+                                                                                }}>–</div>
+                                                                                <input
+                                                                                    type={isMobileApp?'number':'text'}
+                                                                                    className={classes.counternmbrBasket}
+                                                                                    value={item.discount}
+                                                                                    onChange={(event) => {
+                                                                                        items[idx].discount = inputFloat(event.target.value)
+                                                                                        calculateAmountItem(items[idx])
+                                                                                        setItems([...items])
+                                                                                    }}
+                                                                                    onFocus={()=>{
+                                                                                        items[idx].discount = inputFloat('')
+                                                                                        calculateAmountItem(items[idx])
+                                                                                        setItems([...items])
+                                                                                    }}
+                                                                                />
+                                                                                <div className={classes.counterbtnBasket} onClick={() => {
+                                                                                    items[idx].discount = checkFloat(checkFloat(items[idx].discount) + 1)
+                                                                                    calculateAmountItem(items[idx])
+                                                                                    setItems([...items])
+                                                                                }}>+
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className={classes.typeShowBasket} onClick={()=>{
+                                                                                items[idx].discountType = items[idx].discountType==='%'?'сом':'%'
+                                                                                calculateAmountItem(items[idx])
+                                                                                setItems([...items])
+                                                                            }}>
+                                                                                {item.discountType}
+                                                                            </div>
+                                                                        </div>
+                                                                        :
+                                                                        null
+                                                                }
+                                                            </div>
+                                                            :
+                                                            null
                                                     }
+                                                    {
+                                                        'Продажа'===type?
+                                                            <div className={classes.column}>
+                                                                <div className={classes.showBasket} style={{color: item.extraShow||item.extra&&item.extra!=='0'?'#10183D':'black', ...item.extraShow||item.extra?{margin: '5px 0 10px 0'}:{margin: '5px 0 5px 0'}, textAlign: 'end'}} onClick={()=>{
+                                                                    items[idx].extraShow = !items[idx].extraShow
+                                                                    setItems([...items])
+                                                                }}>
+                                                                    Наценка
+                                                                </div>
+                                                                {
+                                                                    item.extraShow||item.extra&&item.extra!=='0'?
+                                                                        <div className={classes.row} style={{justifyContent: 'flex-end'}}>
+                                                                            <div className={classes.counterBasket}>
+                                                                                <div className={classes.counterbtnBasket} onClick={() => {
+                                                                                    if(items[idx].extra>0) {
+                                                                                        items[idx].extra = checkFloat(items[idx].extra - 1)
+                                                                                        calculateAmountItem(items[idx])
+                                                                                        setItems([...items])
+                                                                                    }
+                                                                                }}>–</div>
+                                                                                <input
+                                                                                    type={isMobileApp?'number':'text'}
+                                                                                    className={classes.counternmbrBasket}
+                                                                                    value={item.extra}
+                                                                                    onChange={(event) => {
+                                                                                        items[idx].extra = inputFloat(event.target.value)
+                                                                                        calculateAmountItem(items[idx])
+                                                                                        setItems([...items])
+                                                                                    }}
+                                                                                    onFocus={()=>{
+                                                                                        items[idx].extra = inputFloat('')
+                                                                                        calculateAmountItem(items[idx])
+                                                                                        setItems([...items])
+                                                                                    }}
+                                                                                />
+                                                                                <div className={classes.counterbtnBasket} onClick={() => {
+                                                                                    items[idx].extra = checkFloat(checkFloat(items[idx].extra) + 1)
+                                                                                    calculateAmountItem(items[idx])
+                                                                                    setItems([...items])
+                                                                                }}>+
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className={classes.typeShowBasket} onClick={()=>{
+                                                                                items[idx].extraType = items[idx].extraType==='%'?'сом':'%'
+                                                                                calculateAmountItem(items[idx])
+                                                                                setItems([...items])
+                                                                            }}>
+                                                                                {item.extraType}
+                                                                            </div>
+                                                                        </div>
+                                                                        :
+                                                                        null
+                                                                }
+                                                            </div>
+                                                            :
+                                                            null
+                                                    }
+                                                </div>
+                                                {
+                                                    item.amountEnd!==item.amountStart?
+                                                        <>
+                                                        <br/>
+                                                        <div className={classes.row}>
+                                                            <div className={classes.nameFieldBasket}>
+                                                                Итого:&nbsp;
+                                                            </div>
+                                                            <div className={classes.valueFieldBasket}>
+                                                                {item.amountEnd} сом
+                                                            </div>
+                                                        </div>
+                                                        </>
+                                                        :
+                                                        <br/>
                                                 }
-                                            }}
-                                        />
-                                        </>
-                                        :
-                                        null
+                                                <Divider/>
+                                                <br/>
+                                            </div>
+                                        </LazyLoad>
+                                    )
+                                })
                             }
                             </>
                             :
