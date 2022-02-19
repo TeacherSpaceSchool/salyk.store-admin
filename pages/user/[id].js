@@ -586,8 +586,8 @@ const User = React.memo((props) => {
                                                                 let res = await addUser({
                                                                     login, password, statistic, add, credit, payment, role, name, phone, email, legalObject: legalObject?legalObject._id:undefined, branch: branch?branch._id:undefined
                                                                 })
-                                                                if(res==='OK')
-                                                                    Router.push(`/users/${legalObject?legalObject._id:'super'}`)
+                                                                Router.push(`/user/${res}`)
+                                                                showSnackBar('Успешно', 'success')
                                                             }
                                                             else {
                                                                 let element = {_id: router.query.id, branch: branch?branch._id:undefined}
