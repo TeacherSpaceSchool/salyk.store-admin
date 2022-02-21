@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Snackbar from '@material-ui/core/Snackbar';
 import * as snackbarActions from '../../redux/actions/snackbar'
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Alert } from '@material-ui/lab';
 
 const MyDialog =  React.memo(
     (props) =>{
