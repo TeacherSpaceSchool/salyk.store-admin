@@ -25,6 +25,27 @@ export const geTtpDataByINNforBusinessActivity = async(inn)=>{
     }
 }
 
+export const getFullDeleteLegalObjects = async({skip}, client)=>{
+    try{
+        client = client? client : new SingletonApolloClient().getClient()
+        let res = await client.mutate({
+            variables: {skip},
+            mutation : gql`
+                    query ($skip: Int) {
+                        fullDeleteLegalObjects(skip: $skip) {
+                            _id
+                            createdAt
+                            legalObject
+                            status
+                            end
+                        }
+                    }`})
+        return res.data.fullDeleteLegalObjects
+    } catch(err) {
+        console.error(err)
+    }
+}
+
 export const getLegalObjects = async({skip, search}, client)=>{
     try{
         client = client? client : new SingletonApolloClient().getClient()

@@ -350,7 +350,7 @@ const Payment = React.memo((props) => {
                                                       height={height} offset={[height, 0]} debounce={0}
                                                       once={true}
                                                       placeholder={<CardBranchPlaceholder height={height}/>}>
-                                                <CardCashbox element={element}/>
+                                                <CardCashbox onlyShow element={element}/>
                                             </LazyLoad>
                                         </div>
                                     )

@@ -123,7 +123,8 @@ export default makeStyles({
         fontFamily: 'Roboto',
         whiteSpace: 'pre-wrap',
         cursor: 'pointer',
-        borderBottom: '1px dashed #10183D'
+        borderBottom: '1px dashed #10183D',
+        userSelect: 'none'
     },
     fab: {
         position: 'fixed!important',

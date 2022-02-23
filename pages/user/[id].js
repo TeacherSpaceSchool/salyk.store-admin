@@ -22,6 +22,7 @@ import Router from 'next/router'
 import * as appActions from '../../redux/actions/app'
 import * as snackbarActions from '../../redux/actions/snackbar'
 import TextField from '@material-ui/core/TextField';
+import randomstring from 'randomstring';
 import Confirmation from '../../components/dialog/Confirmation'
 import { urlMain } from '../../redux/constants/other'
 import { getClientGqlSsr } from '../../src/getClientGQL'
@@ -435,6 +436,7 @@ const User = React.memo((props) => {
                                 }
                                 {
                                     profile.add ?
+                                        <>
                                         <Input
                                             error={router.query.id === 'new' && !password || password&&password.length<8}
                                             placeholder='Новый пароль'
@@ -455,6 +457,12 @@ const User = React.memo((props) => {
                                                 </InputAdornment>
                                             }
                                         />
+                                        <div className={classes.geo} onClick={()=>{
+                                            setPassword(randomstring.generate(10))
+                                        }}>
+                                            Генерация нового пароля
+                                        </div>
+                                        </>
                                         :
                                         null
                                 }

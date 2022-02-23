@@ -50,7 +50,7 @@ const list = {
         },
         {
             name: 'Полное удаление налогоплательщика',
-            link: '/statistic/fulldeletelegalobject',
+            link: '/statistic/fulldeletelegalobjects',
             role: ['superadmin']
         },
         {

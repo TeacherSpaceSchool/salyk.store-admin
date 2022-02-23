@@ -25,7 +25,8 @@ export default makeStyles({
         fontFamily: 'Roboto',
         whiteSpace: 'pre-wrap',
         cursor: 'pointer',
-        borderBottom: '1px dashed #10183D'
+        borderBottom: '1px dashed #10183D',
+        userSelect: 'none'
     },
     bottomDivD: {
         width: 'calc(100vw - 300px)',

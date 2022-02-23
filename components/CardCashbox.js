@@ -19,7 +19,7 @@ import SyncOff from '@material-ui/icons/SyncDisabled';
 
 const CardCashbox = React.memo((props) => {
     const classes = cardCashboxStyle();
-    const { element, list } = props;
+    const { element, list, onlyShow } = props;
     const { isMobileApp } = props.app;
     const { profile } = props.user;
     const { setMiniDialog, showMiniDialog } = props.mini_dialogActions;
@@ -27,7 +27,7 @@ const CardCashbox = React.memo((props) => {
     return (
         <Card className={isMobileApp?classes.cardM:classes.cardD}>
             {
-                ['admin', 'superadmin', 'оператор'].includes(profile.role)?
+                !onlyShow&&['admin', 'superadmin', 'оператор'].includes(profile.role)?
                     element.sync?
                         <SyncOn color='primary' className={classes.sync}/>
                         :
@@ -125,7 +125,7 @@ const CardCashbox = React.memo((props) => {
                 </CardActionArea>
             </Link>
             {
-                element.presentCashier&&(['управляющий', 'супервайзер'].includes(profile.role)||['admin', 'superadmin'].includes(profile.role)&&profile.add)?
+                !onlyShow&&element.presentCashier&&(['управляющий', 'супервайзер'].includes(profile.role)||['admin', 'superadmin'].includes(profile.role)&&profile.add)?
                     <CardActions>
                         <Button color='primary' onClick={async()=>{
                             let report = await generateReportX({cashbox: element._id})
