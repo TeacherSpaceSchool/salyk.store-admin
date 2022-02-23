@@ -407,7 +407,7 @@ const User = React.memo((props) => {
                                         </div>
                                 }
                                 {
-                                    profile.add?
+                                    ['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.add?
                                         <TextField
                                             error={!login||errorLogin&&['admin', 'superadmin', 'оператор'].includes(profile.role)}
                                             label='Логин'
@@ -435,7 +435,7 @@ const User = React.memo((props) => {
                                         </div>
                                 }
                                 {
-                                    profile.add ?
+                                    ['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.add ?
                                         <>
                                         <Input
                                             error={router.query.id === 'new' && !password || password&&password.length<8}
@@ -444,9 +444,6 @@ const User = React.memo((props) => {
                                             type='text'
                                             style={hide ? {textSecurity: 'disc', WebkitTextSecurity: 'disc'} : {}}
                                             value={password}
-                                            onChange={(event) => {
-                                                setPassword(event.target.value)
-                                            }}
                                             className={classes.input}
                                             endAdornment={
                                                 <InputAdornment position='end'>
@@ -588,7 +585,7 @@ const User = React.memo((props) => {
                                                 <Button color='primary' onClick={()=>{
                                                     let checkMail = !email.length||validMails(email)
                                                     let checkPhone = !phone.length||validPhones1(phone)
-                                                    if(checkMail&&checkPhone&&name.length&&login.length&&(password.length>7||router.query.id!=='new')&&role.length) {
+                                                    if(!errorLogin&&checkMail&&checkPhone&&name.length&&login.length&&(password.length>7||router.query.id!=='new')&&role.length) {
                                                         const action = async() => {
                                                             if(router.query.id==='new') {
                                                                 let res = await addUser({
