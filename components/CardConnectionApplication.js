@@ -88,6 +88,7 @@ const CardConnectionApplication = React.memo((props) => {
                                     style={{width: '100%'}}
                                     label='Имя'
                                     value={name}
+                                    error={!name}
                                     className={classes.input}
                                     onChange={handleName}
                                 />
@@ -96,6 +97,7 @@ const CardConnectionApplication = React.memo((props) => {
                                 <TextField
                                     style={{width: '100%'}}
                                     label='Телефон'
+                                    error={!phone}
                                     value={phone}
                                     className={classes.input}
                                     onChange={handlePhone}
@@ -159,7 +161,7 @@ const CardConnectionApplication = React.memo((props) => {
                             !element&&!profile.role?
                                 <CardActions>
                                     <Button onClick={async()=> {
-                                    if(name.length>0&&phone.length>0&&address.length>0) {
+                                    if(name.length>0&&phone.length>0) {
                                         const action = async () => {
                                             await addApplicationToConnect({name, phone, address, whereKnow})
                                             setName('')
