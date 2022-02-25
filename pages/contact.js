@@ -29,6 +29,7 @@ const Geo = dynamic(import('../components/dialog/Geo'), { ssr: false });
 import History from '../components/dialog/History'
 import HistoryIcon from '@material-ui/icons/History';
 import Link from 'next/link';
+import Switch from '@material-ui/core/Switch';
 
 const Contact = React.memo((props) => {
     const classes = contactStyle();
@@ -50,6 +51,7 @@ const Contact = React.memo((props) => {
         setAddresses([...addresses])
     };
     let [email, setEmail] = useState([...data.contact.email]);
+    let [whatsapp, setWhatsapp] = useState(data.contact.whatsapp?[...data.contact.whatsapp]:[]);
     let [newEmail, setNewEmail] = useState('');
     let addEmail = ()=>{
         email = [...email, newEmail]
@@ -215,27 +217,42 @@ const Contact = React.memo((props) => {
                                 <br/>
                                 <br/>
                                 {phone.map((element, idx)=>
-                                    <FormControl key={`phone${idx}`} className={classes.input}>
-                                        <InputLabel error={!validPhone1(element)}>Телефон. Формат: +996559871952</InputLabel>
-                                        <Input
-                                            startAdornment={<InputAdornment position='start'>+996</InputAdornment>}
-                                            error={!validPhone1(element)}
-                                            value={element}
-                                            onChange={(event)=>{editPhone(event, idx)}}
-                                            endAdornment={
-                                                <InputAdornment position="end">
-                                                    <IconButton
-                                                        onClick={()=>{
-                                                            deletePhone(idx)
-                                                        }}
-                                                        aria-label='toggle password visibility'
-                                                    >
-                                                        <Remove/>
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            }
-                                        />
-                                    </FormControl>
+                                    <div>
+                                        <FormControl key={`phone${idx}`} className={classes.input}>
+                                            <InputLabel error={!validPhone1(element)}>Телефон. Формат: +996559871952</InputLabel>
+                                            <Input
+                                                startAdornment={<InputAdornment position='start'>+996</InputAdornment>}
+                                                error={!validPhone1(element)}
+                                                value={element}
+                                                onChange={(event)=>{editPhone(event, idx)}}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={()=>{
+                                                                deletePhone(idx)
+                                                            }}
+                                                            aria-label='toggle password visibility'
+                                                        >
+                                                            <Remove/>
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                            />
+                                        </FormControl>
+                                        <div className={classes.row}>
+                                            <div className={classes.nameField}>
+                                                WhatsApp:&nbsp;
+                                            </div>
+                                            <Switch
+                                                checked={whatsapp[idx]}
+                                                onChange={()=>{
+                                                    whatsapp[idx] = !whatsapp[idx]
+                                                    setWhatsapp([...whatsapp])
+                                                }}
+                                                color='primary'
+                                            />
+                                        </div>
+                                    </div>
                                 )}
                                 <Button onClick={async()=>{
                                     addPhone()
@@ -268,7 +285,8 @@ const Contact = React.memo((props) => {
                                                 email,
                                                 phone,
                                                 social,
-                                                info
+                                                info,
+                                                whatsapp
                                             }
                                             const action = async() => {
                                                 await setContact(editElement)
@@ -390,7 +408,7 @@ const Contact = React.memo((props) => {
                                                             +996{element}
                                                         </a>
                                                         {
-                                                            isMobileApp?
+                                                            isMobileApp&&whatsapp[idx]?
                                                                 <>
                                                                 &nbsp;
                                                                 <a href={`https://wa.me/+996${element.substring(1)}`} className={classes.value} style={{color: '#128C7E'}}>
