@@ -12,7 +12,7 @@ import AutocomplectOnline from '../app/AutocomplectOnline'
 
 const SetCashbox =  React.memo(
     (props) =>{
-        const { classes } = props;
+        const { classes, free } = props;
         const { setCashbox } = props.appActions;
         const { legalObject, branch } = props.app;
         const { showMiniDialog } = props.mini_dialogActions;
@@ -20,7 +20,9 @@ const SetCashbox =  React.memo(
         return (
             <div className={classes.main}>
                 <AutocomplectOnline setElement={setCashboxChange} getElements={async (search)=>{
-                    return await getCashboxes({search, legalObject: legalObject._id, ...branch?{branch: branch._id}:{}})
+                    let cashboxes = await getCashboxes({search, legalObject: legalObject._id, ...branch?{branch: branch._id}:{}})
+                    if(free) cashboxes = cashboxes.filter(element=>!element.presentCashier)
+                    return cashboxes
                 }} label={'кассу/РНМ'} minLength={0}/>
                 <br/>
                 <div>

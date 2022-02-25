@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import App from '../../layouts/App';
 import { connect } from 'react-redux'
 import { getLegalObject, setLegalObject, onoffLegalObject, addLegalObject, deleteLegalObject, geTtpDataByINNforBusinessActivity, restoreLegalObject } from '../../src/gql/legalObject'
+import { getUsers } from '../../src/gql/user'
 import legalObjectStyle from '../../src/styleMUI/list'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -39,6 +40,7 @@ import HistoryIcon from '@material-ui/icons/History';
 import SyncOn from '@material-ui/icons/Sync';
 import SyncOff from '@material-ui/icons/SyncDisabled';
 import Check from '@material-ui/icons/Check';
+import AutocomplectOnline from '../../components/app/AutocomplectOnline'
 
 const LegalObject = React.memo((props) => {
     const { profile } = props.user;
@@ -62,6 +64,7 @@ const LegalObject = React.memo((props) => {
     let handleNsp = (event) => {
         setNspType(event.target.value)
     };
+    let [agent, setAgent] = useState(data.object?{...data.object.agent}:undefined);
     let [email, setEmail] = useState(data.object&&data.object.email?cloneObject(data.object.email):[]);
     let addEmail = ()=>{
         email = [...email, '']
@@ -426,6 +429,15 @@ const LegalObject = React.memo((props) => {
                                 value={ugns}
                                 className={classes.input}
                             />
+                            <AutocomplectOnline
+                                defaultValue={agent}
+                                className={classes.input}
+                                setElement={setAgent}
+                                getElements={async (search)=>{return await getUsers({
+                                    search, role: 'агент'
+                                })}}
+                                label={'агента'}
+                            />
                             </>
                             :
                             <>
@@ -548,12 +560,12 @@ const LegalObject = React.memo((props) => {
                                             if (ndsType&&nspType&&rateTaxe&&name.length&&inn.length&&address.length&&checkPhone&&checkMail&&taxpayerType.length&&ugns.length&&responsiblePerson.length) {
                                                 const action = async() => {
                                                     if(router.query.id==='new') {
-                                                        let res = await addLegalObject({rateTaxe, name, inn, ofd, address, ndsType, nspType, phone, email, taxpayerType, ugns, responsiblePerson})
+                                                        let res = await addLegalObject({agent: agent?agent._id:undefined, rateTaxe, name, inn, ofd, address, ndsType, nspType, phone, email, taxpayerType, ugns, responsiblePerson})
                                                         Router.push(`/legalobject/${res}`)
                                                         showSnackBar('Успешно', 'success')
                                                     }
                                                     else {
-                                                        let element = {_id: router.query.id}
+                                                        let element = {_id: router.query.id, agent: agent?agent._id:undefined}
                                                         if (nspType!==data.object.nspType) element.nspType = nspType
                                                         if (ndsType!==data.object.ndsType) element.ndsType = ndsType
                                                         if (name!==data.object.name) element.name = name

@@ -147,6 +147,7 @@ export const getLegalObject = async({_id}, client)=>{
                             syncMsg
                             sync
                             rateTaxe
+                            agent {_id name}
                             ndsType
                             nspType
                         }
@@ -221,8 +222,8 @@ export const addLegalObject = async(element)=>{
         let res = await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($name: String!, $rateTaxe: String!, $ofd: Boolean!, $ndsType: String!, $nspType: String!, $inn: String!, $email: [String]!, $address: String!, $phone: [String]!, $taxpayerType: String!, $ugns: String!, $responsiblePerson: String!) {
-                        addLegalObject(name: $name, ofd: $ofd, rateTaxe: $rateTaxe, inn: $inn, ndsType: $ndsType, nspType: $nspType, email: $email, address: $address, phone: $phone, taxpayerType: $taxpayerType, ugns: $ugns, responsiblePerson: $responsiblePerson)
+                    mutation ($agent: ID, $name: String!, $rateTaxe: String!, $ofd: Boolean!, $ndsType: String!, $nspType: String!, $inn: String!, $email: [String]!, $address: String!, $phone: [String]!, $taxpayerType: String!, $ugns: String!, $responsiblePerson: String!) {
+                        addLegalObject(agent: $agent, name: $name, ofd: $ofd, rateTaxe: $rateTaxe, inn: $inn, ndsType: $ndsType, nspType: $nspType, email: $email, address: $address, phone: $phone, taxpayerType: $taxpayerType, ugns: $ugns, responsiblePerson: $responsiblePerson)
                     }`})
         return res.data.addLegalObject
     } catch(err){
@@ -236,8 +237,8 @@ export const setLegalObject = async(element)=>{
         await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($_id: ID!, $name: String, $rateTaxe: String, $ofd: Boolean, $email: [String], $ndsType: String, $nspType: String, $address: String, $phone: [String], $taxpayerType: String, $ugns: String, $responsiblePerson: String) {
-                        setLegalObject(_id: $_id, ofd: $ofd, name: $name, rateTaxe: $rateTaxe, email: $email, address: $address, ndsType: $ndsType, nspType: $nspType, phone: $phone, taxpayerType: $taxpayerType, ugns: $ugns, responsiblePerson: $responsiblePerson)
+                    mutation ($agent: ID, $_id: ID!, $name: String, $rateTaxe: String, $ofd: Boolean, $email: [String], $ndsType: String, $nspType: String, $address: String, $phone: [String], $taxpayerType: String, $ugns: String, $responsiblePerson: String) {
+                        setLegalObject(agent: $agent, _id: $_id, ofd: $ofd, name: $name, rateTaxe: $rateTaxe, email: $email, address: $address, ndsType: $ndsType, nspType: $nspType, phone: $phone, taxpayerType: $taxpayerType, ugns: $ugns, responsiblePerson: $responsiblePerson)
                     }`})
     } catch(err){
         console.error(err)

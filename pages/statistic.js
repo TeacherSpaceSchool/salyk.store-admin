@@ -30,6 +30,11 @@ const list = {
             role: ['admin', 'superadmin']
         },
         {
+            name: 'Статистика активности налогоплательщиков',
+            link: '/statistic/statisticactivitylegalobject',
+            role: ['admin', 'superadmin', 'агент']
+        },
+        {
             name: 'Статистика платежей',
             link: '/statistic/statisticpayment',
             role: ['admin', 'superadmin']
@@ -143,7 +148,7 @@ const Statistic = React.memo((props) => {
                     statisticSalykStore: []
                 }
                 for (let i = 0; i < list.statisticSalykStore.length; i++) {
-                    if (list.statisticSalykStore[i].name.toLowerCase().includes(search.toLowerCase()) && list.statisticSalykStore[i].role.includes(profile.role) && profile.statistic)
+                    if (list.statisticSalykStore[i].name.toLowerCase().includes(search.toLowerCase()) && list.statisticSalykStore[i].role.includes(profile.role) && (profile.statistic||profile.role==='агент'))
                         showList.statisticSalykStore.push(list.statisticSalykStore[i])
                 }
                 for (let i = 0; i < list.statistic.length; i++) {
@@ -316,7 +321,7 @@ const Statistic = React.memo((props) => {
 
 Statistic.getInitialProps = async function(ctx) {
     await initialApp(ctx)
-    if(!['admin', 'superadmin', 'управляющий', 'супервайзер', 'кассир', 'оператор', 'инспектор'].includes(ctx.store.getState().user.profile.role))
+    if(!['admin', 'superadmin', 'управляющий', 'супервайзер', 'кассир', 'оператор', 'инспектор', 'агент'].includes(ctx.store.getState().user.profile.role))
         if(ctx.res) {
             ctx.res.writeHead(302, {
                 Location: '/'
@@ -332,7 +337,7 @@ Statistic.getInitialProps = async function(ctx) {
         statisticSalykStore: []
     }
     for(let i=0; i<list.statisticSalykStore.length; i++){
-        if(list.statisticSalykStore[i].role.includes(ctx.store.getState().user.profile.role) && ctx.store.getState().user.profile.statistic)
+        if(list.statisticSalykStore[i].role.includes(ctx.store.getState().user.profile.role) && (ctx.store.getState().user.profile.statistic||ctx.store.getState().user.profile.role==='агент'))
             showList.statisticSalykStore.push(list.statisticSalykStore[i])
     }
     for(let i=0; i<list.statistic.length; i++){

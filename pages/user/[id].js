@@ -103,10 +103,12 @@ const User = React.memo((props) => {
                 setRoles(roles)
             }
             else if(['admin', 'superadmin'].includes(profile.role)) {
-                roles = ['оператор', 'инспектор']
+                roles = ['оператор', 'инспектор', 'агент']
                 if('superadmin'===profile.role) roles.push('admin')
                 setRoles(roles)
             }
+            else
+                setRoles([])
             setRole('')
             setBranch(undefined)
         }
@@ -464,7 +466,7 @@ const User = React.memo((props) => {
                                         null
                                 }
                                 {
-                                    profile.add ?
+                                    profile.add&&profile.role!=='кассир' ?
                                         <TextField
                                             error={!name}
                                             label='Имя'
@@ -485,7 +487,7 @@ const User = React.memo((props) => {
                                         </div>
                                 }
                                 {
-                                    profile.add?
+                                    profile.add&&profile.role!=='кассир'?
                                         <>
                                         {phone?phone.map((element, idx)=>
                                             <FormControl key={`phone${idx}`} className={classes.input}>
@@ -532,7 +534,7 @@ const User = React.memo((props) => {
                                             null
                                 }
                                 {
-                                    email.add?
+                                    profile.add&&profile.role!=='кассир'?
                                         <>
                                         {email?email.map((element, idx)=>
                                             <FormControl key={`email${idx}`} className={classes.input}>
@@ -577,11 +579,10 @@ const User = React.memo((props) => {
                                             :
                                             null
                                 }
-                                <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
-                                    {
-                                        profile.add?
-                                            !data.object.del?
-                                                <>
+                                {
+                                    profile.add&&profile.role!=='кассир'?
+                                        !data.object.del?
+                                            <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
                                                 <Button color='primary' onClick={()=>{
                                                     let checkMail = !email.length||validMails(email)
                                                     let checkPhone = !phone.length||validPhones1(phone)
@@ -646,8 +647,9 @@ const User = React.memo((props) => {
                                                         :
                                                         null
                                                 }
-                                                </>
-                                                :
+                                            </div>
+                                            :
+                                            <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
                                                 <Button color='primary' onClick={()=>{
                                                     const action = async() => {
                                                         await restoreUser(router.query.id)
@@ -658,10 +660,10 @@ const User = React.memo((props) => {
                                                 }}>
                                                     Восстановить
                                                 </Button>
-                                            :
-                                            null
-                                    }
-                                </div>
+                                            </div>
+                                        :
+                                        null
+                                }
                                 </>
                                 :
                                 'Ничего не найдено'
@@ -687,8 +689,8 @@ User.getInitialProps = async function(ctx) {
     return {
         data: {
             object:ctx.query.id!=='new'?await getUser({_id: ctx.query.id}, ctx.req?await getClientGqlSsr(ctx.req):undefined):
-                {login: '', password: '', role: '', name: '', phone: [],
-                    statistic: false, add: false, credit: false,
+                {login: '', password: randomstring.generate(10), role: '', name: '', phone: [],
+                    statistic: false, add: false, credit: false, payment: false,
                     legalObject: ctx.store.getState().user.profile.legalObject?{_id: ctx.store.getState().user.profile.legalObject}:undefined, branch: undefined}
         }
     };

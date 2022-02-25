@@ -242,7 +242,7 @@ const Index = React.memo((props) => {
                             <p>&nbsp;</p>
                         </div>
                             :
-                        ['admin', 'superadmin', 'оператор'].includes(profile.role)?
+                        ['admin', 'superadmin', 'оператор', 'инспектор', 'агент'].includes(profile.role)?
                             <Card className={classes.message} style={{width: isMobileApp?300:500, height: isMobileApp?300:500}}>
                                 <CardContent>
                                     <center>
@@ -379,7 +379,7 @@ const Index = React.memo((props) => {
                                                 <CardContent>
                                                     <center>
                                                         <Button size='large' color={cashbox?'primary':'secondary'} onClick={()=>{
-                                                            setMiniDialog('Выберите кассу', <SetCashbox/>)
+                                                            setMiniDialog('Выберите кассу', <SetCashbox free/>)
                                                             showMiniDialog(true)
                                                         }}>
                                                             {cashbox?cashbox.name:'Выберите кассу'}

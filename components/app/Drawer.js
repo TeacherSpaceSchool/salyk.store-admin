@@ -414,7 +414,7 @@ const MyDrawer = React.memo((props) => {
                                 :null
                         }
                         {
-                            ['admin', 'superadmin', 'оператор', 'инспектор'].includes(profile.role)||['управляющий', 'супервайзер', 'кассир'].includes(profile.role)&&profile.statistic?
+                            ['admin', 'superadmin', 'оператор', 'инспектор', 'агент'].includes(profile.role)||['управляющий', 'супервайзер', 'кассир'].includes(profile.role)&&profile.statistic?
                                 <>
                                 <Link href={'/statistic'}>
                                     <ListItem style={{marginLeft: 16, background: router.pathname.includes('statistic')?'#f5f5f5':'#ffffff'}} button onClick={()=>{showDrawer(false)}}>

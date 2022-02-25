@@ -72,6 +72,27 @@ export const getStatisticStorageSize = async(client)=>{
     }
 }
 
+export const getStatisticActivityLegalObject = async({agent, type}, client)=>{
+    try{
+        client = client? client : new SingletonApolloClient().getClient()
+        let res = await client
+            .query({
+                variables: {agent, type},
+                query: gql`
+                    query($agent: ID, $type: String) {
+                        statisticActivityLegalObject(agent: $agent, type: $type) {
+                            columns
+                            row 
+                                {_id data}
+                        }
+                    }`,
+            })
+        return res.data.statisticActivityLegalObject
+    } catch(err){
+        console.error(err)
+    }
+}
+
 export const getStatisticExpiredWorkShifts = async(client)=>{
     try{
         client = client? client : new SingletonApolloClient().getClient()
