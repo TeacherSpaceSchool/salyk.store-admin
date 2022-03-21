@@ -13,6 +13,7 @@ import * as mini_dialogActions from '../redux/actions/mini_dialog'
 import * as snackbarActions from '../redux/actions/snackbar'
 import IconButton from '@material-ui/core/IconButton';
 import Remove from '@material-ui/icons/Remove';
+import WhatsApp from '@material-ui/icons/WhatsApp';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -29,7 +30,6 @@ const Geo = dynamic(import('../components/dialog/Geo'), { ssr: false });
 import History from '../components/dialog/History'
 import HistoryIcon from '@material-ui/icons/History';
 import Link from 'next/link';
-import Switch from '@material-ui/core/Switch';
 
 const Contact = React.memo((props) => {
     const classes = contactStyle();
@@ -217,8 +217,8 @@ const Contact = React.memo((props) => {
                                 <br/>
                                 <br/>
                                 {phone.map((element, idx)=>
-                                    <div>
-                                        <FormControl key={`phone${idx}`} className={classes.input}>
+                                    <div className={classes.row}>
+                                    <FormControl key={`phone${idx}`} className={classes.input}>
                                             <InputLabel error={!validPhone1(element)}>Телефон. Формат: +996559871952</InputLabel>
                                             <Input
                                                 startAdornment={<InputAdornment position='start'>+996</InputAdornment>}
@@ -239,19 +239,14 @@ const Contact = React.memo((props) => {
                                                 }
                                             />
                                         </FormControl>
-                                        <div className={classes.row}>
-                                            <div className={classes.nameField}>
-                                                WhatsApp:&nbsp;
-                                            </div>
-                                            <Switch
-                                                checked={whatsapp[idx]}
-                                                onChange={()=>{
-                                                    whatsapp[idx] = !whatsapp[idx]
-                                                    setWhatsapp([...whatsapp])
-                                                }}
-                                                color='primary'
-                                            />
-                                        </div>
+                                        <IconButton
+                                            onClick={()=>{
+                                                whatsapp[idx] = !whatsapp[idx]
+                                                setWhatsapp([...whatsapp])
+                                            }}
+                                        >
+                                            <WhatsApp style={{color: whatsapp[idx]?'green':'gray'}}/>
+                                        </IconButton>
                                     </div>
                                 )}
                                 <Button onClick={async()=>{

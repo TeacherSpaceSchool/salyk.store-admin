@@ -157,7 +157,7 @@ const Integration = React.memo((props) => {
                                         />
                                 }
                                 <TextField
-                                    label='IP-адресс'
+                                    label='IP-адрес'
                                     value={IP}
                                     className={classes.input}
                                     onChange={(event)=>{setIP(event.target.value)}}

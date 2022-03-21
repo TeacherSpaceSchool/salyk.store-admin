@@ -466,7 +466,7 @@ const User = React.memo((props) => {
                                         null
                                 }
                                 {
-                                    profile.add&&profile.role!=='кассир' ?
+                                    profile.add&&profile.role!=='кассир'?
                                         <TextField
                                             error={!name}
                                             label='Имя'
