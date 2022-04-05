@@ -58,14 +58,24 @@ const CardConnectionApplication = React.memo((props) => {
                                     <div className={classes.nameField}>Телефон:&nbsp;</div>
                                     <div className={classes.value}>{element.phone}</div>
                                 </div>
-                                <div className={classes.row}>
-                                    <div className={classes.nameField}>Адрес:&nbsp;</div>
-                                    <div className={classes.value}>{element.address}</div>
-                                </div>
-                                <div className={classes.row}>
-                                    <div className={classes.nameField}>Откуда узнали:&nbsp;</div>
-                                    <div className={classes.value}>{element.whereKnow}</div>
-                                </div>
+                                {
+                                    element.address?
+                                        <div className={classes.row}>
+                                            <div className={classes.nameField}>Адрес:&nbsp;</div>
+                                            <div className={classes.value}>{element.address}</div>
+                                        </div>
+                                        :
+                                        null
+                                }
+                                {
+                                    element.whereKnow?
+                                        <div className={classes.row}>
+                                            <div className={classes.nameField}>Откуда узнали:&nbsp;</div>
+                                            <div className={classes.value}>{element.whereKnow}</div>
+                                        </div>
+                                        :
+                                        null
+                                }
                                 {
                                     element.who&&['admin', 'superadmin'].includes(profile.role)?
                                         <div className={classes.row}>
@@ -163,12 +173,17 @@ const CardConnectionApplication = React.memo((props) => {
                                     <Button onClick={async()=> {
                                     if(name.length>0&&phone.length>0) {
                                         const action = async () => {
-                                            await addApplicationToConnect({name, phone, address, whereKnow})
-                                            setName('')
-                                            setPhone('')
-                                            setWhereKnow('')
-                                            setAddress('')
-                                            showSnackBar('Заявка отправлена', 'success')
+                                            let res = await addApplicationToConnect({name, phone, address, whereKnow})
+                                            if(res) {
+                                                setList([res, ...list])
+                                                setName('')
+                                                setPhone('')
+                                                setWhereKnow('')
+                                                setAddress('')
+                                                showSnackBar('Заявка отправлена', 'success')
+                                            }
+                                            else
+                                                showSnackBar('Ошибка', 'error')
                                         }
                                         setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
                                         showMiniDialog(true)

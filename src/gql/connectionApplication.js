@@ -47,12 +47,21 @@ export const getApplicationToConnectsCount = async(element, client)=>{
 export const addApplicationToConnect = async(element)=>{
     try{
         const client = new SingletonApolloClient().getClient()
-        await client.mutate({
+        let res = await client.mutate({
             variables: element,
             mutation : gql`
                     mutation ($name: String!, $phone: String!, $address: String!, $whereKnow: String!) {
-                        addApplicationToConnect(name: $name, phone: $phone, address: $address, whereKnow: $whereKnow)
+                        addApplicationToConnect(name: $name, phone: $phone, address: $address, whereKnow: $whereKnow) {
+                            _id
+                            createdAt
+                            name
+                            phone
+                            address
+                            whereKnow
+                            taken
+                        }
                     }`})
+        return res.data.addApplicationToConnect
     } catch(err){
         console.error(err)
     }
