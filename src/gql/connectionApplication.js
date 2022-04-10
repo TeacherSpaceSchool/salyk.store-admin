@@ -12,6 +12,7 @@ export const getApplicationToConnects = async(element, client)=>{
                         applicationToConnects(skip: $skip, filter: $filter) {
                             _id
                             createdAt
+                            comment
                             name
                             phone
                             address
@@ -59,6 +60,7 @@ export const addApplicationToConnect = async(element)=>{
                             address
                             whereKnow
                             taken
+                            comment
                         }
                     }`})
         return res.data.addApplicationToConnect
@@ -75,6 +77,20 @@ export const acceptApplicationToConnect = async(element)=>{
             mutation : gql`
                     mutation ($_id: ID!) {
                         acceptApplicationToConnect(_id: $_id)
+                    }`})
+    } catch(err){
+        console.error(err)
+    }
+}
+
+export const setApplicationToConnect = async(element)=>{
+    try{
+        const client = new SingletonApolloClient().getClient()
+        await client.mutate({
+            variables: element,
+            mutation : gql`
+                    mutation ($_id: ID!, $comment: String!) {
+                        setApplicationToConnect(_id: $_id, comment: $comment)
                     }`})
     } catch(err){
         console.error(err)

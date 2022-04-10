@@ -6,7 +6,7 @@ import cardStyle from '../src/styleMUI/card'
 import { connect } from 'react-redux'
 import Button from '@material-ui/core/Button';
 import CardActions from '@material-ui/core/CardActions';
-import { addApplicationToConnect, acceptApplicationToConnect, deleteApplicationToConnect} from '../src/gql/connectionApplication'
+import { addApplicationToConnect, acceptApplicationToConnect, deleteApplicationToConnect, setApplicationToConnect} from '../src/gql/connectionApplication'
 import { bindActionCreators } from 'redux'
 import * as mini_dialogActions from '../redux/actions/mini_dialog'
 import * as snackbarActions from '../redux/actions/snackbar'
@@ -28,6 +28,11 @@ const CardConnectionApplication = React.memo((props) => {
     let [phone, setPhone] = useState(element?element.phone:'');
     let handlePhone =  (event) => {
         setPhone(event.target.value)
+    };
+    let [comment, setComment] = useState(element?element.comment:'');
+    let handleComment =  (event) => {
+        if(element&&['admin', 'superadmin', 'оператор'].includes(profile.role)&&!element.taken&&profile.add)
+            setComment(event.target.value)
     };
     let [address, setAddress] = useState(element?element.address:'');
     let handleAddress =  (event) => {
@@ -89,6 +94,13 @@ const CardConnectionApplication = React.memo((props) => {
                                         :
                                         null
                                 }
+                                <TextField
+                                    style={{width: '100%'}}
+                                    label='Комментарий'
+                                    value={comment}
+                                    className={classes.input}
+                                    onChange={handleComment}
+                                />
                             </CardContent>
                         </CardActionArea>
                         :
@@ -137,6 +149,15 @@ const CardConnectionApplication = React.memo((props) => {
                     {
                         element&&['admin', 'superadmin', 'оператор'].includes(profile.role)&&!element.taken&&profile.add?
                             <CardActions>
+                                <Button onClick={async()=>{
+                                    const action = async() => {
+                                        await setApplicationToConnect({_id: element._id, comment})
+                                    }
+                                    setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                    showMiniDialog(true)
+                                }} color='primary'>
+                                    Сохранить
+                                </Button>
                                 <Button onClick={async()=>{
                                     const action = async() => {
                                         await acceptApplicationToConnect({_id: element._id})
