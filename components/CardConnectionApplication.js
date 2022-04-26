@@ -31,8 +31,7 @@ const CardConnectionApplication = React.memo((props) => {
     };
     let [comment, setComment] = useState(element?element.comment:'');
     let handleComment =  (event) => {
-        if(element&&['admin', 'superadmin', 'оператор'].includes(profile.role)&&!element.taken&&profile.add)
-            setComment(event.target.value)
+        setComment(event.target.value)
     };
     let [address, setAddress] = useState(element?element.address:'');
     let handleAddress =  (event) => {
@@ -94,13 +93,28 @@ const CardConnectionApplication = React.memo((props) => {
                                         :
                                         null
                                 }
-                                <TextField
-                                    style={{width: '100%'}}
-                                    label='Комментарий'
-                                    value={comment}
-                                    className={classes.input}
-                                    onChange={handleComment}
-                                />
+                                {
+                                    ['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.add?
+                                        !element.taken?
+                                            <TextField
+                                                style={{width: '100%'}}
+                                                label='Комментарий'
+                                                value={comment}
+                                                className={classes.input}
+                                                onChange={handleComment}
+                                            />
+                                            :
+                                            <div className={classes.row}>
+                                                <div className={classes.nameField}>
+                                                    Комментарий:&nbsp;
+                                                </div>
+                                                <div className={classes.value}>
+                                                    {comment}
+                                                </div>
+                                            </div>
+                                        :
+                                        null
+                                }
                             </CardContent>
                         </CardActionArea>
                         :
