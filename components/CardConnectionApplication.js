@@ -104,14 +104,17 @@ const CardConnectionApplication = React.memo((props) => {
                                                 onChange={handleComment}
                                             />
                                             :
-                                            <div className={classes.row}>
-                                                <div className={classes.nameField}>
-                                                    Комментарий:&nbsp;
+                                            comment?
+                                                <div className={classes.row}>
+                                                    <div className={classes.nameField}>
+                                                        Комментарий:&nbsp;
+                                                    </div>
+                                                    <div className={classes.value}>
+                                                        {comment}
+                                                    </div>
                                                 </div>
-                                                <div className={classes.value}>
-                                                    {comment}
-                                                </div>
-                                            </div>
+                                                :
+                                                null
                                         :
                                         null
                                 }
