@@ -67,7 +67,7 @@ const ConnectionApplications = React.memo((props) => {
             </Head>
             <div className={classes.page}>
                 {
-                    !profile.role?
+                    !profile.role&&!list.length?
                         <CardConnectionApplications list={list} setList={setList}/>
                         :
                         null

@@ -12,7 +12,11 @@ import * as mini_dialogActions from '../redux/actions/mini_dialog'
 import * as snackbarActions from '../redux/actions/snackbar'
 import TextField from '@material-ui/core/TextField';
 import Confirmation from './dialog/Confirmation';
-import { pdDDMMYYHHMM } from '../src/lib'
+import { pdDDMMYYHHMM, validPhone1, inputPhone } from '../src/lib'
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 const CardConnectionApplication = React.memo((props) => {
     const { profile } = props.user;
@@ -27,7 +31,7 @@ const CardConnectionApplication = React.memo((props) => {
     };
     let [phone, setPhone] = useState(element?element.phone:'');
     let handlePhone =  (event) => {
-        setPhone(event.target.value)
+        setPhone(inputPhone(event.target.value))
     };
     let [comment, setComment] = useState(element?element.comment:'');
     let handleComment =  (event) => {
@@ -133,15 +137,18 @@ const CardConnectionApplication = React.memo((props) => {
                                 />
                                 <br/>
                                 <br/>
-                                <TextField
-                                    style={{width: '100%'}}
-                                    label='Телефон'
-                                    error={!phone}
-                                    value={phone}
-                                    className={classes.input}
-                                    onChange={handlePhone}
-                                />
-                                <br/>
+                                <FormControl key={`phone${idx}`} className={classes.input}>
+                                    <InputLabel error={!validPhone1(phone)}>Телефон</InputLabel>
+                                    <Input
+                                        style={{width: '100%'}}
+                                        error={!validPhone1(phone)}
+                                        placeholder='Телефон'
+                                        value={phone}
+                                        className={classes.input}
+                                        onChange={handlePhone}
+                                        startAdornment={<InputAdornment position='start'>+996</InputAdornment>}
+                                    />
+                                </FormControl>
                                 <br/>
                                 <TextField
                                     style={{width: '100%'}}

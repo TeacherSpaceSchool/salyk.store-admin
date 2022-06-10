@@ -75,16 +75,11 @@ const Index = React.memo((props) => {
                 {
                     !profile.role?
                         <div style={{background: 'white', padding: 10, overflow: 'hidden'}}>
-                            {
-                                isMobileApp?
-                                    <Link href='/connectionapplications'>
-                                        <div className={classes.scrollDown}>
-                                            ЗАЯВКА НА ПОДКЛЮЧЕНИЕ
-                                        </div>
-                                    </Link>
-                                    :
-                                    null
-                            }
+                            <Link href='/connectionapplications'>
+                                <div className={classes.scrollDown}>
+                                    ЗАЯВКА НА ПОДКЛЮЧЕНИЕ
+                                </div>
+                            </Link>
                             <div style={{display: 'none'}}>
                                 ККМ КАССА БИШКЕК КЫРГЫЗСТАН НАЛОГИ MegaKassa ККМ онлайн О!Касса контрольно кассовая машина оператор фискальных данных ОФД
                             </div>
