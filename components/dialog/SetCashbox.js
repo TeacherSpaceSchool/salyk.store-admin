@@ -20,9 +20,7 @@ const SetCashbox =  React.memo(
         return (
             <div className={classes.main}>
                 <AutocomplectOnline setElement={setCashboxChange} getElements={async (search)=>{
-                    let cashboxes = await getCashboxes({search, legalObject: legalObject._id, ...branch?{branch: branch._id}:{}})
-                    if(free) cashboxes = cashboxes.filter(element=>!element.presentCashier)
-                    return cashboxes
+                    return await getCashboxes({search, legalObject: legalObject._id, ...free?{filter: 'deactive'}:{}, ...branch?{branch: branch._id}:{}})
                 }} label={'кассу/РНМ'} minLength={0}/>
                 <br/>
                 <div>
