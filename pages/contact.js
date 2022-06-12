@@ -37,6 +37,7 @@ const Contact = React.memo((props) => {
     const { isMobileApp } = props.app;
     const { showSnackBar } = props.snackbarActions;
     let [name, setName] = useState(data.contact.name);
+    let [connectionApplicationPhone, setConnectionApplicationPhone] = useState(data.contact.connectionApplicationPhone);
     let [addresses, setAddresses] = useState(data.contact.addresses?data.contact.addresses.map(e=>{return {address: e.address, geo: e.geo}}):[]);
     let addAddress = ()=>{
         addresses = [...addresses, {address: '', geo: [42.8700000, 74.5900000]}]
@@ -255,6 +256,15 @@ const Contact = React.memo((props) => {
                                     Добавить телефон
                                 </Button>
                                 <br/>
+                                <FormControl className={classes.input}>
+                                    <InputLabel error={connectionApplicationPhone&&!validPhone1(connectionApplicationPhone)}>Телефон для подключения. Формат: +996559871952</InputLabel>
+                                    <Input
+                                        startAdornment={<InputAdornment position='start'>+996</InputAdornment>}
+                                        error={connectionApplicationPhone&&!validPhone1(connectionApplicationPhone)}
+                                        value={connectionApplicationPhone}
+                                        onChange={(event)=>{setConnectionApplicationPhone(inputPhone(event.target.value))}}
+                                    />
+                                </FormControl>
                                 <br/>
                                 <TextField
                                     multiline={true}
@@ -276,6 +286,7 @@ const Contact = React.memo((props) => {
                                         if (name&&checkPhone&&checkEmail) {
                                             let editElement = {
                                                 name,
+                                                connectionApplicationPhone,
                                                 addresses,
                                                 email,
                                                 phone,

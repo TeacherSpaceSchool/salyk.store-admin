@@ -13,6 +13,7 @@ export const getContact = async(client)=>{
                             addresses {address geo}
                             email
                             phone
+                            connectionApplicationPhone
                             info
                             whatsapp
                             social
@@ -32,8 +33,8 @@ export const setContact = async(element)=>{
         await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ( $whatsapp: [Boolean]!, $name: String!, $addresses: [AddressInput]!, $info: String!, $email: [String]!, $phone: [String]!, $social: [String]!) {
-                        setContact(name: $name, whatsapp: $whatsapp, addresses: $addresses, email: $email, info: $info, phone: $phone, social: $social)
+                    mutation ($connectionApplicationPhone: String!, $whatsapp: [Boolean]!, $name: String!, $addresses: [AddressInput]!, $info: String!, $email: [String]!, $phone: [String]!, $social: [String]!) {
+                        setContact(connectionApplicationPhone: $connectionApplicationPhone, name: $name, whatsapp: $whatsapp, addresses: $addresses, email: $email, info: $info, phone: $phone, social: $social)
                     }`})
     } catch(err){
         console.error(err)
