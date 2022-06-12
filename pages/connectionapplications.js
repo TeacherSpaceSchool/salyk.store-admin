@@ -68,7 +68,7 @@ const ConnectionApplications = React.memo((props) => {
             </Head>
             <div className={classes.page}>
                 {
-                    !profile.role&&!list.length?
+                    !profile.role&&!list.length&&!data.connectionApplicationPhone?
                         <CardConnectionApplications list={list} setList={setList}/>
                         :
                         null
@@ -100,16 +100,19 @@ const ConnectionApplications = React.memo((props) => {
 ConnectionApplications.getInitialProps = async function(ctx) {
     await initialApp(ctx)
 
+    let contact
     if(!ctx.store.getState().user.profile.role) {
-        let contact = await getContact(ctx.req?await getClientGqlSsr(ctx.req):undefined)
-        if(contact.connectionApplicationPhone)
+        contact = await getContact(ctx.req?await getClientGqlSsr(ctx.req):undefined)
+        if(contact.connectionApplicationPhone) {
             if (ctx.res) {
                 ctx.res.writeHead(302, {
                     Location: `https://wa.me/+996${contact.connectionApplicationPhone}?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%2C%20%D1%85%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B8%D1%82%D1%8C%D1%81%D1%8F%20%D0%BA%20SALYK.STORE`
                 })
                 ctx.res.end()
             } else
-                await Router.push(`https://wa.me/+996${contact.connectionApplicationPhone}?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%2C%20%D1%85%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B8%D1%82%D1%8C%D1%81%D1%8F%20%D0%BA%20SALYK.STORE`)
+                await window.location.replace(`https://wa.me/+996${contact.connectionApplicationPhone}?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%2C%20%D1%85%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B8%D1%82%D1%8C%D1%81%D1%8F%20%D0%BA%20SALYK.STORE`)
+            ctx.store.getState().app.load = true
+        }
     }
     else if(ctx.store.getState().user.profile.role&&!['superadmin','admin', 'оператор'].includes(ctx.store.getState().user.profile.role))
         if(ctx.res) {
@@ -124,6 +127,7 @@ ConnectionApplications.getInitialProps = async function(ctx) {
         data: {
             list: await getApplicationToConnects({skip: 0, filter: ''}, ctx.req?await getClientGqlSsr(ctx.req):undefined),
             count: await getApplicationToConnectsCount({filter: ''}, ctx.req?await getClientGqlSsr(ctx.req):undefined),
+            connectionApplicationPhone: contact&&contact.connectionApplicationPhone
         }
     };
 };

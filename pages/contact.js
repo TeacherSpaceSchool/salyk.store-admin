@@ -256,6 +256,7 @@ const Contact = React.memo((props) => {
                                     Добавить телефон
                                 </Button>
                                 <br/>
+                                <br/>
                                 <FormControl className={classes.input}>
                                     <InputLabel error={connectionApplicationPhone&&!validPhone1(connectionApplicationPhone)}>Телефон для подключения. Формат: +996559871952</InputLabel>
                                     <Input
@@ -265,6 +266,7 @@ const Contact = React.memo((props) => {
                                         onChange={(event)=>{setConnectionApplicationPhone(inputPhone(event.target.value))}}
                                     />
                                 </FormControl>
+                                <br/>
                                 <br/>
                                 <TextField
                                     multiline={true}
@@ -283,7 +285,7 @@ const Contact = React.memo((props) => {
                                         if(email.length)
                                             for(let i=0; i<email.length; i++)
                                                 checkEmail = validMail(email[i])
-                                        if (name&&checkPhone&&checkEmail) {
+                                        if (name&&checkPhone&&checkEmail&&(!connectionApplicationPhone||validPhone1(connectionApplicationPhone))) {
                                             let editElement = {
                                                 name,
                                                 connectionApplicationPhone,
