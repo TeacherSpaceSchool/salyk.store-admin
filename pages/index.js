@@ -330,7 +330,7 @@ const Index = React.memo((props) => {
                                                                 let allNds = checkFloat(allAmount / allPrecent * ndsTypes[ndsType])
                                                                 let allNsp = checkFloat(allAmount / allPrecent * nspTypes[nspType])
                                                                 let items = [{
-                                                                    name: '',
+                                                                    name: 'Продажа',
                                                                     unit: 'шт',
                                                                     count: 1,
                                                                     price: allAmount,
