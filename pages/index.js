@@ -384,13 +384,17 @@ const Index = React.memo((props) => {
                                                         cashbox?
                                                             <center>
                                                                 <Button size='large' color='primary' onClick={async ()=>{
-                                                                    showLoad(true)
-                                                                    list = await startWorkShift({cashbox: cashbox._id})
-                                                                    showLoad(false)
-                                                                    if(list)
-                                                                        setList([list])
-                                                                    else
-                                                                        showSnackBar('Ошибка', 'error')
+                                                                    if(cashbox.endPayment<new Date())
+                                                                        showSnackBar('Пожалуйста оплатите за кассу')
+                                                                    else {
+                                                                        showLoad(true)
+                                                                        list = await startWorkShift({cashbox: cashbox._id})
+                                                                        showLoad(false)
+                                                                        if(list)
+                                                                            setList([list])
+                                                                        else
+                                                                            showSnackBar('Ошибка', 'error')
+                                                                    }
                                                                 }}>
                                                                     Начать смену
                                                                 </Button>
