@@ -14,14 +14,15 @@ const SetCashbox =  React.memo(
     (props) =>{
         const { classes, free } = props;
         const { setCashbox } = props.appActions;
-        const { legalObject, branch } = props.app;
+        const { legalObject, branch, isMobileApp } = props.app;
         const { showMiniDialog } = props.mini_dialogActions;
         let [cashboxChange, setCashboxChange] = useState(undefined);
+        const width = isMobileApp? (window.innerWidth-112) : 500
         return (
-            <div className={classes.main}>
+            <div className={classes.main} style={{width: width}}>
                 <AutocomplectOnline setElement={setCashboxChange} getElements={async (search)=>{
                     return await getCashboxes({search, legalObject: legalObject._id, ...free?{filter: 'deactive'}:{}, ...branch?{branch: branch._id}:{}})
-                }} label={'кассу/РНМ'} minLength={0}/>
+                }} label={'кассу/номер ФМ'} minLength={0}/>
                 <br/>
                 <div>
                     <Button variant='contained' color='primary' onClick={async()=>{

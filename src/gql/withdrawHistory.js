@@ -16,10 +16,10 @@ export const getWithdrawHistory = async({_id}, client)=>{
                             createdAt
                             comment
                             amount
-                            legalObject {name _id inn rateTaxe}
+                            legalObject {name _id inn rateTaxe taxSystem_v2}
                             branch {name address _id}
                             cashier {name _id}
-                            cashbox {name _id rnmNumber}
+                            cashbox {name _id rnmNumber registrationNumber fn}
                             workShift {number _id}
                         }
                     }`,

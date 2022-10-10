@@ -15,10 +15,12 @@ import Router from 'next/router'
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import Link from 'next/link';
+import { useRouter } from 'next/router'
 const height = 92
 
 const Cashboxs = React.memo((props) => {
     const classes = pageListStyle();
+    const router = useRouter()
     const { data } = props;
     let [list, setList] = useState(data.list);
     let [count, setCount] = useState(data.count);
@@ -75,7 +77,7 @@ const Cashboxs = React.memo((props) => {
             <div className={classes.page}>
                 {list?list.map((element)=>
                     <LazyLoad scrollContainer={'.App-body'} key={element._id} height={height} offset={[height, 0]} debounce={0} once={true}  placeholder={<CardLegalObjectPlaceholder height={height}/>}>
-                        <CardLegalObject link='cashboxes' element={element}/>
+                        <CardLegalObject query={router.query.del?{del: 1}:{}} link='cashboxes' element={element} linkAs={`/cashboxes/${element._id}${router.query.del?'?del=1':''}`}/>
                     </LazyLoad>
                 ):null}
             </div>

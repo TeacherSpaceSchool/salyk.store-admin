@@ -15,12 +15,13 @@ const SetClient =  React.memo(
     (props) =>{
         const { classes, dialogAddElement, _setClient } = props;
         const { setClient } = props.appActions;
-        const { legalObject } = props.app;
+        const { legalObject, isMobileApp } = props.app;
         const { profile} = props.user;
         const { showMiniDialog } = props.mini_dialogActions;
         let [clientChange, setClientChange] = useState(undefined);
+        const width = isMobileApp? (window.innerWidth-112) : 500
         return (
-            <div className={classes.main}>
+            <div className={classes.main} style={{width: width}}>
                 <AutocomplectOnline
                     dialogAddElement={profile.add&&dialogAddElement?(setClient, setInputValue, value)=>{return <AddClient legalObject={legalObject._id} setInputValue={setInputValue} setClient={setClient} value={value}/>}:null}
                     setElement={_setClient?_setClient:setClientChange} getElements={async (search)=>{return await getClients({search, legalObject: legalObject._id})}} label={'клиента'}/>

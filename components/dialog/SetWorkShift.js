@@ -14,11 +14,12 @@ const SetWorkShift =  React.memo(
     (props) =>{
         const { classes } = props;
         const { setWorkShift } = props.appActions;
-        const { legalObject, branch, cashier } = props.app;
+        const { legalObject, branch, cashier, isMobileApp } = props.app;
         const { showMiniDialog } = props.mini_dialogActions;
         let [workShiftChange, setWorkShiftChange] = useState(undefined);
+        const width = isMobileApp? (window.innerWidth-112) : 500
         return (
-            <div className={classes.main}>
+            <div className={classes.main} style={{width: width}}>
                 <AutocomplectOnline setElement={setWorkShiftChange} getElements={async (search)=>{
                     return await getWorkShifts({search, legalObject: legalObject._id, ...branch?{branch: branch._id}:{}, ...cashier?{cashier: cashier._id}:{}})
                 }} label={'смену'}/>

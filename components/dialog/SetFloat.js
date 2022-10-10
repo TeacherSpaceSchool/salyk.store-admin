@@ -18,8 +18,9 @@ const SetFloat =  React.memo(
         const { isMobileApp } = props.app;
         let [float, setFloat] = useState('');
         let [comment, setComment] = useState('');
+        const width = isMobileApp? (window.innerWidth-112) : 500
         return (
-            <div className={classes.main}>
+            <div className={classes.main} style={{width: width}}>
                 <TextField
                     className={classes.input}
                     label='Обоснование (не обязательно)'

@@ -10,7 +10,7 @@ import dialogContentStyle from '../../src/styleMUI/dialogContent'
 import { checkFloat, inputFloat } from '../../src/lib';
 import { addSale } from '../../src/gql/sale';
 import Link from 'next/link';
-import { ndsTypes, nspTypes } from '../../src/const'
+import { ndsTypesValue, nspTypesValue } from '../../src/const'
 import TextField from '@material-ui/core/TextField';
 
 const BuyBasket =  React.memo(
@@ -26,12 +26,12 @@ const BuyBasket =  React.memo(
         let [discount, setDiscount] = useState('');
         let [amountEnd, setAmountEnd] = useState(amountStart);
         let [paid, setPaid] = useState(0);
-        let [discountType, setDiscountType] = useState('%');
+        let [discountType, setDiscountType] = useState('сом');
         let [comment, setComment] = useState('');
         let [commentShow, setCommentShow] = useState(false);
         let [extra, setExtra] = useState('');
         let [change, setChange] = useState('');
-        let [extraType, setExtraType] = useState('%');
+        let [extraType, setExtraType] = useState('сом');
         useEffect(() => {
             amountEnd = amountStart + (extraType==='%'?amountStart/100*extra:checkFloat(extra)) - (discountType==='%'?amountStart/100*discount:discount) - consignation
             if(typePayment==='Безналичный'&&type==='Продажа')
@@ -305,14 +305,14 @@ const BuyBasket =  React.memo(
                                                 discount = discount / items.length
                                             }
                                             for (let i = 0; i < items.length; i++) {
-                                                let allPrecent = 100+ndsTypes[items[i].ndsType]+nspTypes[items[i].nspType]
+                                                let allPrecent = 100+checkFloat(ndsTypesValue[items[i].ndsType])+checkFloat(nspTypesValue[items[i].nspType])
                                                 items[i].amountStart = checkFloat(items[i].count*items[i].price)
                                                 items[i].extra = checkFloat(items[i].extraType==='%'?items[i].amountStart/100*items[i].extra:checkFloat(items[i].extra) + extra)
                                                 items[i].discount = checkFloat(items[i].discountType==='%'?items[i].amountStart/100*items[i].discount:checkFloat(items[i].discount) + discount)
                                                 items[i].amountEnd = checkFloat(items[i].amountStart + items[i].extra - items[i].discount)
-                                                items[i].nds = checkFloat(items[i].amountEnd/allPrecent*ndsTypes[items[i].ndsType])
-                                                items[i].nsp = checkFloat(items[i].amountEnd/allPrecent*nspTypes[items[i].nspType])
-                                                if(typePayment==='Безналичный'&&type==='Продажа'&&nspTypes[items[i].nspType]){
+                                                items[i].nds = checkFloat(items[i].amountEnd/allPrecent*checkFloat(ndsTypesValue[items[i].ndsType]))
+                                                items[i].nsp = checkFloat(items[i].amountEnd/allPrecent*checkFloat(nspTypesValue[items[i].nspType]))
+                                                if(typePayment==='Безналичный'&&type==='Продажа'&&checkFloat(nspTypesValue[items[i].nspType])){
                                                     items[i].amountEnd = checkFloat(items[i].amountEnd - items[i].nsp)
                                                     items[i].nsp = 0
                                                 }

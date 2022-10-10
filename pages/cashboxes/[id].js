@@ -39,8 +39,8 @@ const Cashboxes = React.memo((props) => {
     let searchTimeOut = useRef(null);
     const initialRender = useRef(true);
     const getList = async ()=>{
-        setList(await getCashboxes({legalObject: router.query.id, skip: 0, search, ...branch?{branch: branch._id}:{}, filter}))
-        setCount(await getCashboxesCount({legalObject: router.query.id, search, ...branch?{branch: branch._id}:{}, filter}));
+        setList(await getCashboxes({legalObject: router.query.id, del: !!router.query.del, skip: 0, search, ...branch?{branch: branch._id}:{}, filter}))
+        setCount(await getCashboxesCount({legalObject: router.query.id, del: !!router.query.del, search, ...branch?{branch: branch._id}:{}, filter}));
         (document.getElementsByClassName('App-body'))[0].scroll({top: 0, left: 0, behavior: 'instant' });
         forceCheck();
         paginationWork.current = true
@@ -69,7 +69,7 @@ const Cashboxes = React.memo((props) => {
     let paginationWork = useRef(true);
     const checkPagination = async()=>{
         if(paginationWork.current){
-            let addedList = await getCashboxes({skip: list.length, search, legalObject: router.query.id, ...branch?{branch: branch._id}:{}, filter})
+            let addedList = await getCashboxes({skip: list.length, del: !!router.query.del, search, legalObject: router.query.id, ...branch?{branch: branch._id}:{}, filter})
             if(addedList.length>0)
                 setList([...list, ...addedList])
             else
@@ -125,8 +125,8 @@ Cashboxes.getInitialProps = async function(ctx) {
     ctx.store.getState().app.legalObject = {_id: ctx.query.id}
     return {
         data: {
-            list: await getCashboxes({skip: 0, legalObject: ctx.query.id, ...ctx.store.getState().app.branch?{branch: ctx.store.getState().app.branch._id}:{}}, ctx.req?await getClientGqlSsr(ctx.req):undefined),
-            count: await getCashboxesCount({legalObject: ctx.query.id, ...ctx.store.getState().app.branch?{branch: ctx.store.getState().app.branch._id}:{}}, ctx.req?await getClientGqlSsr(ctx.req):undefined),
+            list: await getCashboxes({skip: 0, del: !!ctx.query.del, legalObject: ctx.query.id, ...ctx.store.getState().app.branch?{branch: ctx.store.getState().app.branch._id}:{}}, ctx.req?await getClientGqlSsr(ctx.req):undefined),
+            count: await getCashboxesCount({legalObject: ctx.query.id, del: !!ctx.query.del, ...ctx.store.getState().app.branch?{branch: ctx.store.getState().app.branch._id}:{}}, ctx.req?await getClientGqlSsr(ctx.req):undefined),
         }
     };
 };

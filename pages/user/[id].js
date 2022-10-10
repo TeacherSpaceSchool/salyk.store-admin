@@ -649,18 +649,7 @@ const User = React.memo((props) => {
                                                 }
                                             </div>
                                             :
-                                            <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
-                                                <Button color='primary' onClick={()=>{
-                                                    const action = async() => {
-                                                        await restoreUser(router.query.id)
-                                                        Router.push(`/users/${legalObject?legalObject._id:'super'}`)
-                                                    }
-                                                    setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                                    showMiniDialog(true)
-                                                }}>
-                                                    Восстановить
-                                                </Button>
-                                            </div>
+                                            null
                                         :
                                         null
                                 }

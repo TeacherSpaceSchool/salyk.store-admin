@@ -121,6 +121,14 @@ const list = {
             role: ['admin', 'superadmin']
         },
     ],
+    trash: [
+        {
+            name: 'Кассы',
+            href: {pathname: '/cashboxes', query: {del: 1}},
+            as: `/cashboxes?del=1`,
+            role: ['admin', 'superadmin']
+        }
+    ],
     load: [
     ]
 }
@@ -166,6 +174,10 @@ const Statistic = React.memo((props) => {
                 for (let i = 0; i < list.load.length; i++) {
                     if (list.load[i].name.toLowerCase().includes(search.toLowerCase()) && list.load[i].role.includes(profile.role))
                         showList.load.push(list.load[i])
+                }
+                for (let i = 0; i < list.trash.length; i++) {
+                    if (list.trash[i].name.toLowerCase().includes(search.toLowerCase()) && list.trash[i].role.includes(profile.role))
+                        showList.trash.push(list.trash[i])
                 }
                 setShowList({...showList})
             }
@@ -314,6 +326,32 @@ const Statistic = React.memo((props) => {
                         :
                         null
                 }
+                {
+                    showList.trash&&showList.trash.length>0?
+                        <Accordion expanded={expanded === 'trash'} onChange={handleChange('trash')} style={{width: 'calc(100% - 20px)', margin: 10, background: '#F5F5F5'}}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls='panel1a-content'
+                                id='panel1a-header'
+                                style={{background: '#fff'}}
+                            >
+                                <h3>Корзина</h3>
+                            </AccordionSummary>
+                            <AccordionDetails className={classes.page} >
+                                {showList.trash.map((element, idx)=>
+                                    <Link key={`trash${idx}`} href={element.href} as={element.as}>
+                                        <Card className={classes.statisticButton}>
+                                            <h3>
+                                                {element.name}
+                                            </h3>
+                                        </Card>
+                                    </Link>
+                                )}
+                            </AccordionDetails>
+                        </Accordion>
+                        :
+                        null
+                }
             </div>
         </App>
     )
@@ -334,7 +372,12 @@ Statistic.getInitialProps = async function(ctx) {
         tools: [],
         integrate: [],
         load: [],
-        statisticSalykStore: []
+        statisticSalykStore: [],
+        trash: []
+    }
+    for(let i=0; i<list.trash.length; i++){
+        if(list.trash[i].role.includes(ctx.store.getState().user.profile.role) && ctx.store.getState().user.profile.statistic)
+            showList.trash.push(list.trash[i])
     }
     for(let i=0; i<list.statisticSalykStore.length; i++){
         if(list.statisticSalykStore[i].role.includes(ctx.store.getState().user.profile.role) && (ctx.store.getState().user.profile.statistic||ctx.store.getState().user.profile.role==='агент'))

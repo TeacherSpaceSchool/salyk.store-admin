@@ -21,6 +21,7 @@ import SyncOff from '@material-ui/icons/SyncDisabled';
 import ViewText from '../../components/dialog/ViewText';
 const Pdf = dynamic(import('react-to-pdf'), { ssr: false });
 import Link from 'next/link';
+import {taxSystems} from '../../src/const'
 
 const Receipt = React.memo((props) => {
     const classes = reportStyle();
@@ -31,6 +32,18 @@ const Receipt = React.memo((props) => {
     const { setPrinter } = props.appActions;
     const router = useRouter()
     const receiptRef = useRef(null);
+    let [syncData] = useState(
+        data.object?
+            data.object.syncData?
+                JSON.parse(data.object.syncData)
+                :
+                data.object.cashbox.registrationNumber?
+                    {fields: {1037: data.object.cashbox.registrationNumber, 1041: data.object.cashbox.fn}}
+                    :
+                    null
+            :
+            null
+    );
     let [readyPrint, setReadyPrint] = useState(data.list);
     useEffect(() => {
         setReadyPrint(process.browser&&receiptRef.current&&data.object)
@@ -108,16 +121,16 @@ const Receipt = React.memo((props) => {
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {`${pdDDMMYYHHMM(data.object.start)}${data.object.end?` - ${pdDDMMYYHHMM(data.object.end)}`:''}`}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{`${data.object.type}-Отчет №${data.object.number}`}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>НР: {data.object.legalObject.rateTaxe}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>НР: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
                                     <Link href='/cashbox/[id]' as={`/cashbox/${data.object.cashbox._id}`}>
                                         <a>
-                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>РНМ: {data.object.cashbox.rnmNumber}</span></div>
+                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Касса: {data.object.cashbox.name}</span></div>
                                         </a>
                                     </Link>
                                     :
-                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>РНМ: {data.object.cashbox.rnmNumber}</span></div>
+                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Касса: {data.object.cashbox.name}</span></div>
                             }
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
@@ -207,9 +220,33 @@ const Receipt = React.memo((props) => {
                             }
                             {
                                 data.object.syncMsg!=='Фискальный режим отключен'?
+                                    <>
                                     <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>*********************ФП*********************</span></p>
+                                    {
+                                        syncData?
+                                            <>
+                                            <div style={{textAlign: 'right', marginBottom: 5}}>РН ККМ: {syncData.fields[1037]}</div>
+                                            <div style={{textAlign: 'right', marginBottom: 5}}>ФМ: {syncData.fields[1041]}</div>
+                                            {
+                                                syncData.fields[1040]?
+                                                    <div style={{textAlign: 'right', marginBottom: 5}}>ФД: {syncData.fields[1040]}</div>
+                                                    :
+                                                    null
+                                            }
+                                            {
+                                                syncData.fields[1077]?
+                                                    <div style={{textAlign: 'right', marginBottom: 5}}>ФПД: {parseInt(syncData.fields[1077], 16)}</div>
+                                                    :
+                                                    null
+                                            }
+                                            <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>**********************************************</span></p>
+                                            </>
+                                            :
+                                            null
+                                    }
+                                    </>
                                     :
-                                    null
+                                    <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>**********************************************</span></p>
                             }
                             <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>ККМ SALYK.STORE v1.0</span></p>
                         </div>
@@ -230,8 +267,8 @@ const Receipt = React.memo((props) => {
                                             {message: `Дата: ${`${pdDDMMYYHHMM(data.object.start)}${data.object.end?` - ${pdDDMMYYHHMM(data.object.end)}`:''}`}`, align: 'left'},
                                             {message: `${data.object.type}-Отчет №${data.object.number}`, align: 'left'},
                                             {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
-                                            {message: `НР: ${data.object.legalObject.rateTaxe}`, align: 'left'},
-                                            {message: `РНМ: ${data.object.cashbox.rnmNumber}`, align: 'left'},
+                                            {message: `НР: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
+                                            {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
                                             {message: `Смена №${data.object.workShift.number}`, align: 'left'},
                                             ...['admin', 'superadmin', 'управляющий'].includes(profile.role)?[
                                                 {message: '********************************', align: 'center'},
@@ -299,9 +336,41 @@ const Receipt = React.memo((props) => {
                                                 {message: `  Возврат покупки`, align: 'left'},
                                                 {message: `Сумма: ${data.object.returnedBuyAll}`, align: 'right'},
                                             ]:[],
-                                            ...data.object.syncMsg!=='Фискальный режим отключен'?[{message: '***************ФП***************', align: 'center', bold: true}]:[],
-                                            {message: 'ККМ SALYK.STORE v1.0', align: 'center', bold: true}
-                                        ]
+                                          ]
+                                        if(data.object.syncMsg!=='Фискальный режим отключен') {
+                                            _data.push({
+                                                message: '***************ФП***************',
+                                                align: 'center',
+                                                bold: true
+                                            })
+                                            if (syncData) {
+                                                _data.push({
+                                                    message: `РН ККМ: ${syncData.fields[1037]}`,
+                                                    align: 'right'
+                                                })
+                                                _data.push({
+                                                    message: `ФМ: ${syncData.fields[1041]}`,
+                                                    align: 'right'
+                                                })
+                                                if(syncData.fields[1040])
+                                                    _data.push({
+                                                        message: `ФД: ${syncData.fields[1040]}`,
+                                                        align: 'right'
+                                                    })
+                                                if(syncData.fields[1077])
+                                                    _data.push({
+                                                        message: `ФПД: ${syncData.fields[parseInt(syncData.fields[1077], 16)]}`,
+                                                        align: 'right'
+                                                    })
+                                                _data.push({
+                                                    message: '********************************',
+                                                    align: 'center'
+                                                })
+                                            }
+                                        }
+                                        else
+                                            _data.push({message: '********************************', align: 'center'})
+                                        _data.push({message: 'ККМ SALYK.STORE v1.0', align: 'center', bold: true})
                                         printEsPosData(_printer, _data)
                                     }
                                     else {

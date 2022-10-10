@@ -14,11 +14,12 @@ const SetBranch =  React.memo(
     (props) =>{
         const { classes } = props;
         const { setBranch } = props.appActions;
-        const { legalObject } = props.app;
+        const { legalObject, isMobileApp } = props.app;
         const { showMiniDialog } = props.mini_dialogActions;
         let [branchChange, setBranchChange] = useState(undefined);
+        const width = isMobileApp? (window.innerWidth-112) : 500
         return (
-            <div className={classes.main}>
+            <div className={classes.main} style={{width: width}}>
                 <AutocomplectOnline setElement={setBranchChange} getElements={async (search)=>{return await getBranchs({search, legalObject: legalObject._id})}} minLength={0} label={'объект'}/>
                 <br/>
                 <div>

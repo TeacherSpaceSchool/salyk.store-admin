@@ -9,11 +9,13 @@ import Button from '@material-ui/core/Button';
 import dialogContentStyle from '../../src/styleMUI/dialogContent'
 import * as snackbarActions from '../../redux/actions/snackbar'
 import {getSale} from '../../src/gql/sale'
+import AutocomplectOnline from '../app/AutocomplectOnline'
+import {getCashboxes} from '../../src/gql/cashbox'
 
 const GetSale =  React.memo(
     (props) =>{
         const { classes, type, setSale } = props;
-        let [rnmNumber, setRnmNumber] = useState('');
+        let [cashbox, setCashbox] = useState(null);
         let [number, setNumber] = useState('');
         const { isMobileApp } = props.app;
         const { showMiniDialog } = props.mini_dialogActions;
@@ -21,15 +23,9 @@ const GetSale =  React.memo(
         const { showSnackBar } = props.snackbarActions;
         return (
             <div className={classes.main}>
-                <TextField
-                    style={{width}}
-                    label='РНМ'
-                    className={classes.textField}
-                    margin='normal'
-                    value={rnmNumber}
-                    error={!rnmNumber}
-                    onChange={(event)=>setRnmNumber(event.target.value)}
-                />
+                <AutocomplectOnline error={!cashbox} setElement={setCashbox} getElements={async (search)=>{
+                    return await getCashboxes({all: true, search})
+                }} label={'кассу/номер ФМ'} minLength={0}/>
                 <TextField
                     style={{width}}
                     label='Номер чека'
@@ -42,8 +38,8 @@ const GetSale =  React.memo(
                 <br/>
                 <div>
                     <Button variant='contained' color='primary' onClick={async()=>{
-                        if(rnmNumber&&number) {
-                            let sale = await getSale({_id: 'newSale', type, rnmNumber, number})
+                        if(cashbox&&number) {
+                            let sale = await getSale({_id: 'newSale', type, cashbox: cashbox._id, number})
                             if(sale) {
                                 setSale(sale)
                                 showMiniDialog(false)

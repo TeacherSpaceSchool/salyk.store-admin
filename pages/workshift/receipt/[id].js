@@ -1,23 +1,23 @@
-import initialApp from '../../src/initialApp'
+import initialApp from '../../../src/initialApp'
 import Head from 'next/head';
 import React, {useRef, useState, useEffect} from 'react';
-import App from '../../layouts/App';
+import App from '../../../layouts/App';
 import { connect } from 'react-redux'
-import {getWithdrawHistory} from '../../src/gql/withdrawHistory'
-import saleStyle from '../../src/styleMUI/list'
+import {getWorkShift} from '../../../src/gql/workShift'
+import saleStyle from '../../../src/styleMUI/list'
 import { bindActionCreators } from 'redux'
-import * as appActions from '../../redux/actions/app'
+import * as appActions from '../../../redux/actions/app'
 import { useRouter } from 'next/router'
 import Router from 'next/router'
-import { urlMain } from '../../redux/constants/other'
-import { getClientGqlSsr } from '../../src/getClientGQL'
-import {pdDDMMYYHHMM} from '../../src/lib'
-import { connectPrinterByBluetooth, printEsPosData } from '../../src/printer'
+import { urlMain } from '../../../redux/constants/other'
+import { getClientGqlSsr } from '../../../src/getClientGQL'
+import {pdDDMMYYHHMM} from '../../../src/lib'
+import { connectPrinterByBluetooth, printEsPosData } from '../../../src/printer'
 import Button from '@material-ui/core/Button';
 import dynamic from 'next/dynamic'
 const Pdf = dynamic(import('react-to-pdf'), { ssr: false });
 import Link from 'next/link';
-import {taxSystems} from '../../src/const'
+import {taxSystems} from '../../../src/const'
 
 const Receipt = React.memo((props) => {
     const classes = saleStyle();
@@ -27,6 +27,7 @@ const Receipt = React.memo((props) => {
     const { setPrinter } = props.appActions;
     const router = useRouter()
     const receiptRef = useRef(null);
+    let [syncData] = useState(data.object&&data.object.syncData?JSON.parse(data.object.syncData):null);
     let [readyPrint, setReadyPrint] = useState(data.list);
     useEffect(() => {
         setReadyPrint(process.browser&&receiptRef.current&&data.object)
@@ -40,8 +41,8 @@ const Receipt = React.memo((props) => {
                 <meta property='og:description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:type' content='website' />
                 <meta property='og:image' content={`${urlMain}/512x512.png`} />
-                <meta property='og:url' content={`${urlMain}/withdrawhistory/${router.query.id}`} />
-                <link rel='canonical' href={`${urlMain}/withdrawhistory/${router.query.id}`}/>
+                <meta property='og:url' content={`${urlMain}/workshift/receipt/${router.query.id}`} />
+                <link rel='canonical' href={`${urlMain}/workshift/receipt/${router.query.id}`}/>
             </Head>
             {
                 data.object!==null?
@@ -76,7 +77,7 @@ const Receipt = React.memo((props) => {
                                     <div style={{textAlign: 'center', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
                             }
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(data.object.createdAt)}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Операция: Изъятие из кассы</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Операция: Открытие смены</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК №{data.object.number}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>НР: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
@@ -92,13 +93,13 @@ const Receipt = React.memo((props) => {
                             }
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
-                                    <Link href='/workshift/[id]' as={`/workshift/${data.object.workShift._id}`}>
+                                    <Link href='/workshift/[id]' as={`/workshift/${data.object._id}`}>
                                         <a>
-                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Смена №{data.object.workShift.number}</span></div>
+                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Смена №{data.object.number}</span></div>
                                         </a>
                                     </Link>
                                     :
-                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Смена №{data.object.workShift.number}</span></div>
+                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Смена №{data.object.number}</span></div>
                             }
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
@@ -110,27 +111,19 @@ const Receipt = React.memo((props) => {
                                     :
                                     <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Кассир: {data.object.cashier.name}</span></div>
                             }
-                            <div style={{textAlign: 'center', height: 12, marginTop: 10, marginBottom: 10}}>**********************************************</div>
-                            <div style={{textAlign: 'right', marginBottom: 5, fontWeight: 'bold'}}>ИТОГО: {data.object.amount}</div>
-                            {
-                                data.object.comment?
-                                    <div style={{textAlign: 'right', marginBottom: 5}}>Комментарий: {data.object.comment}</div>
-                                    :
-                                    null
-                            }
                             {
                                 data.object.syncMsg!=='Фискальный режим отключен'?
                                     <>
                                     <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>*********************ФП*********************</span></p>
                                     {
-                                        data.object.cashbox.registrationNumber?
-                                            <div style={{textAlign: 'right', marginBottom: 5}}>РН ККМ: {data.object.cashbox.registrationNumber}</div>
-                                            :
-                                            null
-                                    }
-                                    {
-                                        data.object.cashbox.fn?
-                                            <div style={{textAlign: 'right', marginBottom: 5}}>ФМ: {data.object.cashbox.fn}</div>
+                                        syncData?
+                                            <>
+                                            <div style={{textAlign: 'right', marginBottom: 5}}>РН ККМ: {syncData.fields[1037]}</div>
+                                            <div style={{textAlign: 'right', marginBottom: 5}}>ФМ: {syncData.fields[1041]}</div>
+                                            <div style={{textAlign: 'right', marginBottom: 5}}>ФД: {syncData.fields[1040]}</div>
+                                            <div style={{textAlign: 'right', marginBottom: 5}}>ФПД: {parseInt(syncData.fields[1077], 16)}</div>
+                                            <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>**********************************************</span></p>
+                                            </>
                                             :
                                             null
                                     }
@@ -156,24 +149,42 @@ const Receipt = React.memo((props) => {
                                             {message: data.object.legalObject.name, align: 'center'},
                                             {message: `${data.object.branch.name}, ${data.object.branch.address}`, align: 'center'},
                                             {message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`, align: 'left'},
-                                            {message: 'Операция: Изъятие из кассы', align: 'left'},
+                                            {message: 'Операция: Открытие смены', align: 'left'},
                                             {message: `ЧЕК №${data.object.number}`, align: 'left'},
                                             {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
                                             {message: `НР: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
                                             {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
-                                            {message: `Смена №${data.object.workShift.number}`, align: 'left'},
+                                            {message: `Смена №${data.object.number}`, align: 'left'},
                                             {message: `Кассир: ${data.object.cashier.name}`, align: 'left'},
-                                            {message: '********************************', align: 'center'},
-                                            {message: `ИТОГО: ${data.object.amountEnd}`, align: 'right', bold: true}
                                         ]
-                                        if(data.object.comment)
-                                            _data.push({message: `Комментарий: ${data.object.comment}`, align: 'right'})
                                         if(data.object.syncMsg!=='Фискальный режим отключен') {
-                                            _data.push({message: '***************ФП***************', align: 'center', bold: true})
-                                                if(data.object.cashbox.registrationNumber)
-                                                    _data.push({message: `РН ККМ: ${data.object.cashbox.registrationNumber}`, align: 'center', bold: true})
-                                            if(data.object.cashbox.fn)
-                                                _data.push({message: `ФМ: ${data.object.cashbox.fn}`, align: 'center', bold: true})
+                                            _data.push({
+                                                message: '***************ФП***************',
+                                                align: 'center',
+                                                bold: true
+                                            })
+                                            if (syncData) {
+                                                _data.push({
+                                                    message: `РН ККМ: ${syncData.fields[1037]}`,
+                                                    align: 'right'
+                                                })
+                                                _data.push({
+                                                    message: `ФМ: ${syncData.fields[1041]}`,
+                                                    align: 'right'
+                                                })
+                                                _data.push({
+                                                    message: `ФД: ${syncData.fields[1040]}`,
+                                                    align: 'right'
+                                                })
+                                                _data.push({
+                                                    message: `ФПД: ${syncData.fields[parseInt(syncData.fields[1077], 16)]}`,
+                                                    align: 'right'
+                                                })
+                                                _data.push({
+                                                    message: '********************************',
+                                                    align: 'center'
+                                                })
+                                            }
                                         }
                                         else
                                             _data.push({message: '********************************', align: 'center'})
@@ -217,7 +228,7 @@ Receipt.getInitialProps = async function(ctx) {
             ctx.res.end()
         } else
             Router.push('/')
-    let object = await getWithdrawHistory({_id: ctx.query.id}, ctx.req?await getClientGqlSsr(ctx.req):undefined)
+    let object = await getWorkShift({_id: ctx.query.id}, ctx.req?await getClientGqlSsr(ctx.req):undefined)
     return {
         data: {
             object

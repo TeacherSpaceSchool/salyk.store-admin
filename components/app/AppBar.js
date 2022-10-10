@@ -383,7 +383,7 @@ const MyAppBar = React.memo((props) => {
                                     [
                                         <MenuItem key='CashboxMenu' onClick={handleMenuCashbox} style={{background: cashbox?'rgba(0, 0, 0, 0.1)':'transparent'}}>
                                             <div style={{display: 'flex'}}>
-                                                <PointofsaleIcon/>&nbsp;{cashbox?cashbox.name:'Касса/РНМ'}
+                                                <PointofsaleIcon/>&nbsp;{cashbox?cashbox.name:'Касса'}
                                             </div>
                                         </MenuItem>,
                                         <Menu
@@ -402,7 +402,7 @@ const MyAppBar = React.memo((props) => {
                                             onClose={handleCloseCashbox}
                                         >
                                             <MenuItem key='onCashbox' style={{background: cashbox?'rgba(0, 0, 0, 0.1)': '#fff'}} onClick={async ()=>{setMiniDialog('Кассы', <SetCashbox/>);showMiniDialog(true);handleCloseCashbox();handleCloseMobileMenu();}}>
-                                                По кассе/РНМ
+                                                По кассе
                                             </MenuItem>
                                             <MenuItem key='allCashbox' style={{background: !cashbox?'rgba(0, 0, 0, 0.1)': '#fff'}} onClick={()=>{setCashbox(undefined);handleCloseCashbox();handleCloseMobileMenu();}}>
                                                 Все
@@ -660,7 +660,7 @@ const MyAppBar = React.memo((props) => {
                             }
                             {legalObject&&filterShow&&filterShow.cashbox&&['superadmin', 'admin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
                                 <>
-                                <Tooltip title='Касса/РНМ'>
+                                <Tooltip title='Касса'>
                                     <IconButton
                                         style={{background: cashbox?'rgba(255, 255, 255, 0.2)':'transparent'}}
                                         aria-owns={openCashbox ? 'menu-appbar' : undefined}
@@ -687,7 +687,7 @@ const MyAppBar = React.memo((props) => {
                                     onClose={handleCloseCashbox}
                                 >
                                     <MenuItem style={{background: cashbox?'rgba(0, 0, 0, 0.1)': '#fff'}} onClick={async ()=>{setMiniDialog('Кассы', <SetCashbox/>);showMiniDialog(true);handleCloseCashbox();}}>
-                                        {cashbox?cashbox.name:'По кассе/РНМ'}
+                                        {cashbox?cashbox.name:'По кассе'}
                                     </MenuItem>
                                     <MenuItem style={{background: !cashbox?'rgba(0, 0, 0, 0.1)': '#fff'}} onClick={()=>{setCashbox(undefined);handleCloseCashbox();}}>
                                         Все

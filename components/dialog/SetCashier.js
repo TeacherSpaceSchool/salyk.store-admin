@@ -14,11 +14,12 @@ const SetCashier =  React.memo(
     (props) =>{
         const { classes } = props;
         const { setCashier } = props.appActions;
-        const { legalObject, branch } = props.app;
+        const { legalObject, branch, isMobileApp } = props.app;
         const { showMiniDialog } = props.mini_dialogActions;
         let [cashierChange, setCashierChange] = useState(undefined);
+        const width = isMobileApp? (window.innerWidth-112) : 500
         return (
-            <div className={classes.main}>
+            <div className={classes.main} style={{width: width}}>
                 <AutocomplectOnline setElement={setCashierChange} getElements={async (search)=>{return await getUsers({search, legalObject: legalObject._id, ...branch?{branch: branch._id}:{}})}} label={'кассира'}/>
                 <br/>
                 <div>

@@ -68,7 +68,7 @@ const AutocomplectOnline = React.memo((props) => {
             inputValue={inputValue}
             className={classes.input}
             options={elements}
-            getOptionLabel={option => `${option.name?option.name:option.number}${option.rnmNumber?`/${option.rnmNumber}`:''}`}
+            getOptionLabel={option => <div style={{wordBreak: 'break-all'}}>{`${option.name?option.name:option.number}${option.rnmNumber?`/${option.rnmNumber}`:''}${option.fn?`/${option.fn}`:''}`}</div>}
             onChange={(event, newValue) => {
                 focus.current = false
                 if(dialogAddElement&&typeof newValue === 'string') {

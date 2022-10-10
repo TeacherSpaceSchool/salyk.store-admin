@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import {getCashbox, _setCashbox, addCashbox, deleteCashbox, restoreCashbox, clearCashbox} from '../../src/gql/cashbox'
 import {generateReportX} from '../../src/gql/report'
 import {getLegalObjects} from '../../src/gql/legalObject'
+import {getFns} from '../../src/gql/kkm-2.0'
 import cashboxStyle from '../../src/styleMUI/list'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -21,13 +22,14 @@ import TextField from '@material-ui/core/TextField';
 import Confirmation from '../../components/dialog/Confirmation'
 import { urlMain } from '../../redux/constants/other'
 import { getClientGqlSsr } from '../../src/getClientGQL'
-import { pdDDMMYYHHMM } from '../../src/lib'
+import { pdDDMMYYHHMM, pdDDMMYYYY } from '../../src/lib'
 import AutocomplectOnline from '../../components/app/AutocomplectOnline'
 import {getBranchs} from '../../src/gql/branch';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Link from 'next/link';
 import History from '../../components/dialog/History';
+import SetFn from '../../components/dialog/SetFn';
 import HistoryIcon from '@material-ui/icons/History';
 import SyncOn from '@material-ui/icons/Sync';
 import SyncOff from '@material-ui/icons/SyncDisabled';
@@ -41,6 +43,7 @@ const Cashbox = React.memo((props) => {
     const { showSnackBar } = props.snackbarActions;
     const { setCashbox } = props.appActions;
     let [name, setName] = useState(data.object?data.object.name:'');
+    let [fn, setFn] = useState(data.object&&data.object.fn?data.object.fn:'');
     let [legalObject, setLegalObject] = useState(data.object?data.object.legalObject:undefined);
     let [branch, setBranch] = useState(data.object?data.object.branch:undefined);
     const { setMiniDialog, showMiniDialog } = props.mini_dialogActions;
@@ -52,6 +55,14 @@ const Cashbox = React.memo((props) => {
     }
     let handleCloseQuick = () => {
         setAnchorElQuick(null);
+    }
+    const [anchorElReport, setAnchorElReport] = useState(null);
+    const openReport = Boolean(anchorElReport);
+    let handleMenuReport = (event) => {
+        setAnchorElReport(event.currentTarget);
+    }
+    let handleCloseReport = () => {
+        setAnchorElReport(null);
     }
     return (
         <App pageName={data.object!==null?router.query.id==='new'?'Добавить':data.object.name:'Ничего не найдено'}>
@@ -187,7 +198,10 @@ const Cashbox = React.memo((props) => {
                                 router.query.id==='new'?
                                     <AutocomplectOnline
                                         error={!legalObject}
-                                        setElement={setLegalObject}
+                                        setElement={(legalObject)=>{
+                                            setFn('')
+                                            setLegalObject(legalObject)
+                                        }}
                                         getElements={async (search)=>{return await getLegalObjects({search})}}
                                         label={'налогоплательщика'}
                                     />
@@ -210,7 +224,66 @@ const Cashbox = React.memo((props) => {
                             null
                         }
                         {
-                            router.query.id!=='new'?
+                            legalObject&&!data.object.fn?
+                                <TextField
+                                    label='Номер ФМ'
+                                    error={!fn}
+                                    value={fn}
+                                    className={classes.input}
+                                    onClick={async ()=>{
+                                        let fns = await getFns(legalObject._id)
+                                        fns = fns.filter(fn=>fn.status==='FREE')
+                                        setMiniDialog('Номер ФМ', <SetFn _id={legalObject._id} fns={fns} setFn={setFn}/>)
+                                        showMiniDialog(true)
+                                    }}
+                                    inputProps = {{
+                                        readOnly: true
+                                    }}
+                                />
+                                :
+                                null
+                        }
+                        {
+                            data.object.fn?
+                                <div className={classes.row}>
+                                    <div className={classes.nameField}>
+                                        Номер ФМ:&nbsp;
+                                    </div>
+                                    <div className={classes.value}>
+                                        {data.object.fn}
+                                    </div>
+                                </div>
+                                :
+                                null
+                        }
+                        {
+                            data.object.registrationNumber?
+                                <div className={classes.row}>
+                                    <div className={classes.nameField}>
+                                        Номер регистрации:&nbsp;
+                                    </div>
+                                    <div className={classes.value}>
+                                        {data.object.registrationNumber}
+                                    </div>
+                                </div>
+                                :
+                                null
+                        }
+                        {
+                            data.object.fnExpiresAt?
+                                <div className={classes.row}>
+                                    <div className={classes.nameField}>
+                                        Истечение регистрации ФМ:&nbsp;
+                                    </div>
+                                    <div className={classes.value} style={{color: data.object.fnExpiresAt&&data.object.fnExpiresAt>=new Date()?'green':'red'}}>
+                                        {pdDDMMYYYY(data.object.fnExpiresAt)}
+                                    </div>
+                                </div>
+                                :
+                                null
+                        }
+                        {
+                            data.object.rnmNumber?
                                 <div className={classes.row}>
                                     <div className={classes.nameField}>
                                         РНМ:&nbsp;
@@ -335,6 +408,45 @@ const Cashbox = React.memo((props) => {
                                 !data.object.del?
                                     <>
                                     {
+                                        router.query.id!=='new'&&data.object.syncData&&data.object.fnExpiresAt?
+                                            <>
+                                            <Menu
+                                                key='Report'
+                                                id='menu-appbar'
+                                                anchorEl={anchorElReport}
+                                                anchorOrigin={{
+                                                    vertical: 'bottom',
+                                                    horizontal: 'right',
+                                                }}
+                                                transformOrigin={{
+                                                    vertical: 'bottom',
+                                                    horizontal: 'right',
+                                                }}
+                                                open={openReport}
+                                                onClose={handleCloseReport}
+                                            >
+                                                {data.object.syncData.map((element, idx)=>
+                                                    <Link href={{pathname: '/cashbox/receipt/[id]', query: {idx: idx}}} as={`/cashbox/receipt/${router.query.id}?idx=${idx}`}>
+                                                        <MenuItem key={`syncData${idx}`}>{
+                                                            element[0]==='registerCashbox'?
+                                                                `Регистрация №${idx+1}`
+                                                                :
+                                                                element[0]==='reregisterCashbox'?
+                                                                    `Изменении №${idx+1}`
+                                                                    :
+                                                                    `Закрытие №${idx+1}`
+                                                        }</MenuItem>
+                                                    </Link>
+                                                )}
+                                            </Menu>
+                                            <Button color='primary' onClick={handleMenuReport}>
+                                                Чеки
+                                            </Button>
+                                            </>
+                                            :
+                                            null
+                                    }
+                                    {
                                         router.query.id!=='new'&&data.object.presentCashier&&(['управляющий', 'супервайзер'].includes(profile.role)||['admin', 'superadmin'].includes(profile.role)&&profile.add)?
                                             <Button color='primary' onClick={async()=>{
                                                 let report = await generateReportX({cashbox: router.query.id})
@@ -369,10 +481,10 @@ const Cashbox = React.memo((props) => {
                                     {
                                         profile.add?
                                             <Button color='primary' onClick={()=>{
-                                                if(name.length&&legalObject&&branch) {
+                                                if(name.length&&legalObject&&branch&&fn) {
                                                     const action = async() => {
                                                         if(router.query.id==='new') {
-                                                            let res = await addCashbox({name, legalObject: legalObject._id, branch: branch._id})
+                                                            let res = await addCashbox({fn, name, legalObject: legalObject._id, branch: branch._id})
                                                             Router.push(`/cashbox/${res}`)
                                                             showSnackBar('Успешно', 'success')
                                                         }
@@ -398,8 +510,11 @@ const Cashbox = React.memo((props) => {
                                         ['admin', 'superadmin'].includes(profile.role)&&router.query.id!=='new'&&!data.object.presentCashier&&profile.add?
                                             <Button color='secondary' onClick={()=>{
                                                 const action = async() => {
-                                                    await deleteCashbox(router.query.id)
-                                                    Router.push(`/cashboxes/${legalObject._id}`)
+                                                    let res = await deleteCashbox(router.query.id)
+                                                    if(res==='OK')
+                                                        Router.push(`/cashboxes/${legalObject._id}`)
+                                                    else
+                                                        showSnackBar('Ошибка', 'error')
                                                 }
                                                 setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
                                                 showMiniDialog(true)
@@ -411,16 +526,7 @@ const Cashbox = React.memo((props) => {
                                     }
                                     </>
                                     :
-                                    <Button color='primary' onClick={()=>{
-                                        const action = async() => {
-                                            await restoreCashbox(router.query.id)
-                                            Router.push(`/cashboxes/${legalObject?legalObject._id:'super'}`)
-                                        }
-                                        setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                        showMiniDialog(true)
-                                    }}>
-                                        Восстановить
-                                    </Button>
+                                    null
                             }
                         </div>
                         </>
@@ -446,7 +552,7 @@ Cashbox.getInitialProps = async function(ctx) {
     return {
         data: {
             object:ctx.query.id!=='new'?await getCashbox({_id: ctx.query.id}, ctx.req?await getClientGqlSsr(ctx.req):undefined):
-                {name: '', legalObject: undefined, branch: undefined}
+                {name: '', legalObject: undefined, branch: undefined, fn: ''}
         }
     };
 };

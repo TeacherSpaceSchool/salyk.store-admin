@@ -470,7 +470,11 @@ const WorkShift = React.memo((props) => {
                                                    :
                                                    null
                                            }
-
+                                           <Link href='/workshift/receipt/[id]' as={`/workshift/receipt/${router.query.id}`}>
+                                               <Button color='primary' className={classes.button}>
+                                                   Чек
+                                               </Button>
+                                           </Link>
                                            {
                                                profile.role!=='admin'||profile.add?
                                                    <Button color='primary' onClick={async()=>{
@@ -506,7 +510,11 @@ const WorkShift = React.memo((props) => {
                                    }
                                    </>
                                    :
-                                   null
+                                   <Link href='/workshift/receipt/[id]' as={`/workshift/receipt/${router.query.id}`}>
+                                       <Button color='primary' className={classes.button}>
+                                           Чек
+                                       </Button>
+                                   </Link>
                            }
                        </div>
                        </>

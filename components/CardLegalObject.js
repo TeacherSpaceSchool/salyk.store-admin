@@ -80,24 +80,29 @@ const CardLegalObject = React.memo((props) => {
                                                 {element.address}
                                             </div>
                                         </div>
-                                        <div className={classes.row}>
-                                            <div className={classes.nameField}>
-                                                Телефон:&nbsp;
-                                            </div>
-                                            <div>
-                                                {element.phone.map((phone, idx)=>
-                                                    idx<4?
-                                                        <div key={`phone${idx}`} className={classes.value}>
-                                                            +996{phone}
-                                                        </div>
-                                                        :
-                                                        idx===4?
-                                                            '...'
-                                                            :
-                                                            null
-                                                )}
-                                            </div>
-                                        </div>
+                                        {
+                                            element.phone.length?
+                                                <div className={classes.row}>
+                                                    <div className={classes.nameField}>
+                                                        Телефон:&nbsp;
+                                                    </div>
+                                                    <div>
+                                                        {element.phone.map((phone, idx)=>
+                                                            idx<4?
+                                                                <div key={`phone${idx}`} className={classes.value}>
+                                                                    +996{phone}
+                                                                </div>
+                                                                :
+                                                                idx===4?
+                                                                    '...'
+                                                                    :
+                                                                    null
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                :
+                                                null
+                                        }
                                         </>
                                         :
                                         <div className={classes.row}>

@@ -1,6 +1,6 @@
 import initialApp from '../../src/initialApp'
 import Head from 'next/head';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import App from '../../layouts/App';
 import { connect } from 'react-redux'
 import {getBranch, _setBranch, addBranch, deleteBranch, restoreBranch} from '../../src/gql/branch'
@@ -12,10 +12,7 @@ import Button from '@material-ui/core/Button';
 import { bindActionCreators } from 'redux'
 import * as mini_dialogActions from '../../redux/actions/mini_dialog'
 import { useRouter } from 'next/router'
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import Router from 'next/router'
 import * as userActions from '../../redux/actions/user'
 import * as snackbarActions from '../../redux/actions/snackbar'
@@ -26,7 +23,7 @@ import dynamic from 'next/dynamic'
 const Geo = dynamic(import('../../components/dialog/Geo'), { ssr: false });
 import { urlMain } from '../../redux/constants/other'
 import { getClientGqlSsr } from '../../src/getClientGQL'
-import { ugnsTypes, bTypes, pTypes } from '../../src/const'
+import { ugnsTypes, bTypes, pTypes, calcItemAttributes } from '../../src/const'
 import { pdDDMMYYHHMM, cloneObject } from '../../src/lib'
 import AutocomplectOnline from '../../components/app/AutocomplectOnline'
 import Menu from '@material-ui/core/Menu';
@@ -37,6 +34,9 @@ import SyncOn from '@material-ui/icons/Sync';
 import SyncOff from '@material-ui/icons/SyncDisabled';
 import ViewText from '../../components/dialog/ViewText';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 const Branch = React.memo((props) => {
     const { profile } = props.user;
@@ -45,12 +45,21 @@ const Branch = React.memo((props) => {
     const { isMobileApp } = props.app;
     const { showSnackBar } = props.snackbarActions;
     const { setBranch } = props.appActions;
+    const initialRender = useRef(true);
     let [name, setName] = useState(data.object?data.object.name:'');
+    let [locality, setLocality] = useState(data.object?data.object.locality:'');
+    let [postalCode, setPostalCode] = useState(data.object?data.object.postalCode:'-');
+    let [route, setRoute] = useState(data.object?data.object.route:'');
+    let [streetNumber, setStreetNumber] = useState(data.object?data.object.streetNumber:'');
     let [address, setAddress] = useState(data.object?data.object.address:'');
-    let [geo, setGeo] = useState(data.object&&data.object.geo?cloneObject(data.object.geo):undefined);
-    let [ugns, setUgns] = useState(data.object?data.object.ugns:'');
-    let [bType, setBType] = useState(data.object?data.object.bType:'');
-    let [pType, setPType] = useState(data.object?data.object.pType:'');
+    let [geo, setGeo] = useState(data.object&&data.object.geo&&data.object.geo.length?cloneObject(data.object.geo):[42.8700000, 74.5900000]);
+    let [ugns_v2, setUgns_v2] = useState(data.object?ugnsTypes[data.object.ugns_v2]:'');
+    let [bType_v2, setBType_v2] = useState(data.object?bTypes[data.object.bType_v2]:'');
+    let [pType_v2, setPType_v2] = useState(data.object?pTypes[data.object.pType_v2]:'');
+    let [calcItemAttribute, setCalcItemAttribute] = useState(data.object?calcItemAttributes[data.object.calcItemAttribute]:'');
+    let handleCalcItemAttribute =  (event) => {
+        setCalcItemAttribute(event.target.value)
+    };
     let [legalObject, setLegalObject] = useState(data.object?data.object.legalObject:undefined);
     const { setMiniDialog, showMiniDialog, setFullDialog, showFullDialog } = props.mini_dialogActions;
     const router = useRouter()
@@ -62,6 +71,12 @@ const Branch = React.memo((props) => {
     let handleCloseQuick = () => {
         setAnchorElQuick(null);
     }
+    useEffect(()=>{
+        if(initialRender.current)
+            initialRender.current = false
+        else
+            setAddress(`${locality}, ${route}, ${streetNumber}`)
+    },[locality, route, streetNumber])
     return (
         <App pageName={data.object!==null?router.query.id==='new'?'Добавить':data.object.name:'Ничего не найдено'}>
             <Head>
@@ -222,59 +237,96 @@ const Branch = React.memo((props) => {
                                 error={!name}
                                 value={name}
                                 className={classes.input}
-                                onChange={(event)=>{setName(event.target.value)}}
+                                onChange={(event)=>{
+                                    setName(event.target.value)
+                                }}
                             />
                             <Autocomplete
                                 className={classes.input}
-                                options={Object.keys(ugnsTypes)}
-                                value={ugns}
+                                options={ugnsTypes.slice(1)}
+                                value={ugns_v2}
                                 getOptionLabel={option => option}
                                 noOptionsText='Ничего не найдено'
                                 onChange={(event, newValue) => {
-                                    setUgns(newValue)
+                                    setUgns_v2(newValue)
                                 }}
-                                renderInput={(params) => <TextField error={!ugns} {...params} label='Налоговый орган' variant='standard' />}
+                                renderInput={(params) => <TextField error={!ugns_v2} {...params} label='Налоговый орган' variant='standard' />}
+                            />
+                            <FormControl error={!calcItemAttribute} className={classes.input}>
+                                <InputLabel>Признаки предметов расчета</InputLabel>
+                                <Select value={calcItemAttribute} onChange={handleCalcItemAttribute}>
+                                    {calcItemAttributes.map((element)=>
+                                        <MenuItem key={element} value={element}>{element}</MenuItem>
+                                    )}
+                                </Select>
+                            </FormControl>
+                            <Autocomplete
+                                className={classes.input}
+                                options={pTypes.slice(1)}
+                                value={pType_v2}
+                                getOptionLabel={option => option}
+                                noOptionsText='Ничего не найдено'
+                                onChange={(event, newValue) => {
+                                    setPType_v2(newValue)
+                                }}
+                                renderInput={(params) => <TextField error={!pType_v2} {...params} label='Тип' variant='standard' />}
                             />
                             <Autocomplete
                                 className={classes.input}
-                                options={pTypes}
-                                value={pType}
+                                options={bTypes.slice(1)}
+                                value={bType_v2}
                                 getOptionLabel={option => option}
                                 noOptionsText='Ничего не найдено'
                                 onChange={(event, newValue) => {
-                                    setPType(newValue)
+                                    setBType_v2(newValue)
                                 }}
-                                renderInput={(params) => <TextField error={!pType} {...params} label='Тип' variant='standard' />}
-                            />
-                            <Autocomplete
-                                className={classes.input}
-                                options={bTypes}
-                                value={bType}
-                                getOptionLabel={option => option}
-                                noOptionsText='Ничего не найдено'
-                                onChange={(event, newValue) => {
-                                    setBType(newValue)
-                                }}
-                                renderInput={(params) => <TextField error={!bType} {...params} label='Тип бизнеса' variant='standard' />}
+                                renderInput={(params) => <TextField error={!bType_v2} {...params} label='Тип бизнеса' variant='standard' />}
                             />
                             <TextField
                                 error={!address}
                                 label='Адрес'
                                 value={address}
                                 className={classes.input}
-                                onChange={(event)=>{setAddress(event.target.value)}}
                             />
-                            <div className={classes.geo} style={{color: geo?'#10183D':'red'}} onClick={()=>{
+                            <div className={classes.geo} style={{color: geo&&geo[0]!==42.8700000&&geo[1]!==74.5900000?'#10183D':'red'}} onClick={()=>{
                                 setFullDialog('Геолокация', <Geo change={true} geo={geo} setAddressGeo={setGeo}/>)
                                 showFullDialog(true)
                             }}>
                                 {
-                                    geo?
+                                    geo&&geo[0]!==42.8700000&&geo[1]!==74.5900000?
                                         'Изменить геолокацию'
                                         :
                                         'Задайте геолокацию'
                                 }
                             </div>
+                            <TextField
+                                error={!locality}
+                                label='Населенный пункт'
+                                value={locality}
+                                className={classes.input}
+                                onChange={(event)=>{setLocality(event.target.value)}}
+                            />
+                            <TextField
+                                error={!route}
+                                label='Улица, проспект, микрорайон'
+                                value={route}
+                                className={classes.input}
+                                onChange={(event)=>{setRoute(event.target.value)}}
+                            />
+                            <TextField
+                                error={!streetNumber}
+                                label='Номер здания'
+                                value={streetNumber}
+                                className={classes.input}
+                                onChange={(event)=>{setStreetNumber(event.target.value)}}
+                            />
+                            <TextField
+                                error={!postalCode}
+                                label='Почтовый индекс'
+                                value={postalCode}
+                                className={classes.input}
+                                onChange={(event)=>{setPostalCode(event.target.value)}}
+                            />
                             </>
                             :
                             ['управляющий', 'супервайзер', 'admin', 'оператор'].includes(profile.role)?
@@ -322,6 +374,38 @@ const Branch = React.memo((props) => {
                                         {address}
                                     </div>
                                 </div>
+                                <div className={classes.row}>
+                                    <div className={classes.nameField}>
+                                        Населенный пункт:&nbsp;
+                                    </div>
+                                    <div className={classes.value}>
+                                        {locality}
+                                    </div>
+                                </div>
+                                <div className={classes.row}>
+                                    <div className={classes.nameField}>
+                                        Почтовый индекс:&nbsp;
+                                    </div>
+                                    <div className={classes.value}>
+                                        {postalCode}
+                                    </div>
+                                </div>
+                                <div className={classes.row}>
+                                    <div className={classes.nameField}>
+                                        Улица, проспект, микрорайон:&nbsp;
+                                    </div>
+                                    <div className={classes.value}>
+                                        {route}
+                                    </div>
+                                </div>
+                                <div className={classes.row}>
+                                    <div className={classes.nameField}>
+                                        Номер здания:&nbsp;
+                                    </div>
+                                    <div className={classes.value}>
+                                        {streetNumber}
+                                    </div>
+                                </div>
                                 <div className={classes.geo} style={{color: geo?'#10183D':'red'}} onClick={()=>{
                                     setFullDialog('Геолокация', <Geo geo={geo}/>)
                                     showFullDialog(true)
@@ -333,15 +417,15 @@ const Branch = React.memo((props) => {
                                         Налоговый орган:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {ugns}
+                                        {data.object.ugns?data.object.ugns:ugnsTypes[ugns_v2]}
                                     </div>
                                 </div>
                                 <div className={classes.row}>
                                     <div className={classes.nameField}>
-                                        Тип регистрации:&nbsp;
+                                        Предметы расчета:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {data.object.regType}
+                                        {calcItemAttributes[calcItemAttribute]}
                                     </div>
                                 </div>
                                 <div className={classes.row}>
@@ -349,7 +433,7 @@ const Branch = React.memo((props) => {
                                         Тип:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {pType}
+                                        {data.object.pType?data.object.pType:pTypes[pType_v2]}
                                     </div>
                                 </div>
                                 <div className={classes.row}>
@@ -357,7 +441,7 @@ const Branch = React.memo((props) => {
                                         Тип бизнеса:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {bType}
+                                        {data.object.bType?data.object.bType:bTypes[bType_v2]}
                                     </div>
                                 </div>
                                 </>
@@ -370,10 +454,23 @@ const Branch = React.memo((props) => {
                                     !data.object.del?
                                         <>
                                         <Button color='primary' onClick={()=>{
-                                            if (legalObject&&name.length&&address.length&&pType.length&&bType.length&&ugns.length) {
+                                            if (calcItemAttribute&&geo&&legalObject&&name&&address&&locality&&postalCode&&route&&streetNumber&&pType_v2&&bType_v2&&ugns_v2) {
                                                 const action = async() => {
                                                     if(router.query.id==='new') {
-                                                        let res = await addBranch({legalObject: legalObject._id, bType, pType, ugns, name, address, geo})
+                                                        let res = await addBranch({
+                                                            legalObject: legalObject._id,
+                                                            bType_v2: bTypes.indexOf(bType_v2),
+                                                            pType_v2: bTypes.indexOf(bType_v2),
+                                                            calcItemAttribute: calcItemAttributes.indexOf(calcItemAttribute),
+                                                            ugns_v2: ugnsTypes.indexOf(ugns_v2),
+                                                            name,
+                                                            address,
+                                                            locality,
+                                                            postalCode,
+                                                            route,
+                                                            streetNumber,
+                                                            geo
+                                                        })
                                                         Router.push(`/branch/${res}`)
                                                         showSnackBar('Успешно', 'success')
                                                     }
@@ -382,9 +479,17 @@ const Branch = React.memo((props) => {
                                                         if (JSON.stringify(geo)!==JSON.stringify(data.object.geo)) element.geo = geo
                                                         if (name!==data.object.name) element.name = name
                                                         if (address!==data.object.address) element.address = address
-                                                        if (ugns!==data.object.ugns) element.ugns = ugns
-                                                        if (bType!==data.object.bType) element.bType = bType
-                                                        if (pType!==data.object.pType) element.pType = pType
+                                                        if (locality!==data.object.locality) element.locality = locality
+                                                        if (postalCode!==data.object.postalCode) element.postalCode = postalCode
+                                                        if (route!==data.object.route) element.route = route
+                                                        if (streetNumber!==data.object.streetNumber)
+                                                            element.streetNumber = streetNumber
+                                                        else
+                                                            element.streetNumber = streetNumber[streetNumber.length-1]===' '?streetNumber.slice(0, streetNumber.length-1):streetNumber+' '
+                                                        if (ugnsTypes.indexOf(ugns_v2)!==data.object.ugns_v2) element.ugns_v2 = ugnsTypes.indexOf(ugns_v2)
+                                                        if (bTypes.indexOf(bType_v2)!==data.object.bType_v2) element.bType_v2 = bTypes.indexOf(bType_v2)
+                                                        if (pTypes.indexOf(pType_v2)!==data.object.pType_v2) element.pType_v2 = pTypes.indexOf(pType_v2)
+                                                        if (calcItemAttributes.indexOf(calcItemAttribute)!==data.object.calcItemAttribute) element.calcItemAttribute = calcItemAttributes.indexOf(calcItemAttribute)
                                                         await _setBranch(element)
                                                         Router.reload()
                                                     }
@@ -413,16 +518,7 @@ const Branch = React.memo((props) => {
                                         }
                                             </>
                                         :
-                                        <Button color='primary' onClick={()=>{
-                                            const action = async() => {
-                                                await restoreBranch(router.query.id)
-                                                Router.push(`/branchs/${legalObject._id}`)
-                                            }
-                                            setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                            showMiniDialog(true)
-                                        }}>
-                                            Восстановить
-                                        </Button>
+                                        null
                                     :
                                     null
                             }
@@ -449,7 +545,20 @@ Branch.getInitialProps = async function(ctx) {
             Router.push('/')
     return {
         data: {
-            object:ctx.query.id!=='new'?await getBranch({_id: ctx.query.id}, ctx.req?await getClientGqlSsr(ctx.req):undefined):{legalObject: undefined, bType: '', pType: '', ugns: '', name: '', address: '', geo: undefined}
+            object:ctx.query.id!=='new'?await getBranch({_id: ctx.query.id}, ctx.req?await getClientGqlSsr(ctx.req):undefined):{
+                legalObject: undefined,
+                bType_v2: null,
+                pType_v2: null,
+                ugns_v2: null,
+                name: '',
+                locality: '',
+                calcItemAttribute: '',
+                postalCode: '',
+                address: '',
+                route: '',
+                streetNumber: '',
+                geo: undefined
+            }
         }
     };
 };

@@ -73,14 +73,6 @@ const CardCashbox = React.memo((props) => {
                         }
                         <div className={classes.row}>
                             <div className={classes.nameField}>
-                                РНМ:&nbsp;
-                            </div>
-                            <div className={classes.value}>
-                                {element.rnmNumber}
-                            </div>
-                        </div>
-                        <div className={classes.row}>
-                            <div className={classes.nameField}>
                                 Оплачен до:&nbsp;
                             </div>
                             <div className={classes.value} style={{color: element.endPayment&&element.endPayment>=new Date()?'green':'red'}}>

@@ -14,10 +14,12 @@ const SetLegalObjects =  React.memo(
     (props) =>{
         const { classes } = props;
         const { setLegalObject } = props.appActions;
+        const { isMobileApp } = props.app;
         const { showMiniDialog } = props.mini_dialogActions;
         let [legalObjectChange, setLegalObjectChange] = useState(undefined);
+        const width = isMobileApp? (window.innerWidth-112) : 500
         return (
-            <div className={classes.main}>
+            <div className={classes.main} style={{width: width}}>
                 <AutocomplectOnline setElement={setLegalObjectChange} getElements={async (search)=>{return await getLegalObjects({search})}} label={'налогоплательщика'}/>
                 <br/>
                 <div>

@@ -85,23 +85,24 @@ export const getSalesCount = async({date, legalObject, workShift, branch, cashbo
     }
 }
 
-export const getSale = async({_id, type, rnmNumber, number}, client)=>{
+export const getSale = async({_id, type, cashbox, number}, client)=>{
     try{
         client = client? client : new SingletonApolloClient().getClient()
         let res = await client
             .query({
-                variables: {_id, type, rnmNumber, number},
+                variables: {_id, type, cashbox, number},
                 query: gql`
-                    query ($_id: ID!, $rnmNumber: String, $type: String, $number: String) {
-                        sale(_id: $_id, rnmNumber: $rnmNumber, type: $type, number: $number) {
+                    query ($_id: ID!, $cashbox: ID, $type: String, $number: String) {
+                        sale(_id: $_id, cashbox: $cashbox, type: $type, number: $number) {
                             _id
                             createdAt
                             qr
+                            syncData
                             number
-                            legalObject {_id name inn rateTaxe}
+                            legalObject {_id name inn rateTaxe taxSystem_v2}
                             branch {_id name address}
                             cashier {_id name}
-                            cashbox {_id name rnmNumber}
+                            cashbox {_id name rnmNumber fn registrationNumber}
                             workShift {_id number}
                             client {_id name}
                             sale {_id number}

@@ -23,7 +23,7 @@ import TextField from '@material-ui/core/TextField';
 import PointofsaleIcon from '../icons/pointofsale.svg';
 import { inputFloat, checkFloat } from '../src/lib'
 import IconButton from '@material-ui/core/IconButton';
-import { ndsTypes, nspTypes } from '../src/const'
+import {ndsTypesValue, nspTypes, nspTypesValue} from '../src/const'
 import {getLegalObject} from '../src/gql/legalObject'
 import Buy from '../components/dialog/Buy'
 const height = 400
@@ -286,11 +286,11 @@ const Index = React.memo((props) => {
                                                                 if (event.key === 'Enter') {
                                                                     allAmount = checkFloat(allAmount)
                                                                     if (allAmount > 0) {
-                                                                        let ndsType = legalObject.ndsType
-                                                                        let nspType = legalObject.nspType
-                                                                        let allPrecent = 100 + ndsTypes[ndsType] + nspTypes[nspType]
-                                                                        let allNds = checkFloat(allAmount / allPrecent * ndsTypes[ndsType])
-                                                                        let allNsp = checkFloat(allAmount / allPrecent * nspTypes[nspType])
+                                                                        let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
+                                                                        let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
+                                                                        let allPrecent = 100 + ndsPrecent + nspPrecent
+                                                                        let allNds = checkFloat(allAmount / allPrecent * ndsPrecent)
+                                                                        let allNsp = checkFloat(allAmount / allPrecent * nspPrecent)
                                                                         let items = [{
                                                                             name: 'Продажа',
                                                                             unit: 'шт',
@@ -303,11 +303,13 @@ const Index = React.memo((props) => {
                                                                             extraType: 'сом',
                                                                             amountEnd: allAmount,
                                                                             nds: allNds,
-                                                                            nsp: allNsp
+                                                                            nsp: allNsp,
+                                                                            ndsType: legalObject.ndsType_v2?legalObject.ndsType_v2.toString():null,
+                                                                            nspType: legalObject.nspType_v2?legalObject.nspType_v2.toString():null
                                                                         }]
                                                                         setMiniDialog('Оплата', <Buy
-                                                                            ndsPrecent={ndsTypes[legalObject.ndsType]}
-                                                                            nspPrecent={nspTypes[legalObject.nspType]}
+                                                                            ndsPrecent={ndsPrecent}
+                                                                            nspPrecent={nspPrecent}
                                                                             setAllAmount={setAllAmount}
                                                                             amountStart={allAmount}
                                                                             items={items}
@@ -324,11 +326,11 @@ const Index = React.memo((props) => {
                                                         <IconButton aria-label='scanner' onClick={async ()=>{
                                                             allAmount = checkFloat(allAmount)
                                                             if (allAmount > 0) {
-                                                                let ndsType = legalObject.ndsType
-                                                                let nspType = legalObject.nspType
-                                                                let allPrecent = 100+ndsTypes[ndsType]+nspTypes[nspType]
-                                                                let allNds = checkFloat(allAmount / allPrecent * ndsTypes[ndsType])
-                                                                let allNsp = checkFloat(allAmount / allPrecent * nspTypes[nspType])
+                                                                let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
+                                                                let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
+                                                                let allPrecent = 100+ndsPrecent+nspPrecent
+                                                                let allNds = checkFloat(allAmount / allPrecent * ndsPrecent)
+                                                                let allNsp = checkFloat(allAmount / allPrecent * nspPrecent)
                                                                 let items = [{
                                                                     name: 'Продажа',
                                                                     unit: 'шт',
@@ -342,12 +344,12 @@ const Index = React.memo((props) => {
                                                                     amountEnd: allAmount,
                                                                     nds: allNds,
                                                                     nsp: allNsp,
-                                                                    ndsType,
-                                                                    nspType
+                                                                    ndsType: legalObject.ndsType_v2?legalObject.ndsType_v2.toString():null,
+                                                                    nspType: legalObject.nspType_v2?legalObject.nspType_v2.toString():null
                                                                 }]
                                                                 setMiniDialog('Оплата', <Buy
-                                                                                             ndsPrecent={ndsTypes[legalObject.ndsType]}
-                                                                                             nspPrecent={nspTypes[legalObject.nspType]}
+                                                                                             ndsPrecent={ndsPrecent}
+                                                                                             nspPrecent={nspPrecent}
                                                                                              amountStart={allAmount}
                                                                                              setAllAmount={setAllAmount}
                                                                                              items={items}
@@ -384,7 +386,10 @@ const Index = React.memo((props) => {
                                                         cashbox?
                                                             <center>
                                                                 <Button size='large' color='primary' onClick={async ()=>{
-                                                                    if(cashbox.endPayment<new Date())
+                                                                    let now = new Date()
+                                                                    if(cashbox.fnExpiresAt&&cashbox.fnExpiresAt<now)
+                                                                        showSnackBar('Касса просроченна')
+                                                                    else if(cashbox.endPayment<now)
                                                                         showSnackBar('Пожалуйста оплатите за кассу')
                                                                     else {
                                                                         showLoad(true)

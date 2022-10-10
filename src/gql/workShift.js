@@ -64,10 +64,10 @@ export const getWorkShift = async({_id}, client)=>{
                             _id
                             createdAt
                             number
-                            legalObject {_id name}
-                            branch {_id name}
+                            legalObject {_id name inn rateTaxe taxSystem_v2}
+                            branch {_id name address}
                             cashier {_id name role}
-                            cashbox {_id name}
+                            cashbox {_id name rnmNumber fn registrationNumber}
                             consignation
                             paidConsignation
                             prepayment
@@ -94,6 +94,7 @@ export const getWorkShift = async({_id}, client)=>{
                             returnedBuyCount
                             sync
                             syncMsg
+                            syncData
                         }
                     }`,
             })
