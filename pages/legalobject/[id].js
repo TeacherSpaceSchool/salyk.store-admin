@@ -182,22 +182,22 @@ const LegalObject = React.memo((props) => {
                                         Операции
                                     </MenuItem>
                                 </Link>
-                                <Link href='/deposithistorys/[id]' as={`/deposithistorys/${router.query._id}`}>
+                                <Link href='/deposithistorys/[id]' as={`/deposithistorys/${router.query.id}`}>
                                     <MenuItem>
                                         Внесения
                                     </MenuItem>
                                 </Link>
-                                <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${router.query._id}`}>
+                                <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${router.query.id}`}>
                                     <MenuItem>
                                         Изъятия
                                     </MenuItem>
                                 </Link>
-                                <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${router.query._id}?type=X`}>
+                                <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${router.query.id}?type=X`}>
                                     <MenuItem>
                                         X-Отчет
                                     </MenuItem>
                                 </Link>
-                                <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${router.query._id}?type=Z`}>
+                                <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${router.query.id}?type=Z`}>
                                     <MenuItem>
                                         Z-Отчет
                                     </MenuItem>
