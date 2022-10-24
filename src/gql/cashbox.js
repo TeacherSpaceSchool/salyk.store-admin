@@ -1,15 +1,15 @@
 import { gql } from 'apollo-boost';
 import { SingletonApolloClient } from '../singleton/client';
 
-export const getCashboxes = async({search, skip, del, legalObject, branch, filter, all}, client)=>{
+export const getCashboxes = async({search, skip, legalObject, branch, filter, all}, client)=>{
     try{
         client = client? client : new SingletonApolloClient().getClient()
         let res = await client
             .query({
-                variables: {search, skip, legalObject, del, branch, filter, all},
+                variables: {search, skip, legalObject, branch, filter, all},
                 query: gql`
-                    query ($skip: Int, $search: String, $del: Boolean, $legalObject: ID, $branch: ID, $filter: String, $all: Boolean) {
-                        cashboxes(skip: $skip, search: $search, del: $del, legalObject: $legalObject, branch: $branch, filter: $filter, all: $all) {
+                    query ($skip: Int, $search: String, $legalObject: ID, $branch: ID, $filter: String, $all: Boolean) {
+                        cashboxes(skip: $skip, search: $search, legalObject: $legalObject, branch: $branch, filter: $filter, all: $all) {
                             _id
                             createdAt
                             rnmNumber
@@ -33,18 +33,50 @@ export const getCashboxes = async({search, skip, del, legalObject, branch, filte
     }
 }
 
-export const getCashboxesCount = async({search, legalObject, del, branch, filter}, client)=>{
+export const getCashboxesCount = async({search, legalObject, branch, filter}, client)=>{
     try{
         client = client? client : new SingletonApolloClient().getClient()
         let res = await client
             .query({
-                variables: {search, legalObject, branch, del, filter},
+                variables: {search, legalObject, branch, filter},
                 query: gql`
-                    query ($search: String, $legalObject: ID, $del: Boolean, $branch: ID, $filter: String) {
-                        cashboxesCount(search: $search, legalObject: $legalObject, del: $del, branch: $branch, filter: $filter)
+                    query ($search: String, $legalObject: ID, $branch: ID, $filter: String) {
+                        cashboxesCount(search: $search, legalObject: $legalObject, branch: $branch, filter: $filter)
                     }`,
             })
         return res.data.cashboxesCount
+    } catch(err){
+        console.error(err)
+    }
+}
+
+export const getCashboxesTrash = async({search, skip}, client)=>{
+    try{
+        client = client? client : new SingletonApolloClient().getClient()
+        let res = await client
+            .query({
+                variables: {search, skip},
+                query: gql`
+                    query ($skip: Int, $search: String) {
+                        cashboxesTrash(skip: $skip, search: $search) {
+                           _id
+                            createdAt
+                            rnmNumber
+                            registrationNumber
+                            fn
+                            fnExpiresAt
+                            name
+                            legalObject {name _id}
+                            branch {name _id}
+                            presentCashier {name _id role}
+                            cash
+                            endPayment
+                            del
+                            sync
+                            }
+                    }`,
+            })
+        return res.data.cashboxesTrash
     } catch(err){
         console.error(err)
     }

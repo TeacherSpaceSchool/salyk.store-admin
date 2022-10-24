@@ -405,47 +405,47 @@ const Cashbox = React.memo((props) => {
                         }
                         <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
                             {
+                                router.query.id!=='new'&&data.object.syncData&&data.object.fnExpiresAt?
+                                    <>
+                                    <Menu
+                                        key='Report'
+                                        id='menu-appbar'
+                                        anchorEl={anchorElReport}
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'right',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'right',
+                                        }}
+                                        open={openReport}
+                                        onClose={handleCloseReport}
+                                    >
+                                        {data.object.syncData.map((element, idx)=>
+                                            <Link href={{pathname: '/cashbox/receipt/[id]', query: {idx: idx}}} as={`/cashbox/receipt/${router.query.id}?idx=${idx}`}>
+                                                <MenuItem key={`syncData${idx}`}>{
+                                                    element[0]==='registerCashbox'?
+                                                        `Регистрация №${idx+1}`
+                                                        :
+                                                        element[0]==='reregisterCashbox'?
+                                                            `Изменении №${idx+1}`
+                                                            :
+                                                            `Закрытие №${idx+1}`
+                                                }</MenuItem>
+                                            </Link>
+                                        )}
+                                    </Menu>
+                                    <Button color='primary' onClick={handleMenuReport}>
+                                        Чеки
+                                    </Button>
+                                    </>
+                                    :
+                                    null
+                            }
+                            {
                                 !data.object.del?
                                     <>
-                                    {
-                                        router.query.id!=='new'&&data.object.syncData&&data.object.fnExpiresAt?
-                                            <>
-                                            <Menu
-                                                key='Report'
-                                                id='menu-appbar'
-                                                anchorEl={anchorElReport}
-                                                anchorOrigin={{
-                                                    vertical: 'bottom',
-                                                    horizontal: 'right',
-                                                }}
-                                                transformOrigin={{
-                                                    vertical: 'bottom',
-                                                    horizontal: 'right',
-                                                }}
-                                                open={openReport}
-                                                onClose={handleCloseReport}
-                                            >
-                                                {data.object.syncData.map((element, idx)=>
-                                                    <Link href={{pathname: '/cashbox/receipt/[id]', query: {idx: idx}}} as={`/cashbox/receipt/${router.query.id}?idx=${idx}`}>
-                                                        <MenuItem key={`syncData${idx}`}>{
-                                                            element[0]==='registerCashbox'?
-                                                                `Регистрация №${idx+1}`
-                                                                :
-                                                                element[0]==='reregisterCashbox'?
-                                                                    `Изменении №${idx+1}`
-                                                                    :
-                                                                    `Закрытие №${idx+1}`
-                                                        }</MenuItem>
-                                                    </Link>
-                                                )}
-                                            </Menu>
-                                            <Button color='primary' onClick={handleMenuReport}>
-                                                Чеки
-                                            </Button>
-                                            </>
-                                            :
-                                            null
-                                    }
                                     {
                                         router.query.id!=='new'&&data.object.presentCashier&&(['управляющий', 'супервайзер'].includes(profile.role)||['admin', 'superadmin'].includes(profile.role)&&profile.add)?
                                             <Button color='primary' onClick={async()=>{
