@@ -16,6 +16,7 @@ export const getBranchs = async({search, skip, legalObject}, client)=>{
                             bType
                             pType
                             ugns
+                            administrativeArea_v2
                             bType_v2
                             pType_v2
                             ugns_v2
@@ -73,6 +74,7 @@ export const getBranchsTrash = async({search, skip}, client)=>{
                             ugns
                             bType_v2
                             pType_v2
+                            administrativeArea_v2
                             ugns_v2
                             name
                             address
@@ -111,6 +113,7 @@ export const getBranch = async({_id}, client)=>{
                             bType_v2
                             pType_v2
                             ugns_v2
+                            administrativeArea_v2
                             name
                             address
                             locality
@@ -133,12 +136,13 @@ export const getBranch = async({_id}, client)=>{
 export const deleteBranch = async(_id)=>{
     try{
         const client = new SingletonApolloClient().getClient()
-        await client.mutate({
+        let res = await client.mutate({
             variables: {_id},
             mutation : gql`
                     mutation ($_id: ID!) {
                         deleteBranch(_id: $_id)
                     }`})
+        return res.data.deleteBranch
     } catch(err){
         console.error(err)
     }
@@ -164,8 +168,8 @@ export const addBranch = async(element)=>{
         let res = await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($legalObject: ID!, $calcItemAttribute: Int!, $bType_v2: Int!, $pType_v2: Int!, $ugns_v2: Int!, $address: String!, $name: String!, $locality: String!, $postalCode: String!, $route: String!, $streetNumber: String!, $geo: [Float]) {
-                        addBranch(legalObject: $legalObject, calcItemAttribute: $calcItemAttribute, bType_v2: $bType_v2, pType_v2: $pType_v2, ugns_v2: $ugns_v2, address: $address, name: $name, locality: $locality, postalCode: $postalCode, route: $route, streetNumber: $streetNumber, geo: $geo)
+                    mutation ($legalObject: ID!, $administrativeArea_v2: String!, $calcItemAttribute: Int!, $bType_v2: Int!, $pType_v2: Int!, $ugns_v2: Int!, $address: String!, $name: String!, $locality: String!, $postalCode: String!, $route: String!, $streetNumber: String!, $geo: [Float]) {
+                        addBranch(legalObject: $legalObject, administrativeArea_v2: $administrativeArea_v2, calcItemAttribute: $calcItemAttribute, bType_v2: $bType_v2, pType_v2: $pType_v2, ugns_v2: $ugns_v2, address: $address, name: $name, locality: $locality, postalCode: $postalCode, route: $route, streetNumber: $streetNumber, geo: $geo)
                     }`})
         return res.data.addBranch
     } catch(err){
@@ -176,12 +180,13 @@ export const addBranch = async(element)=>{
 export const _setBranch = async(element)=>{
     try{
         const client = new SingletonApolloClient().getClient()
-        await client.mutate({
+        let res = await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($_id: ID!, $bType_v2: Int, $calcItemAttribute: Int, $pType_v2: Int, $ugns_v2: Int, $name: String, $address: String, $locality: String, $postalCode: String, $route: String, $streetNumber: String, $geo: [Float]) {
-                        setBranch(_id: $_id, bType_v2: $bType_v2, pType_v2: $pType_v2, calcItemAttribute: $calcItemAttribute, ugns_v2: $ugns_v2, name: $name, address: $address, locality: $locality, postalCode: $postalCode, route: $route, streetNumber: $streetNumber, geo: $geo)
+                    mutation ($_id: ID!, $bType_v2: Int, $administrativeArea_v2: String, $calcItemAttribute: Int, $pType_v2: Int, $ugns_v2: Int, $name: String, $address: String, $locality: String, $postalCode: String, $route: String, $streetNumber: String, $geo: [Float]) {
+                        setBranch(_id: $_id, bType_v2: $bType_v2 administrativeArea_v2: $administrativeArea_v2, pType_v2: $pType_v2, calcItemAttribute: $calcItemAttribute, ugns_v2: $ugns_v2, name: $name, address: $address, locality: $locality, postalCode: $postalCode, route: $route, streetNumber: $streetNumber, geo: $geo)
                     }`})
+        return res.data.setBranch
     } catch(err){
         console.error(err)
     }

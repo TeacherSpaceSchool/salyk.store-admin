@@ -20,10 +20,9 @@ import * as appActions from '../../redux/actions/app'
 import TextField from '@material-ui/core/TextField';
 import Confirmation from '../../components/dialog/Confirmation'
 import dynamic from 'next/dynamic'
-const Geo = dynamic(import('../../components/dialog/Geo'), { ssr: false });
 import { urlMain } from '../../redux/constants/other'
 import { getClientGqlSsr } from '../../src/getClientGQL'
-import { ugnsTypes, bTypes, pTypes, calcItemAttributes } from '../../src/const'
+import { ugnsTypes, bTypes, pTypes, calcItemAttributes, administrativeAreas } from '../../src/const'
 import { pdDDMMYYHHMM, cloneObject } from '../../src/lib'
 import AutocomplectOnline from '../../components/app/AutocomplectOnline'
 import Menu from '@material-ui/core/Menu';
@@ -37,6 +36,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+const Geo = dynamic(import('../../components/dialog/Geo'), { ssr: false });
 
 const Branch = React.memo((props) => {
     const { profile } = props.user;
@@ -53,6 +53,10 @@ const Branch = React.memo((props) => {
     let [streetNumber, setStreetNumber] = useState(data.object?data.object.streetNumber:'');
     let [address, setAddress] = useState(data.object?data.object.address:'');
     let [geo, setGeo] = useState(data.object&&data.object.geo&&data.object.geo.length?cloneObject(data.object.geo):[42.8700000, 74.5900000]);
+    let [administrativeArea_v2, setAdministrativeArea_v2] = useState(data.object?data.object.administrativeArea_v2:'');
+    let handleAdministrativeArea_v2 =  (event) => {
+        setAdministrativeArea_v2(event.target.value)
+    };
     let [ugns_v2, setUgns_v2] = useState(data.object?ugnsTypes[data.object.ugns_v2]:'');
     let [bType_v2, setBType_v2] = useState(data.object?bTypes[data.object.bType_v2]:'');
     let [pType_v2, setPType_v2] = useState(data.object?pTypes[data.object.pType_v2]:'');
@@ -75,7 +79,7 @@ const Branch = React.memo((props) => {
         if(initialRender.current)
             initialRender.current = false
         else
-            setAddress(`${locality}, ${route}, ${streetNumber}`)
+            setAddress(`${locality}, ${route} ${streetNumber}`)
     },[locality, route, streetNumber])
     return (
         <App pageName={data.object!==null?router.query.id==='new'?'Добавить':data.object.name:'Ничего не найдено'}>
@@ -299,6 +303,14 @@ const Branch = React.memo((props) => {
                                         'Задайте геолокацию'
                                 }
                             </div>
+                            <FormControl error={!administrativeArea_v2} className={classes.input}>
+                                <InputLabel>Область</InputLabel>
+                                <Select value={administrativeArea_v2} onChange={handleAdministrativeArea_v2}>
+                                    {administrativeAreas.map((element)=>
+                                        <MenuItem key={element} value={element}>{element}</MenuItem>
+                                    )}
+                                </Select>
+                            </FormControl>
                             <TextField
                                 error={!locality}
                                 label='Населенный пункт'
@@ -372,6 +384,14 @@ const Branch = React.memo((props) => {
                                     </div>
                                     <div className={classes.value}>
                                         {address}
+                                    </div>
+                                </div>
+                                <div className={classes.row}>
+                                    <div className={classes.nameField}>
+                                        Область:&nbsp;
+                                    </div>
+                                    <div className={classes.value}>
+                                        {administrativeArea_v2}
                                     </div>
                                 </div>
                                 <div className={classes.row}>
@@ -454,13 +474,15 @@ const Branch = React.memo((props) => {
                                     !data.object.del?
                                         <>
                                         <Button color='primary' onClick={()=>{
-                                            if (calcItemAttribute&&geo&&legalObject&&name&&address&&locality&&postalCode&&route&&streetNumber&&pType_v2&&bType_v2&&ugns_v2) {
+                                            console.log(administrativeArea_v2)
+                                            if (administrativeArea_v2&&calcItemAttribute&&geo&&legalObject&&name&&address&&locality&&postalCode&&route&&streetNumber&&pType_v2&&bType_v2&&ugns_v2) {
                                                 const action = async() => {
                                                     if(router.query.id==='new') {
                                                         let res = await addBranch({
                                                             legalObject: legalObject._id,
                                                             bType_v2: bTypes.indexOf(bType_v2),
                                                             pType_v2: bTypes.indexOf(bType_v2),
+                                                            administrativeArea_v2,
                                                             calcItemAttribute: calcItemAttributes.indexOf(calcItemAttribute),
                                                             ugns_v2: ugnsTypes.indexOf(ugns_v2),
                                                             name,
@@ -490,8 +512,14 @@ const Branch = React.memo((props) => {
                                                         if (bTypes.indexOf(bType_v2)!==data.object.bType_v2) element.bType_v2 = bTypes.indexOf(bType_v2)
                                                         if (pTypes.indexOf(pType_v2)!==data.object.pType_v2) element.pType_v2 = pTypes.indexOf(pType_v2)
                                                         if (calcItemAttributes.indexOf(calcItemAttribute)!==data.object.calcItemAttribute) element.calcItemAttribute = calcItemAttributes.indexOf(calcItemAttribute)
-                                                        await _setBranch(element)
-                                                        Router.reload()
+                                                        if (administrativeArea_v2!==data.object.administrativeArea_v2) element.administrativeArea_v2 = administrativeArea_v2
+                                                        let res = await _setBranch(element)
+                                                        if(res==='OK')
+                                                            Router.reload()
+                                                        else if(res==='USED_WORKSHIFT')
+                                                            showSnackBar('Закройте смены')
+                                                        else
+                                                            showSnackBar('Ошибка', 'error')
                                                     }
                                                 }
                                                 setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
@@ -505,8 +533,15 @@ const Branch = React.memo((props) => {
                                             profile.role!=='оператор'?
                                                 <Button color='secondary' onClick={()=>{
                                                     const action = async() => {
-                                                        await deleteBranch(router.query.id)
-                                                        Router.push(`/branchs/${legalObject._id}`)
+                                                        let res = await deleteBranch(router.query.id)
+                                                        if(res==='OK')
+                                                            Router.push(`/branchs/${legalObject._id}`)
+                                                        else if(res==='USED_WORKSHIFT')
+                                                            showSnackBar('Закройте смены')
+                                                        else if(res==='USED_CASHBOX')
+                                                            showSnackBar('Отвяжите кассы')
+                                                        else
+                                                            showSnackBar('Ошибка', 'error')
                                                     }
                                                     setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
                                                     showMiniDialog(true)
@@ -553,6 +588,7 @@ Branch.getInitialProps = async function(ctx) {
                 name: '',
                 locality: '',
                 calcItemAttribute: '',
+                administrativeArea_v2: '',
                 postalCode: '',
                 address: '',
                 route: '',
