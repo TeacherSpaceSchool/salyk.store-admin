@@ -349,7 +349,7 @@ const Receipt = React.memo((props) => {
                                                             align: 'right'
                                                         })
                                                         _data.push({
-                                                            message: `ФПД: ${parseInt(syncData.fields[1077], 16)}`,
+                                                            message: `ФПД: ${syncData.fields[parseInt(syncData.fields[1077], 16)]}`,
                                                             align: 'right'
                                                         })
                                                         _data.push({
@@ -362,7 +362,6 @@ const Receipt = React.memo((props) => {
                                                     _data.push({message: '********************************', align: 'center'})
                                                 _data.push({message: 'ККМ SALYK.STORE v1.0', align: 'center', bold: true})
                                                 _data.push({image: data.object.qr})
-                                                _data.push({QR: 'https://tax.salyk.kg/tax-web-control/client/api/v1/ticket?date=20211125T183125&type=3&operation_type=1&fn_number=0000000000001340&fd_number=18213&fm=176988221192301&tin=02406202110341&regNumber=0000000000006425&sum=0'})
                                                 await printEsPosData(_printer, _data)
                                             }
                                             else {
