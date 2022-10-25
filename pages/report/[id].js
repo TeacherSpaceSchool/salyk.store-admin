@@ -359,7 +359,7 @@ const Receipt = React.memo((props) => {
                                                     })
                                                 if(syncData.fields[1077])
                                                     _data.push({
-                                                        message: `ФПД: ${syncData.fields[parseInt(syncData.fields[1077], 16)]}`,
+                                                        message: `ФПД: ${parseInt(syncData.fields[1077], 16)}`,
                                                         align: 'right'
                                                     })
                                                 _data.push({
