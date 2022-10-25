@@ -37,7 +37,7 @@ export const printEsPosData = async (printer, data) => {
             await img.decode();
             img = encoder
                 .align('center')
-                .image(img, 360, 360, 'atkinson')
+                .image(img, 240, 240, 'atkinson')
                 .encode()
             while (img.length > 20) {
                 printImg = img.slice(0, 20);
