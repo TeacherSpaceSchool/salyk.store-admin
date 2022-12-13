@@ -119,7 +119,7 @@ const Receipt = React.memo((props) => {
                                     <div style={{textAlign: 'center', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
                             }
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(data.object.createdAt)}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Операция: {data.object.type}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.type}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК №{data.object.number}</span></div>
                             {
                                 data.object.sale?
@@ -135,7 +135,7 @@ const Receipt = React.memo((props) => {
                                     null
                             }
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>НР: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
                                     <Link href='/cashbox/[id]' as={`/cashbox/${data.object.cashbox._id}`}>
@@ -222,7 +222,7 @@ const Receipt = React.memo((props) => {
                             <div style={{textAlign: 'right', marginBottom: 5}}>НДС{data.object.ndsPrecent?` ${data.object.ndsPrecent}%`:''}: {data.object.nds}</div>
                             <div style={{textAlign: 'right', marginBottom: 5}}>НСП{data.object.nspPrecent?` ${data.object.nspPrecent}%`:''}: {data.object.nsp}</div>
                             <div style={{textAlign: 'right', marginBottom: 5, fontWeight: 'bold'}}>ИТОГО: {data.object.amountEnd}</div>
-                            <div style={{textAlign: 'right', marginBottom: 5}}>{data.object.type==='Возврат'?'Наличными':data.object.typePayment}: {data.object.paid}</div>
+                            <div style={{textAlign: 'right', marginBottom: 5}}>{data.object.typePayment}: {data.object.paid}</div>
                             {
                                 data.object.usedPrepayment?
                                     <div style={{textAlign: 'right', marginBottom: 5}}>Авансом: {data.object.usedPrepayment}</div>
@@ -291,11 +291,11 @@ const Receipt = React.memo((props) => {
                                                     {message: data.object.legalObject.name, align: 'center'},
                                                     {message: `${data.object.branch.name}, ${data.object.branch.address}`, align: 'center'},
                                                     {message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`, align: 'left'},
-                                                    {message: `Операция: ${data.object.type}`, align: 'left'},
+                                                    {message: data.object.type, align: 'left'},
                                                     {message: `ЧЕК №${data.object.number}`, align: 'left'},
                                                     ...data.object.sale?[{message: `ЧЕК ОСНОВАНИЯ №${data.object.sale.number}`, align: 'left'}]:[],
                                                     {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
-                                                    {message: `НР: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
+                                                    {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
                                                     {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
                                                     {message: `Смена №${data.object.workShift.number}`, align: 'left'},
                                                     {message: `Кассир: ${data.object.cashier.name}`, align: 'left'},
@@ -321,7 +321,7 @@ const Receipt = React.memo((props) => {
                                                 _data.push({message: `НДС${data.object.ndsPrecent?` ${data.object.ndsPrecent}%`:''}: ${data.object.nds}`, align: 'right'})
                                                 _data.push({message: `НСП${data.object.nspPrecent?` ${data.object.nspPrecent}%`:''}: ${data.object.nsp}`, align: 'right'})
                                                 _data.push({message: `ИТОГО: ${data.object.amountEnd}`, align: 'right', bold: true})
-                                                _data.push({message: `${data.object.type==='Возврат'?'Наличными':data.object.typePayment}: ${data.object.paid}`, align: 'right'})
+                                                _data.push({message: `${data.object.typePayment}: ${data.object.paid}`, align: 'right'})
                                                 if(data.object.usedPrepayment)
                                                     _data.push({message: `Авансом: ${data.object.usedPrepayment}`, align: 'right'})
                                                 if(data.object.type==='Кредит'||data.object.type==='Возврат'&&data.object.paid<data.object.amountEnd)
@@ -349,7 +349,7 @@ const Receipt = React.memo((props) => {
                                                             align: 'right'
                                                         })
                                                         _data.push({
-                                                            message: `ФПД: ${syncData.fields[parseInt(syncData.fields[1077], 16)]}`,
+                                                            message: `ФПД: ${parseInt(syncData.fields[1077], 16)}`,
                                                             align: 'right'
                                                         })
                                                         _data.push({

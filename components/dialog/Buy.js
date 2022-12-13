@@ -12,12 +12,14 @@ import { addSale } from '../../src/gql/sale';
 import Link from 'next/link';
 import { ndsTypesValue, nspTypesValue } from '../../src/const'
 import TextField from '@material-ui/core/TextField';
+import * as appActions from '../../redux/actions/app'
 
 const BuyBasket =  React.memo(
     (props) =>{
         const { isMobileApp } = props.app;
         const { profile } = props.user;
         let { classes, client, amountStart, _setComment, cashbox, items, allNsp, allNds, ndsPrecent, nspPrecent, type, usedPrepayment, consignation, sale, setItems, setType, setClient, setSale, setAllAmount } = props;
+        const { showLoad } = props.appActions;
         const { showMiniDialog } = props.mini_dialogActions;
         const { showSnackBar } = props.snackbarActions;
         const width = isMobileApp? (window.innerWidth-112) : 500
@@ -278,6 +280,7 @@ const BuyBasket =  React.memo(
                         <br/>
                         <div>
                             <Button variant='contained' color='primary' onClick={async()=>{
+                                showLoad(true)
                                 if(typePayment==='Наличными'&&['Покупка', 'Возврат аванса', 'Возврат продажи'].includes(type)&&paid>cashbox.cash)
                                     showSnackBar('Наличных в кассе недостаточно, внесите нужную сумму')
                                 else {
@@ -375,6 +378,7 @@ const BuyBasket =  React.memo(
                                         }
                                     }
                                 }
+                                showLoad(false)
                             }} className={classes.button}>
                                 Оплатить
                             </Button>
@@ -411,6 +415,7 @@ function mapDispatchToProps(dispatch) {
     return {
         mini_dialogActions: bindActionCreators(mini_dialogActions, dispatch),
         snackbarActions: bindActionCreators(snackbarActions, dispatch),
+        appActions: bindActionCreators(appActions, dispatch),
     }
 }
 

@@ -77,18 +77,18 @@ const Receipt = React.memo((props) => {
                                     <div style={{textAlign: 'center', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
                             }
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(syncData.date)}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Операция: {
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{
                                 data.object.syncData[router.query.idx][0]==='registerCashbox'?
-                                    'Регистрация'
+                                    'Регистрация ФМ'
                                     :
                                     data.object.syncData[router.query.idx][0]==='reregisterCashbox'?
-                                        'Изменении'
+                                        'Перерегистрация ФМ'
                                         :
-                                        'Закрытие'
+                                        'Закрытие ФМ'
                             }</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК №{parseInt(router.query.idx)+1}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>НР: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
                                     <Link href='/cashbox/[id]' as={`/cashbox/${data.object._id}`}>
@@ -130,18 +130,18 @@ const Receipt = React.memo((props) => {
                                             {message: data.object.legalObject.name, align: 'center'},
                                             {message: `${data.object.branch.name}, ${data.object.branch.address}`, align: 'center'},
                                             {message: `Дата: ${pdDDMMYYHHMM(syncData.date)}`, align: 'left'},
-                                            {message: `Операция: ${
+                                            {message: `${
                                                 data.object.syncData[router.query.idx][0]==='registerCashbox'?
-                                                    'Регистрация'
+                                                    'Регистрация ФМ'
                                                     :
                                                     data.object.syncData[router.query.idx][0]==='reregisterCashbox'?
-                                                        'Изменении'
+                                                        'Перерегистрация ФМ'
                                                         :
-                                                        'Закрытие'
+                                                        'Закрытие ФМ'
                                             }`, align: 'left'},
                                             {message: `ЧЕК №${parseInt(router.query.idx)+1}`, align: 'left'},
                                             {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
-                                            {message: `НР: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
+                                            {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
                                             {message: `Касса: ${data.object.name}`, align: 'left'},
                                             {message: `********************************`, align: 'center'},
                                             {message: `Истечение регистрации ФМ: ${pdDDMMYYYY(data.object.fnExpiresAt)}`, align: 'left'},

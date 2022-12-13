@@ -77,10 +77,10 @@ const Receipt = React.memo((props) => {
                                     <div style={{textAlign: 'center', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
                             }
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(data.object.createdAt)}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Операция: Открытие смены</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Открытие смены</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК №{data.object.number}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>НР: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
                                     <Link href='/cashbox/[id]' as={`/cashbox/${data.object.cashbox._id}`}>
@@ -149,10 +149,10 @@ const Receipt = React.memo((props) => {
                                             {message: data.object.legalObject.name, align: 'center'},
                                             {message: `${data.object.branch.name}, ${data.object.branch.address}`, align: 'center'},
                                             {message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`, align: 'left'},
-                                            {message: 'Операция: Открытие смены', align: 'left'},
+                                            {message: 'Открытие смены', align: 'left'},
                                             {message: `ЧЕК №${data.object.number}`, align: 'left'},
                                             {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
-                                            {message: `НР: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
+                                            {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
                                             {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
                                             {message: `Смена №${data.object.number}`, align: 'left'},
                                             {message: `Кассир: ${data.object.cashier.name}`, align: 'left'},
