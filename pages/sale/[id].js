@@ -219,8 +219,8 @@ const Receipt = React.memo((props) => {
                                     :
                                     null
                             }
-                            <div style={{textAlign: 'right', marginBottom: 5}}>НДС{data.object.ndsPrecent?` ${data.object.ndsPrecent}%`:''}: {data.object.nds}</div>
-                            <div style={{textAlign: 'right', marginBottom: 5}}>НСП{data.object.nspPrecent?` ${data.object.nspPrecent}%`:''}: {data.object.nsp}</div>
+                            <div style={{textAlign: 'right', marginBottom: 5}}>НДС {data.object.ndsPrecent}%: {data.object.nds}</div>
+                            <div style={{textAlign: 'right', marginBottom: 5}}>НСП {data.object.nspPrecent}%: {data.object.nsp}</div>
                             <div style={{textAlign: 'right', marginBottom: 5, fontWeight: 'bold'}}>ИТОГО: {data.object.amountEnd}</div>
                             <div style={{textAlign: 'right', marginBottom: 5}}>{data.object.typePayment}: {data.object.paid}</div>
                             {
@@ -318,8 +318,8 @@ const Receipt = React.memo((props) => {
                                                     _data.push({message: `${'Продажа'===data.object.type?'Скидка':'Уценка'}: ${data.object.discount}`, align: 'right'})
                                                 if(data.object.extra)
                                                     _data.push({message: `Наценка: ${data.object.extra}`, align: 'right'})
-                                                _data.push({message: `НДС${data.object.ndsPrecent?` ${data.object.ndsPrecent}%`:''}: ${data.object.nds}`, align: 'right'})
-                                                _data.push({message: `НСП${data.object.nspPrecent?` ${data.object.nspPrecent}%`:''}: ${data.object.nsp}`, align: 'right'})
+                                                _data.push({message: `НДС ${data.object.ndsPrecent}%: ${data.object.nds}`, align: 'right'})
+                                                _data.push({message: `НСП ${data.object.nspPrecent}%: ${data.object.nsp}`, align: 'right'})
                                                 _data.push({message: `ИТОГО: ${data.object.amountEnd}`, align: 'right', bold: true})
                                                 _data.push({message: `${data.object.typePayment}: ${data.object.paid}`, align: 'right'})
                                                 if(data.object.usedPrepayment)
