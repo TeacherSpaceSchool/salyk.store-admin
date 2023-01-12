@@ -285,12 +285,10 @@ const Index = React.memo((props) => {
                                                             onKeyPress={event => {
                                                                 if (event.key === 'Enter') {
                                                                     allAmount = checkFloat(allAmount)
+                                                                    let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
+                                                                    let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
+                                                                    let allPrecent = 100+ndsPrecent+nspPrecent
                                                                     if (allAmount > 0) {
-                                                                        let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
-                                                                        let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
-                                                                        let allPrecent = 100 + ndsPrecent + nspPrecent
-                                                                        let allNds = checkFloat(allAmount / allPrecent * ndsPrecent)
-                                                                        let allNsp = checkFloat(allAmount / allPrecent * nspPrecent)
                                                                         let items = [{
                                                                             name: 'Продажа',
                                                                             unit: 'шт',
@@ -302,19 +300,14 @@ const Index = React.memo((props) => {
                                                                             extra: '',
                                                                             extraType: 'сом',
                                                                             amountEnd: allAmount,
-                                                                            nds: allNds,
-                                                                            nsp: allNsp,
-                                                                            ndsType: legalObject.ndsType_v2?legalObject.ndsType_v2.toString():null,
-                                                                            nspType: legalObject.nspType_v2?legalObject.nspType_v2.toString():null
                                                                         }]
                                                                         setMiniDialog('Оплата', <Buy
+                                                                            allPrecent={allPrecent}
                                                                             ndsPrecent={ndsPrecent}
                                                                             nspPrecent={nspPrecent}
                                                                             setAllAmount={setAllAmount}
                                                                             amountStart={allAmount}
                                                                             items={items}
-                                                                            allNsp={allNsp}
-                                                                            allNds={allNds}
                                                                             consignation={0}
                                                                             usedPrepayment={0}
                                                                             type='Продажа'/>)
@@ -325,12 +318,10 @@ const Index = React.memo((props) => {
                                                         />
                                                         <IconButton aria-label='scanner' onClick={async ()=>{
                                                             allAmount = checkFloat(allAmount)
+                                                            let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
+                                                            let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
+                                                            let allPrecent = 100+ndsPrecent+nspPrecent
                                                             if (allAmount > 0) {
-                                                                let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
-                                                                let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
-                                                                let allPrecent = 100+ndsPrecent+nspPrecent
-                                                                let allNds = checkFloat(allAmount / allPrecent * ndsPrecent)
-                                                                let allNsp = checkFloat(allAmount / allPrecent * nspPrecent)
                                                                 let items = [{
                                                                     name: 'Продажа',
                                                                     unit: 'шт',
@@ -342,22 +333,18 @@ const Index = React.memo((props) => {
                                                                     extra: '',
                                                                     extraType: 'сом',
                                                                     amountEnd: allAmount,
-                                                                    nds: allNds,
-                                                                    nsp: allNsp,
-                                                                    ndsType: legalObject.ndsType_v2?legalObject.ndsType_v2.toString():null,
-                                                                    nspType: legalObject.nspType_v2?legalObject.nspType_v2.toString():null
                                                                 }]
                                                                 setMiniDialog('Оплата', <Buy
-                                                                                             ndsPrecent={ndsPrecent}
-                                                                                             nspPrecent={nspPrecent}
-                                                                                             amountStart={allAmount}
-                                                                                             setAllAmount={setAllAmount}
-                                                                                             items={items}
-                                                                                             allNsp={allNsp}
-                                                                                             allNds={allNds}
-                                                                                             consignation={0}
-                                                                                             usedPrepayment={0}
-                                                                                             type='Продажа'/>)
+                                                                    allPrecent={allPrecent}
+                                                                    ndsPrecent={ndsPrecent}
+                                                                    nspPrecent={nspPrecent}
+                                                                    amountStart={allAmount}
+                                                                    setAllAmount={setAllAmount}
+                                                                    items={items}
+                                                                    consignation={0}
+                                                                    usedPrepayment={0}
+                                                                    type='Продажа'
+                                                                />)
                                                                 showMiniDialog(true)
                                                             }
                                                         }}>

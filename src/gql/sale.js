@@ -43,12 +43,8 @@ export const getSales = async({skip, date, legalObject, branch, cashbox, client,
                                 extra
                                 amountStart
                                 amountEnd
-                                nds
-                                nsp
                                 tnved
                                 mark
-                                nspType
-                                ndsType
                             }
                         }
                     }`,
@@ -131,12 +127,8 @@ export const getSale = async({_id, type, cashbox, number}, client)=>{
                                 extra
                                 amountStart
                                 amountEnd
-                                nds
-                                nsp
                                 tnved
                                 mark
-                                nspType
-                                ndsType
                             }
                         }
                     }`,

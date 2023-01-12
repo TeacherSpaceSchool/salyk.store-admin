@@ -10,7 +10,7 @@ import dialogContentStyle from '../../src/styleMUI/dialogContent'
 import { checkFloat, inputFloat } from '../../src/lib';
 import { addSale } from '../../src/gql/sale';
 import Link from 'next/link';
-import { ndsTypesValue, nspTypesValue } from '../../src/const'
+import { withoutNdsNsp } from '../../src/const'
 import TextField from '@material-ui/core/TextField';
 import * as appActions from '../../redux/actions/app'
 
@@ -18,13 +18,15 @@ const BuyBasket =  React.memo(
     (props) =>{
         const { isMobileApp } = props.app;
         const { profile } = props.user;
-        let { classes, client, amountStart, _setComment, cashbox, items, allNsp, allNds, ndsPrecent, nspPrecent, type, usedPrepayment, consignation, sale, setItems, setType, setClient, setSale, setAllAmount } = props;
+        let { classes, client, amountStart, _setComment, cashbox, items, allPrecent, ndsPrecent, nspPrecent, type, usedPrepayment, consignation, sale, setItems, setType, setClient, setSale, setAllAmount } = props;
         const { showLoad } = props.appActions;
         const { showMiniDialog } = props.mini_dialogActions;
         const { showSnackBar } = props.snackbarActions;
         const width = isMobileApp? (window.innerWidth-112) : 500
         let [typePayment, setTypePayment] = useState('Наличными');
         let [res, setRes] = useState(undefined);
+        let [allNds, setAllNds] = useState(checkFloat(amountStart / allPrecent * ndsPrecent));
+        let [allNsp, setAllNsp] = useState(checkFloat(amountStart / allPrecent * nspPrecent));
         let [discount, setDiscount] = useState('');
         let [amountEnd, setAmountEnd] = useState(amountStart);
         let [paid, setPaid] = useState(0);
@@ -36,8 +38,13 @@ const BuyBasket =  React.memo(
         let [extraType, setExtraType] = useState('сом');
         useEffect(() => {
             amountEnd = amountStart + (extraType==='%'?amountStart/100*extra:checkFloat(extra)) - (discountType==='%'?amountStart/100*discount:discount) - consignation
-            if(typePayment==='Безналичный'&&type==='Продажа')
+            allNds = checkFloat(amountEnd / allPrecent * ndsPrecent)
+            setAllNds(allNds)
+            allNsp = checkFloat(amountEnd / allPrecent * nspPrecent)
+            setAllNsp(allNsp)
+            if(typePayment==='Безналичный'&&type==='Продажа') {
                 amountEnd -= allNsp
+            }
             amountEnd = checkFloat(amountEnd)
             setAmountEnd(amountEnd)
             if (typePayment === 'Безналичный')
@@ -292,9 +299,7 @@ const BuyBasket =  React.memo(
                                         if (change<0&&['Аванс', 'Погашение кредита', 'Покупка', 'Возврат продажи', 'Возврат покупки', 'Возврат аванса'].includes(type) || amountEnd<0 || paid<0)
                                             showSnackBar('Сумма слишком мала')
                                         else {
-                                            let discountAll = 0, extraAll = 0;
-                                            allNds = 0
-                                            allNsp = 0
+                                            let discountAll = 0, extraAll = 0, nsp;
                                             extra = checkFloat(extra)
                                             if(extra) {
                                                 if (extraType === '%')
@@ -308,21 +313,16 @@ const BuyBasket =  React.memo(
                                                 discount = discount / items.length
                                             }
                                             for (let i = 0; i < items.length; i++) {
-                                                let allPrecent = 100+checkFloat(ndsTypesValue[items[i].ndsType])+checkFloat(nspTypesValue[items[i].nspType])
                                                 items[i].amountStart = checkFloat(items[i].count*items[i].price)
                                                 items[i].extra = checkFloat(items[i].extraType==='%'?items[i].amountStart/100*items[i].extra:checkFloat(items[i].extra) + extra)
                                                 items[i].discount = checkFloat(items[i].discountType==='%'?items[i].amountStart/100*items[i].discount:checkFloat(items[i].discount) + discount)
                                                 items[i].amountEnd = checkFloat(items[i].amountStart + items[i].extra - items[i].discount)
-                                                items[i].nds = checkFloat(items[i].amountEnd/allPrecent*checkFloat(ndsTypesValue[items[i].ndsType]))
-                                                items[i].nsp = checkFloat(items[i].amountEnd/allPrecent*checkFloat(nspTypesValue[items[i].nspType]))
-                                                if(typePayment==='Безналичный'&&type==='Продажа'&&checkFloat(nspTypesValue[items[i].nspType])){
-                                                    items[i].amountEnd = checkFloat(items[i].amountEnd - items[i].nsp)
-                                                    items[i].nsp = 0
+                                                if(typePayment==='Безналичный'&&type==='Продажа'){
+                                                    nsp = checkFloat(items[i].amountEnd / allPrecent * nspPrecent)
+                                                    items[i].amountEnd = checkFloat(items[i].amountEnd - nsp)
                                                 }
                                                 discountAll = checkFloat(discountAll + items[i].discount)
                                                 extraAll = checkFloat(extraAll + items[i].extra)
-                                                allNds += items[i].nds
-                                                allNsp += items[i].nsp
                                                 items[i] = {
                                                     name: items[i].name,
                                                     unit: items[i].unit,
@@ -332,10 +332,6 @@ const BuyBasket =  React.memo(
                                                     extra: items[i].extra,
                                                     amountStart: items[i].amountStart,
                                                     amountEnd: items[i].amountEnd,
-                                                    ndsType: items[i].ndsType,
-                                                    nds: items[i].nds,
-                                                    nspType: items[i].nspType,
-                                                    nsp: items[i].nsp,
                                                     tnved: items[i].tnved,
                                                     mark: items[i].mark,
                                                 }
@@ -355,8 +351,8 @@ const BuyBasket =  React.memo(
                                                 amountEnd,
                                                 usedPrepayment: 'Продажа'===type?usedPrepayment:0,
                                                 comment,
-                                                nds: checkFloat(allNds),
-                                                nsp: typePayment === 'Безналичный' ? 0 : checkFloat(allNsp)
+                                                nds: withoutNdsNsp.includes(type)?0:checkFloat(allNds),
+                                                nsp: withoutNdsNsp.includes(type)||typePayment==='Безналичный'?0:checkFloat(allNsp)
                                             })
                                             if(res){
                                                 setRes(res)

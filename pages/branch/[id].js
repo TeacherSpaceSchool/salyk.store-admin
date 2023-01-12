@@ -474,7 +474,6 @@ const Branch = React.memo((props) => {
                                     !data.object.del?
                                         <>
                                         <Button color='primary' onClick={()=>{
-                                            console.log(administrativeArea_v2)
                                             if (administrativeArea_v2&&calcItemAttribute&&geo&&legalObject&&name&&address&&locality&&postalCode&&route&&streetNumber&&pType_v2&&bType_v2&&ugns_v2) {
                                                 const action = async() => {
                                                     if(router.query.id==='new') {

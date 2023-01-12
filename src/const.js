@@ -7,6 +7,8 @@ export const ndsTypesValue = [0, 12]
 
 export const nspTypesValue = [0, 1, 2, 3, 5, 0.5, 1.5]
 
+export const withoutNdsNsp = ['Погашение кредита', 'Аванс', 'Возврат аванса', 'Покупка', 'Возврат покупки']
+
 export const taxSystems = [
     'Общий налоговый режим',
     'Налог на основе обязательного патента',

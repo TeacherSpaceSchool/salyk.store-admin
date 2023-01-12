@@ -58,8 +58,6 @@ const Selnew = React.memo((props) => {
     let [client, setClient] = useState(undefined);
     let [sale, setSale] = useState(undefined);
     let [allAmount, setAllAmount] = useState(0);
-    let [allNds, setAllNds] = useState(0);
-    let [allNsp, setAllNsp] = useState(0);
     let [type, setType] = useState('Продажа');
     let [comment, setComment] = useState('');
     let [items, setItems] = useState([]);
@@ -73,11 +71,8 @@ const Selnew = React.memo((props) => {
         setType(event.target.value)
     };
     let calculateAmountItem = (item) => {
-        let allPrecent = 100+ndsTypesValue[item.ndsType]+nspTypesValue[item.nspType]
         item.amountStart = checkFloat(item.count*item.price)
         item.amountEnd = checkFloat(item.amountStart + (item.extraType==='%'?item.amountStart/100*item.extra:checkFloat(item.extra)) - (item.discountType==='%'?item.amountStart/100*item.discount:item.discount))
-        item.nds = checkFloat(item.amountEnd/allPrecent*ndsTypesValue[item.ndsType])
-        item.nsp = checkFloat(item.amountEnd/allPrecent*nspTypesValue[item.nspType])
     };
     let addItem = (item) => {
         if(item) {
@@ -92,9 +87,6 @@ const Selnew = React.memo((props) => {
                 }
             }
             if(!search) {
-                let ndsType = legalObject.ndsType_v2?legalObject.ndsType_v2.toString():null
-                let nspType = legalObject.nspType_v2?legalObject.nspType_v2.toString():null
-                let allPrecent = 100+checkFloat(ndsTypesValue[ndsType])+checkFloat(nspTypesValue[nspType])
                 setItems([{
                     editedPrice: item.editedPrice,
                     _id: item._id,
@@ -108,12 +100,8 @@ const Selnew = React.memo((props) => {
                     extraType: 'сом',
                     amountStart: item.price,
                     amountEnd: item.price,
-                    nds: checkFloat(item.price / allPrecent * checkFloat(ndsTypesValue[ndsType])),
-                    nsp: checkFloat(item.price / allPrecent * checkFloat(nspTypesValue[nspType])),
                     tnved: item.tnved,
                     mark: item.mark,
-                    ndsType,
-                    nspType
                 }, ...items])
             }
             setInputValue('')
@@ -140,16 +128,10 @@ const Selnew = React.memo((props) => {
             initialRender.current = false;
         } else {
             allAmount = 0
-            allNds = 0
-            allNsp = 0
             for (let i = 0; i < items.length; i++) {
                 allAmount += items[i].amountEnd
-                allNds += items[i].nds
-                allNsp += items[i].nsp
             }
             setAllAmount(checkFloat(allAmount))
-            setAllNds(checkFloat(allNds))
-            setAllNsp(checkFloat(allNsp))
             if(type==='Продажа')
                 localStorage.items = JSON.stringify(items)
         }
@@ -204,9 +186,6 @@ const Selnew = React.memo((props) => {
                             }
                         }
                         if(!search) {
-                            let ndsType = legalObject.ndsType_v2?legalObject.ndsType_v2.toString():null
-                            let nspType = legalObject.nspType_v2?legalObject.nspType_v2.toString():null
-                            let allPrecent = 100+checkFloat(ndsTypesValue[ndsType])+checkFloat(nspTypesValue[nspType])
                             items = [{
                                 editedPrice: scanItems[0].editedPrice,
                                 _id: scanItems[0]._id,
@@ -220,12 +199,8 @@ const Selnew = React.memo((props) => {
                                 extraType: 'сом',
                                 amountStart: scanItems[0].price,
                                 amountEnd: scanItems[0].price,
-                                nds: checkFloat(scanItems[0].price / allPrecent * checkFloat(ndsTypesValue[ndsType])),
-                                nsp: checkFloat(scanItems[0].price / allPrecent * checkFloat(nspTypesValue[nspType])),
                                 tnved: scanItems[0].tnved,
                                 mark: scanItems[0].mark,
-                                ndsType,
-                                nspType
                             }, ...items]
                         }
                     }
@@ -332,10 +307,6 @@ const Selnew = React.memo((props) => {
                                                                 extraType: 'сом',
                                                                 amountStart: item.amountEnd,
                                                                 amountEnd: item.amountEnd,
-                                                                nds: item.nds,
-                                                                nsp: item.nsp,
-                                                                ndsType: item.ndsType,
-                                                                nspType: item.nspType,
                                                                 tnved: item.tnved,
                                                                 mark: item.mark,
                                                             }
@@ -755,8 +726,11 @@ const Selnew = React.memo((props) => {
                             else {
                                 if (allAmount > 0) {
                                     if (!type.includes('Возврат') || sale) {
+                                        allAmount = checkFloat(allAmount)
+                                        let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
+                                        let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
+                                        let allPrecent = 100+ndsPrecent+nspPrecent
                                         if (['Аванс', 'Погашение кредита', 'Возврат аванса'].includes(type)) {
-                                            allAmount = checkFloat(allAmount)
                                             items = [{
                                                 name: comment.length ? comment : type,
                                                 unit: 'шт',
@@ -768,55 +742,32 @@ const Selnew = React.memo((props) => {
                                                 extra: '',
                                                 extraType: 'сом',
                                                 amountEnd: allAmount,
-                                                nds: 0,
-                                                nsp: 0
                                             }]
                                         }
-                                        else if(['Продажа', 'Покупка'].includes(type)&&!items.length){
-                                            allAmount = checkFloat(allAmount)
-
-                                            let ndsType = legalObject.ndsType_v2?legalObject.ndsType_v2.toString():null
-                                            let nspType = legalObject.nspType_v2?legalObject.nspType_v2.toString():null
-                                            let allPrecent = 100+checkFloat(ndsTypesValue[ndsType])+checkFloat(nspTypesValue[nspType])
-                                            allNds = checkFloat(allAmount / allPrecent * checkFloat(ndsTypesValue[ndsType]))
-                                            allNsp = checkFloat(allAmount / allPrecent * checkFloat(nspTypesValue[nspType]))
-
-                                            items = [{
-                                                name: comment.length ? comment : '',
-                                                unit: 'шт',
-                                                count: 1,
-                                                price: allAmount,
-                                                amountStart: allAmount,
-                                                discount: '',
-                                                discountType: 'сом',
-                                                extra: '',
-                                                extraType: 'сом',
-                                                amountEnd: allAmount,
-                                                nds: allNds,
-                                                nsp: allNsp,
-                                                ndsType,
-                                                nspType
-                                            }]
-                                        }
-                                        console.log(items)
                                         let consignation = 0
                                         if (sale && sale.type === 'Кредит' && type === 'Возврат продажи')
                                             consignation = checkFloat(sale.amountEnd - sale.paid)
                                         let cashbox
                                         if (['Покупка', 'Возврат аванса', 'Возврат продажи'].includes(type))
                                             cashbox = await getCashbox({_id: data.cashbox})
-                                        setMiniDialog('Оплата', <Buy sale={sale}
-                                                                     _setComment={setComment}
-                                                                     ndsPrecent={checkFloat(ndsTypesValue[legalObject.ndsType_v2])}
-                                                                     nspPrecent={checkFloat(nspTypesValue[legalObject.nspType_v2])}
-                                                                     amountStart={allAmount}
-                                                                     client={client}
-                                                                     items={items} setType={setType}
-                                                                     allNsp={allNsp} allNds={allNds} type={type}
-                                                                     consignation={consignation}
-                                                                     setItems={setItems} setSale={setSale}
-                                                                     cashbox={cashbox} setClient={setClient}
-                                                                     usedPrepayment={usedPrepayment}/>)
+                                        setMiniDialog('Оплата', <Buy
+                                            sale={sale}
+                                            _setComment={setComment}
+                                            ndsPrecent={ndsPrecent}
+                                            nspPrecent={nspPrecent}
+                                            allPrecent={allPrecent}
+                                            amountStart={allAmount}
+                                            client={client}
+                                            items={items}
+                                            setType={setType}
+                                            type={type}
+                                            consignation={consignation}
+                                            setItems={setItems}
+                                            setSale={setSale}
+                                            cashbox={cashbox}
+                                            setClient={setClient}
+                                            usedPrepayment={usedPrepayment}
+                                        />)
                                         showMiniDialog(true)
 
                                     }
