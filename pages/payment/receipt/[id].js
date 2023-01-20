@@ -66,7 +66,7 @@ const Receipt = React.memo((props) => {
                             <div style={{textAlign: 'center', height: 12, marginTop: 10, marginBottom: 10}}>**********************************************</div>
                             <div style={{textAlign: 'right', marginBottom: 5}}>Оплачено: {data.object.paid}</div>
                             <div style={{textAlign: 'right', marginBottom: 5}}>Сдача: {data.object.change}</div>
-                            <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>ККМ SALYK.STORE v1.0</span></p>
+                            <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>ККМ SALYK.STORE v1.1</span></p>
                             {
                                 data.object.qr?
                                     <div style={{display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center'}}>
@@ -99,7 +99,7 @@ const Receipt = React.memo((props) => {
                                             {message: '********************************', align: 'center'},
                                             {message: `Оплачено: ${data.object.paid}`, align: 'right'},
                                             {message: `Сдача: ${data.object.change}`, align: 'right'},
-                                            {message: 'ККМ SALYK.STORE v1.0', align: 'center', bold: true},
+                                            {message: 'ККМ SALYK.STORE v1.1', align: 'center', bold: true},
                                             {image: data.object.qr}
                                         ]
                                         printEsPosData(_printer, _data)

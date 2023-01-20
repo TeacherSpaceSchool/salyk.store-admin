@@ -112,7 +112,7 @@ const Receipt = React.memo((props) => {
                             <div style={{textAlign: 'right', marginBottom: 5}}>ФД: {syncData.fields[1040]}</div>
                             <div style={{textAlign: 'right', marginBottom: 5}}>ФПД: {parseInt(syncData.fields[1077], 16)}</div>
                             <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>**********************************************</span></p>
-                            <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>ККМ SALYK.STORE v1.0</span></p>
+                            <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>ККМ SALYK.STORE v1.1</span></p>
                         </div>
                     </center>
                     {
@@ -156,7 +156,7 @@ const Receipt = React.memo((props) => {
                                             {message: `ФД: ${syncData.fields[1040]}`, align: 'left'},
                                             {message: `ФПД: ${parseInt(syncData.fields[1077], 16)}`, align: 'left'},
                                             {message: '**********************************************', align: 'center'},
-                                            {message: 'ККМ SALYK.STORE v1.0', align: 'center', bold: true},
+                                            {message: 'ККМ SALYK.STORE v1.1', align: 'center', bold: true},
                                         ]
                                         await printEsPosData(_printer, _data)
                                     }

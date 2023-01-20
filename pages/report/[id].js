@@ -248,7 +248,7 @@ const Receipt = React.memo((props) => {
                                     :
                                     <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>**********************************************</span></p>
                             }
-                            <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>ККМ SALYK.STORE v1.0</span></p>
+                            <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>ККМ SALYK.STORE v1.1</span></p>
                         </div>
                     </center>
                     {
@@ -366,7 +366,7 @@ const Receipt = React.memo((props) => {
                                         }
                                         else
                                             _data.push({message: '********************************', align: 'center'})
-                                        _data.push({message: 'ККМ SALYK.STORE v1.0', align: 'center', bold: true})
+                                        _data.push({message: 'ККМ SALYK.STORE v1.1', align: 'center', bold: true})
                                         printEsPosData(_printer, _data)
                                     }
                                     else {
