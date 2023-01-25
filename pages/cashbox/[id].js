@@ -429,7 +429,7 @@ const Cashbox = React.memo((props) => {
                                                         `Регистрация №${idx+1}`
                                                         :
                                                         element[0]==='reregisterCashbox'?
-                                                            `Изменении №${idx+1}`
+                                                            `Перерегистрация №${idx+1}`
                                                             :
                                                             `Закрытие №${idx+1}`
                                                 }</MenuItem>
