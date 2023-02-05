@@ -185,7 +185,7 @@ const Receipt = React.memo((props) => {
                                     <div style={{textAlign: 'left', marginBottom: 5}}>{item.name}{item.mark?' | M':''}{item.tnved?` | ${item.tnved}`:''}</div>
                                     <div style={{textAlign: 'right', marginBottom: 5}}>{item.price.toFixed(2)} * {item.count} {item.unit} = {item.amountStart.toFixed(2)}</div>
                                     <div style={{textAlign: 'right', marginBottom: 5}}>
-                                        {`НДС ${checkFloat(item.ndsPrecent)}%: ${checkFloat(item.nds)} | НСП ${checkFloat(item.nspPrecent)}%: ${checkFloat(item.nsp)}`}
+                                        {`НДС ${checkFloat(item.ndsPrecent)}%: ${(checkFloat(item.nds)).toFixed(2)} | НСП ${checkFloat(item.nspPrecent)}%: ${(checkFloat(item.nsp)).toFixed(2)}`}
                                     </div>
                                     {
                                         item.discount||item.extra?
@@ -308,7 +308,7 @@ const Receipt = React.memo((props) => {
                                                 for(let i=0; i<data.object.items.length; i++) {
                                                     _data.push({message: `${data.object.items[i].name}${data.object.items[i].mark?' | M':''}${data.object.items[i].tnved?` | ${data.object.items[i].tnved}`:''}`, align: 'left'})
                                                     _data.push({message: `${data.object.items[i].price.toFixed(2)} * ${data.object.items[i].count} ${data.object.items[i].unit} = ${data.object.items[i].amountStart.toFixed(2)}`, align: 'right'})
-                                                    _data.push({message: `НДС ${checkFloat(data.object.items[i].ndsPrecent)}%: ${checkFloat(data.object.items[i].nds)} | НСП ${checkFloat(data.object.items[i].nspPrecent)}%: ${checkFloat(data.object.items[i].nsp)}`, align: 'right'})
+                                                    _data.push({message: `НДС ${checkFloat(data.object.items[i].ndsPrecent)}%: ${(checkFloat(data.object.items[i].nds)).toFixed(2)} | НСП ${checkFloat(data.object.items[i].nspPrecent)}%: ${(checkFloat(data.object.items[i].nsp)).toFixed(2)}`, align: 'right'})
                                                     if(data.object.items[i].discount||data.object.items[i].extra){
                                                         if(data.object.items[i].discount)
                                                             _data.push({message: `${'Продажа'===data.object.type?'Скидка':'Уценка'}: ${data.object.items[i].discount.toFixed(2)}`, align: 'right'})
