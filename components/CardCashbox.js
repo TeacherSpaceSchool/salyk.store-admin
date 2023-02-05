@@ -75,7 +75,7 @@ const CardCashbox = React.memo((props) => {
                             <div className={classes.nameField}>
                                 Оплачен до:&nbsp;
                             </div>
-                            <div className={classes.value} style={{color: element.endPayment&&element.endPayment>=new Date()?'green':'red'}}>
+                            <div className={classes.value} style={{color: element.paidWork?'green':'red'}}>
                                 {element.endPayment?pdDDMMYYHHMM(element.endPayment):'не оплачен'}
                             </div>
                         </div>

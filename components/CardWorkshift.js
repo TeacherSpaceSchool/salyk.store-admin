@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -20,21 +20,33 @@ import SyncOn from '@material-ui/icons/Sync';
 import SyncOff from '@material-ui/icons/SyncDisabled';
 
 const CardWorkshift = React.memo((props) => {
+    const { element, setList } = props;
     const { profile } = props.user;
     const classes = cardWorkshiftStyle();
     const { setMiniDialog, showMiniDialog } = props.mini_dialogActions;
     const { showSnackBar } = props.snackbarActions;
-    const { element } = props;
     const { isMobileApp } = props.app;
     let [deposit, setDeposit] = useState(element?element.deposit:0);
     let [withdraw, setWithdraw] = useState(element?element.withdraw:0);
     let [cashEnd, setCashEnd] = useState(element?element.cashEnd:0);
-    let [expired, setExpired] = useState(false);
     useEffect(()=>{
-        if(!element.end){
-            setExpired(((new Date()-element.start)/1000/60/60)>24)
+        if(element.needDeposit) {
+            element.needDeposit = false
+            setList([element])
+            setMiniDialog('Внести', <SetFloat action={async (float, comment)=>{
+                if(float>0) {
+                    let res = await _setWorkShift({deposit: float, comment, withdraw: 0})
+                    if(res==='OK') {
+                        setDeposit(deposit + float)
+                        setCashEnd(cashEnd + float)
+                    }
+                }
+                else
+                    showSnackBar('Сумма слишком мала')
+            }}/>)
+            showMiniDialog(true)
         }
-    }, []);
+    },[])
     return (
         <Card className={isMobileApp?classes.cardM:classes.cardD}>
             {
@@ -51,7 +63,7 @@ const CardWorkshift = React.memo((props) => {
                     <CardContent>
                         {
                             !element.end?
-                                <div className={classes.status} style={{background: expired?'red':'green'}}>{expired?'Cмена просрочена':'Работает'}</div>
+                                <div className={classes.status} style={{background: element.expired?'red':'green'}}>{element.expired?'Cмена просрочена':'Работает'}</div>
                                 :
                                 null
                         }
@@ -121,22 +133,14 @@ const CardWorkshift = React.memo((props) => {
                                 :
                                 null
                         }
-                        <div className={classes.row}>
-                            <div className={classes.nameField}>
-                                Наличных на начало:&nbsp;
-                            </div>
-                            <div className={classes.value}>
-                                {element.cashStart} сом
-                            </div>
-                        </div>
                         {
-                            cashEnd!=undefined?
+                            cashEnd?
                                 <div className={classes.row}>
                                     <div className={classes.nameField}>
-                                        Наличных на конец:&nbsp;
+                                        Наличных в кассе:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {cashEnd} сом
+                                        {cashEnd.toFixed(2)} сом
                                     </div>
                                 </div>
                                 :
@@ -149,7 +153,7 @@ const CardWorkshift = React.memo((props) => {
                                         Внесено:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {deposit} сом
+                                        {deposit.toFixed(2)} сом
                                     </div>
                                 </div>
                                 :
@@ -162,7 +166,7 @@ const CardWorkshift = React.memo((props) => {
                                         Изъято:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {withdraw} сом
+                                        {withdraw.toFixed(2)} сом
                                     </div>
                                 </div>
                                 :
@@ -175,7 +179,7 @@ const CardWorkshift = React.memo((props) => {
                                         Наличными:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {element.cash} сом
+                                        {element.cash.toFixed(2)} сом
                                     </div>
                                 </div>
                                 :
@@ -188,7 +192,7 @@ const CardWorkshift = React.memo((props) => {
                                         Безналичными:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {element.cashless} сом
+                                        {element.cashless.toFixed(2)} сом
                                     </div>
                                 </div>
                                 :
@@ -201,7 +205,7 @@ const CardWorkshift = React.memo((props) => {
                                         Скидки:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {element.discount} сом
+                                        {element.discount.toFixed(2)} сом
                                     </div>
                                 </div>
                                 :
@@ -214,7 +218,7 @@ const CardWorkshift = React.memo((props) => {
                                         Наценки:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {element.extra} сом
+                                        {element.extra.toFixed(2)} сом
                                     </div>
                                 </div>
                                 :
@@ -227,7 +231,7 @@ const CardWorkshift = React.memo((props) => {
                                         Продажа:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {element.sale} сом | {element.saleCount} шт
+                                        {element.sale.toFixed(2)} сом | {element.saleCount} шт
                                     </div>
                                 </div>
                                 :
@@ -240,7 +244,7 @@ const CardWorkshift = React.memo((props) => {
                                         Возврат:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {element.returned} сом | {element.returnedCount} шт
+                                        {element.returned.toFixed(2)} сом | {element.returnedCount} шт
                                     </div>
                                 </div>
                                 :
@@ -253,7 +257,7 @@ const CardWorkshift = React.memo((props) => {
                                         Кредит:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {element.consignation} сом | {element.consignationCount} шт
+                                        {element.consignation.toFixed(2)} сом | {element.consignationCount} шт
                                     </div>
                                 </div>
                                 :
@@ -266,7 +270,7 @@ const CardWorkshift = React.memo((props) => {
                                         Погашение кредита:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {element.paidConsignation} сом | {element.paidConsignationCount} шт
+                                        {element.paidConsignation.toFixed(2)} сом | {element.paidConsignationCount} шт
                                     </div>
                                 </div>
                                 :
@@ -279,7 +283,7 @@ const CardWorkshift = React.memo((props) => {
                                         Аванс:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {element.prepayment} сом | {element.prepaymentCount} шт
+                                        {element.prepayment.toFixed(2)} сом | {element.prepaymentCount} шт
                                     </div>
                                 </div>
                                 :
@@ -292,7 +296,7 @@ const CardWorkshift = React.memo((props) => {
                                         Покупка:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {element.buy} сом | {element.buyCount} шт
+                                        {element.buy.toFixed(2)} сом | {element.buyCount} шт
                                     </div>
                                 </div>
                                 :
@@ -305,7 +309,7 @@ const CardWorkshift = React.memo((props) => {
                                         Возврат покупки:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {element.returnedBuy} сом | {element.returnedBuyCount} шт
+                                        {element.returnedBuy.toFixed(2)} сом | {element.returnedBuyCount} шт
                                     </div>
                                 </div>
                                 :
@@ -321,7 +325,7 @@ const CardWorkshift = React.memo((props) => {
                         <div style={{width: '100%'}}>
                             <div className={classes.row}>
                                 {
-                                    !expired?
+                                    !element.expired?
                                         <>
                                         {
                                             profile.role==='кассир'?
@@ -388,13 +392,16 @@ const CardWorkshift = React.memo((props) => {
                                         null
                                 }
                                 {
-                                    profile.role!=='admin'||profile.add||expired?
+                                    profile.role!=='admin'||profile.add||element.expired?
                                         <Button color='secondary' onClick={()=>{
                                             const action = async() => {
-                                                let report = await endWorkShift(...['управляющий', 'супервайзер', 'admin', 'superadmin'].includes(profile.role)?[element._id]:[])
-                                                Router.push(`/report/${report}?type=Z`)
+                                                let res = await _setWorkShift({deposit: 0, comment: 'Закрытие смены', withdraw: cashEnd})
+                                                if(res==='OK') {
+                                                    let report = await endWorkShift(...['управляющий', 'супервайзер', 'admin', 'superadmin'].includes(profile.role)?[element._id]:[])
+                                                    Router.push(`/report/${report}?type=Z`)
+                                                }
                                             }
-                                            setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                            setMiniDialog('Закрыть смену и обнулить кассу?', <Confirmation action={action}/>)
                                             showMiniDialog(true)
                                         }}>
                                             Закрыть смену
@@ -404,7 +411,7 @@ const CardWorkshift = React.memo((props) => {
                                 }
                             </div>
                             {
-                                profile.role==='кассир'&&!expired?
+                                profile.role==='кассир'&&!element.expired?
                                     <center>
                                         <Link href='/salenew'>
                                             <Button variant='outlined' color='primary' style={{width: '100%', marginTop: 10}}>

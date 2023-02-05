@@ -109,6 +109,7 @@ export const getLegalObject = async({_id}, client)=>{
                         legalObject(_id: $_id) {
                             _id
                             createdAt
+                            accessTokenExpired
                             accessLogin
                             accessPassword
                             accessToken

@@ -26,6 +26,8 @@ export const getItems = async({skip, search, category, type, legalObject, limit,
                             tnved
                             mark
                             priority
+                            ndsType_v2
+                            nspType_v2
                         }
                     }`,
             })
@@ -76,6 +78,8 @@ export const getItem = async({_id}, client)=>{
                             mark
                             quick
                             priority
+                            ndsType_v2
+                            nspType_v2
                         }
                     }`,
             })
@@ -99,14 +103,14 @@ export const deleteItem = async(_id)=>{
     }
 }
 
-export const addItem = async({legalObject, category, price, unit, barCode, name, type, editedPrice, tnved, mark, quick, priority})=>{
+export const addItem = async({legalObject, category, price, unit, barCode, name, type, editedPrice, tnved, mark, quick, priority, ndsType_v2, nspType_v2})=>{
     try{
         const client = new SingletonApolloClient().getClient()
         let res = await client.mutate({
-            variables: {legalObject, category, price, unit, barCode, name, type, editedPrice, tnved, mark, quick, priority},
+            variables: {legalObject, category, price, unit, barCode, name, type, editedPrice, tnved, mark, quick, priority, ndsType_v2, nspType_v2},
             mutation : gql`
-                    mutation ($legalObject: ID!, $category: ID, $tnved: String!, $mark: Boolean!, $priority: Int!, $quick: Boolean!, $price: Float!, $editedPrice: Boolean!, $unit: String!, $barCode: String, $name: String!, $type: String!) {
-                        addItem(legalObject: $legalObject, category: $category, tnved: $tnved, mark: $mark, priority: $priority, quick: $quick, price: $price, editedPrice: $editedPrice, unit: $unit, barCode: $barCode, name: $name, type: $type)
+                    mutation ($legalObject: ID!, $category: ID, $tnved: String!, $ndsType_v2: Int, $nspType_v2: Int, $mark: Boolean!, $priority: Int!, $quick: Boolean!, $price: Float!, $editedPrice: Boolean!, $unit: String!, $barCode: String, $name: String!, $type: String!) {
+                        addItem(legalObject: $legalObject, category: $category, tnved: $tnved, ndsType_v2: $ndsType_v2, nspType_v2: $nspType_v2, mark: $mark, priority: $priority, quick: $quick, price: $price, editedPrice: $editedPrice, unit: $unit, barCode: $barCode, name: $name, type: $type)
                     }`})
         return res.data.addItem
     } catch(err){
@@ -114,14 +118,14 @@ export const addItem = async({legalObject, category, price, unit, barCode, name,
     }
 }
 
-export const setItem = async({_id, category, price, unit, barCode, name, type, editedPrice, tnved, mark, quick, priority})=>{
+export const setItem = async({_id, category, price, unit, barCode, name, type, editedPrice, tnved, mark, quick, priority, ndsType_v2, nspType_v2})=>{
     try{
         const client = new SingletonApolloClient().getClient()
         await client.mutate({
-            variables: {_id, category, price, unit, barCode, name, type, editedPrice, tnved, mark, quick, priority},
+            variables: {_id, category, price, unit, barCode, name, type, editedPrice, tnved, mark, quick, priority, ndsType_v2, nspType_v2},
             mutation : gql`
-                    mutation ($_id: ID!, $category: ID, $tnved: String, $mark: Boolean, $quick: Boolean, $price: Float, $priority: Int, $editedPrice: Boolean, $unit: String, $barCode: String, $name: String, $type: String) {
-                        setItem(_id: $_id, category: $category, tnved: $tnved, mark: $mark, quick: $quick, priority: $priority, editedPrice: $editedPrice, price: $price, unit: $unit, barCode: $barCode, name: $name, type: $type)
+                    mutation ($_id: ID!, $category: ID, $tnved: String, $mark: Boolean, $ndsType_v2: Int, $nspType_v2: Int, $quick: Boolean, $price: Float, $priority: Int, $editedPrice: Boolean, $unit: String, $barCode: String, $name: String, $type: String) {
+                        setItem(_id: $_id, category: $category, tnved: $tnved, mark: $mark, ndsType_v2: $ndsType_v2, nspType_v2: $nspType_v2, quick: $quick, priority: $priority, editedPrice: $editedPrice, price: $price, unit: $unit, barCode: $barCode, name: $name, type: $type)
                     }`})
     } catch(err){
         console.error(err)

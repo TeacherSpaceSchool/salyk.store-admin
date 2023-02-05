@@ -18,33 +18,24 @@ const BuyBasket =  React.memo(
     (props) =>{
         const { isMobileApp } = props.app;
         const { profile } = props.user;
-        let { classes, client, amountStart, _setComment, cashbox, items, allPrecent, ndsPrecent, nspPrecent, type, usedPrepayment, consignation, sale, setItems, setType, setClient, setSale, setAllAmount } = props;
+        let { classes, client, amountStart, _setComment, cashbox, allNsp, allNds, items, type, usedPrepayment, sale, setItems, setType, setClient, setSale, setAllAmount } = props;
+        //при возврате кредита минусуем долг
+        const { consignation } = props;
         const { showLoad } = props.appActions;
         const { showMiniDialog } = props.mini_dialogActions;
         const { showSnackBar } = props.snackbarActions;
         const width = isMobileApp? (window.innerWidth-112) : 500
         let [typePayment, setTypePayment] = useState('Наличными');
         let [res, setRes] = useState(undefined);
-        let [allNds, setAllNds] = useState(checkFloat(amountStart / allPrecent * ndsPrecent));
-        let [allNsp, setAllNsp] = useState(checkFloat(amountStart / allPrecent * nspPrecent));
-        let [discount, setDiscount] = useState('');
         let [amountEnd, setAmountEnd] = useState(amountStart);
         let [paid, setPaid] = useState(0);
-        let [discountType, setDiscountType] = useState('сом');
         let [comment, setComment] = useState('');
         let [commentShow, setCommentShow] = useState(false);
-        let [extra, setExtra] = useState('');
         let [change, setChange] = useState('');
-        let [extraType, setExtraType] = useState('сом');
         useEffect(() => {
-            amountEnd = amountStart + (extraType==='%'?amountStart/100*extra:checkFloat(extra)) - (discountType==='%'?amountStart/100*discount:discount) - consignation
-            allNds = checkFloat(amountEnd / allPrecent * ndsPrecent)
-            setAllNds(allNds)
-            allNsp = checkFloat(amountEnd / allPrecent * nspPrecent)
-            setAllNsp(allNsp)
-            if(typePayment==='Безналичный'&&type==='Продажа') {
+            amountEnd = amountStart - consignation
+            if (typePayment === 'Безналичный')
                 amountEnd -= allNsp
-            }
             amountEnd = checkFloat(amountEnd)
             setAmountEnd(amountEnd)
             if (typePayment === 'Безналичный')
@@ -58,7 +49,7 @@ const BuyBasket =  React.memo(
                 change = parseInt(change)
             setChange(change)
             setPaid(paid)
-        }, [typePayment, extra, discount, extraType, discountType]);
+        }, [typePayment]);
         return (
             <div className={classes.main} style={{width}}>
                 {
@@ -92,87 +83,6 @@ const BuyBasket =  React.memo(
                                         :
                                         null
                                 }
-                                <div style={{width}} className={isMobileApp?classes.column:classes.row}>
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>{'Продажа'===type?'Скидка':'Уценка'}:&nbsp;&nbsp;&nbsp;&nbsp;</div>
-                                        <div className={classes.counter}>
-                                            <div className={classes.counterbtn} onClick={() => {
-                                                if(discount>0) {
-                                                    discount = checkFloat(discount - 1)
-                                                    setDiscount(discount)
-                                                }
-                                            }}>–</div>
-                                            <input
-                                                type={isMobileApp?'number':'text'}
-                                                className={classes.counternmbr}
-                                                value={discount}
-                                                onChange={(event) => {
-                                                    if('Продажа'===type) {
-                                                        discount = inputFloat(event.target.value)
-                                                        setDiscount(discount)
-                                                    }
-                                                }}
-                                                onFocus={()=>{
-                                                    if('Продажа'===type) {
-                                                        discount = inputFloat('')
-                                                        setDiscount(discount)
-                                                    }
-                                                }}
-                                            />
-                                            <div className={classes.counterbtn} onClick={() => {
-                                                discount = checkFloat(checkFloat(discount) + 1)
-                                                setDiscount(discount)
-                                            }}>+
-                                            </div>
-                                        </div>
-                                        <div className={classes.typeShow} onClick={()=>{
-                                            discountType = discountType==='%'?'сом':'%'
-                                            setDiscountType(discountType)
-                                        }}>
-                                            {discountType}
-                                        </div>
-                                    </div>
-                                    {
-                                        'Продажа'===type?
-                                            <div className={classes.row}>
-                                                <div className={classes.nameField}>Наценка:&nbsp;&nbsp;</div>
-                                                <div className={classes.counter}>
-                                                    <div className={classes.counterbtn} onClick={() => {
-                                                        if(extra>0) {
-                                                            extra = checkFloat(extra - 1)
-                                                            setExtra(extra)
-                                                        }
-                                                    }}>–</div>
-                                                    <input
-                                                        type={isMobileApp?'number':'text'}
-                                                        className={classes.counternmbr}
-                                                        value={extra}
-                                                        onChange={(event) => {
-                                                            extra = inputFloat(event.target.value)
-                                                            setExtra(extra)
-                                                        }}
-                                                        onFocus={()=>{
-                                                            extra = inputFloat('')
-                                                            setExtra(extra)
-                                                        }}
-                                                    />
-                                                    <div className={classes.counterbtn} onClick={() => {
-                                                        extra = checkFloat(checkFloat(extra) + 1)
-                                                        setExtra(extra)
-                                                    }}>+
-                                                    </div>
-                                                </div>
-                                                <div className={classes.typeShow} onClick={()=>{
-                                                    extraType = extraType==='%'?'сом':'%'
-                                                    setExtraType(extraType)
-                                                }}>
-                                                    {extraType}
-                                                </div>
-                                            </div>
-                                            :
-                                            null
-                                    }
-                                </div>
                                 </>
                                 :
                                 null
@@ -261,7 +171,12 @@ const BuyBasket =  React.memo(
                         {
                             change<0?
                                 <div className={classes.row}>
-                                    <b style={{color: 'red'}}>{['Аванс', 'Погашение кредита', 'Покупка', 'Возврат продажи', 'Возврат покупки', 'Возврат аванса'].includes(type)||!profile.credit?'Сумма слишком мала':`Кредит: ${change*-1} сома`}</b>
+                                    <b style={{color: 'red'}}>{
+                                        ['Аванс', 'Погашение кредита', 'Покупка', 'Возврат продажи', 'Возврат покупки', 'Возврат аванса'].includes(type)||!profile.credit?
+                                            'Оплата слишком мала'
+                                            :
+                                            'Оплата слишком мала'/*/КРЕДИТ/`Кредит: ${change*-1} сома`*/
+                                    }</b>
                                 </div>
                                 :
                                 <div className={classes.row}>
@@ -291,36 +206,16 @@ const BuyBasket =  React.memo(
                                 if(typePayment==='Наличными'&&['Покупка', 'Возврат аванса', 'Возврат продажи'].includes(type)&&paid>cashbox.cash)
                                     showSnackBar('Наличных в кассе недостаточно, внесите нужную сумму')
                                 else {
-                                    if(!profile.credit&&change<0) {
+                                    if(/*/КРЕДИТ/!profile.credit&&*/change<0) {
                                         showMiniDialog(false)
-                                        showSnackBar('Кредит не разрешен')
+                                        showSnackBar(/*/КРЕДИТ/'Кредит не разрешен'*/'Оплата слишком мала')
                                     }
                                     else {
                                         if (change<0&&['Аванс', 'Погашение кредита', 'Покупка', 'Возврат продажи', 'Возврат покупки', 'Возврат аванса'].includes(type) || amountEnd<0 || paid<0)
                                             showSnackBar('Сумма слишком мала')
                                         else {
-                                            let discountAll = 0, extraAll = 0, nsp;
-                                            extra = checkFloat(extra)
-                                            if(extra) {
-                                                if (extraType === '%')
-                                                    extra = checkFloat(amountStart / 100 * extra)
-                                                extra = extra / items.length
-                                            }
-                                            discount = checkFloat(discount)
-                                            if(discount) {
-                                                if (discountType === '%')
-                                                    discount = checkFloat(amountStart / 100 * discount)
-                                                discount = discount / items.length
-                                            }
+                                            let discountAll = 0, extraAll = 0
                                             for (let i = 0; i < items.length; i++) {
-                                                items[i].amountStart = checkFloat(items[i].count*items[i].price)
-                                                items[i].extra = checkFloat(items[i].extraType==='%'?items[i].amountStart/100*items[i].extra:checkFloat(items[i].extra) + extra)
-                                                items[i].discount = checkFloat(items[i].discountType==='%'?items[i].amountStart/100*items[i].discount:checkFloat(items[i].discount) + discount)
-                                                items[i].amountEnd = checkFloat(items[i].amountStart + items[i].extra - items[i].discount)
-                                                if(typePayment==='Безналичный'&&type==='Продажа'){
-                                                    nsp = checkFloat(items[i].amountEnd / allPrecent * nspPrecent)
-                                                    items[i].amountEnd = checkFloat(items[i].amountEnd - nsp)
-                                                }
                                                 discountAll = checkFloat(discountAll + items[i].discount)
                                                 extraAll = checkFloat(extraAll + items[i].extra)
                                                 items[i] = {
@@ -328,21 +223,23 @@ const BuyBasket =  React.memo(
                                                     unit: items[i].unit,
                                                     count: checkFloat(items[i].count),
                                                     price: checkFloat(items[i].price),
-                                                    discount: items[i].discount,
-                                                    extra: items[i].extra,
-                                                    amountStart: items[i].amountStart,
-                                                    amountEnd: items[i].amountEnd,
+                                                    discount: checkFloat(items[i].discount),
+                                                    extra: checkFloat(items[i].extra),
+                                                    amountStart: checkFloat(items[i].amountStart),
+                                                    amountEnd: checkFloat(items[i].amountEnd),
                                                     tnved: items[i].tnved,
                                                     mark: items[i].mark,
+                                                    ndsPrecent: checkFloat(items[i].ndsPrecent),
+                                                    nds: checkFloat(items[i].nds),
+                                                    nspPrecent: checkFloat(items[i].nspPrecent),
+                                                    nsp: checkFloat(items[i].nsp),
                                                 }
                                             }
                                             let res = await addSale({
-                                                ndsPrecent,
-                                                nspPrecent,
                                                 client: client?client._id:client,
                                                 sale: sale?sale._id:sale,
                                                 typePayment,
-                                                type: change<0?'Кредит':type==='Возврат продажи'?'Возврат':type,
+                                                type: change<0?'Кредит':type,
                                                 paid: checkFloat(paid),
                                                 change: change<0?0:change,
                                                 extra: extraAll,

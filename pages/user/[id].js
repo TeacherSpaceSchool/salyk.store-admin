@@ -255,8 +255,8 @@ const User = React.memo((props) => {
                                                         <div className={classes.nameField}>
                                                             Вход:&nbsp;
                                                         </div>
-                                                        <div className={classes.value} style={{color: ((new Date()-data.object.enteredDate)/1000/60/60)<24?'green':'red'}}>
-                                                            {((new Date()-data.object.enteredDate)/1000/60/60)<24?'Выполнен':'Просрочен'}
+                                                        <div className={classes.value} style={{color: data.object.enteredExpired?'red':'green'}}>
+                                                            {data.object.enteredExpired?'Просрочен':'Выполнен'}
                                                         </div>
                                                     </div>
                                                     :

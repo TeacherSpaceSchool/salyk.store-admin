@@ -35,6 +35,7 @@ import AutocomplectOnline from '../../components/app/AutocomplectOnline'
 import {getLegalObjects} from '../../src/gql/legalObject'
 import { openScanner } from '../../src/lib';
 const types = ['товары', 'услуги']
+import { ndsTypes, nspTypes } from '../../src/const'
 
 const Item = React.memo((props) => {
     const { profile } = props.user;
@@ -42,6 +43,15 @@ const Item = React.memo((props) => {
     const { data } = props;
     const { isMobileApp } = props.app;
     const { showSnackBar } = props.snackbarActions;
+
+    let [ndsType_v2, setNdsType_v2] = useState(data.object&&data.object.ndsType_v2!=undefined?ndsTypes[data.object.ndsType_v2]:null);
+    let handleNdsType_v2 = (event) => {
+        setNdsType_v2(event.target.value)
+    };
+    let [nspType_v2, setNspType_v2] = useState(data.object&&data.object.nspType_v2!=undefined?nspTypes[data.object.nspType_v2]:null);
+    let handleNspType_v2 = (event) => {
+        setNspType_v2(event.target.value)
+    };
     let [legalObject, setLegalObject] = useState(data.object?data.object.legalObject:undefined);
     let [name, setName] = useState(data.object?data.object.name:'');
     let [price, setPrice] = useState(data.object?data.object.price:'');
@@ -85,123 +95,10 @@ const Item = React.memo((props) => {
             </Head>
             <Card className={classes.page}>
                 <CardContent className={classes.column} style={isMobileApp?{}:{justifyContent: 'start', alignItems: 'flex-start'}}>
-                {
-                    data.object!==null?
-                        !profile.add?
-                            <>
-                            <div className={classes.row}>
-                                <div className={classes.nameField}>
-                                    Регистрация:&nbsp;
-                                </div>
-                                <div className={classes.value}>
-                                    {pdDDMMYYHHMM(data.object.createdAt)}
-                                </div>
-                            </div>
-                            {
-                                ['admin', 'superadmin'].includes(profile.role)?
-                                    <Link href='/legalobject/[id]' as={`/legalobject/${data.object.legalObject._id}`}>
-                                        <a>
-                                            <div className={classes.row}>
-                                                <div className={classes.nameField}>
-                                                    Налогоплательщик:&nbsp;
-                                                </div>
-                                                <div className={classes.value}>
-                                                    {data.object.legalObject.name}
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </Link>
-                                    :
-                                    null
-                            }
-                            <div className={classes.row}>
-                                <div className={classes.nameField}>
-                                    Тип:&nbsp;
-                                </div>
-                                <div className={classes.value}>
-                                    {type}
-                                </div>
-                            </div>
-                            <div className={classes.row}>
-                                <div className={classes.nameField}>
-                                    Название:&nbsp;
-                                </div>
-                                <div className={classes.value}>
-                                    {name}
-                                </div>
-                            </div>
-                            {
-                                barCode?
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>
-                                            Штрих-код:&nbsp;
-                                        </div>
-                                        <div className={classes.value}>
-                                            {barCode}
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-                            <div className={classes.row} style={{alignItems: 'flex-end'}}>
-                                <div className={classes.nameField}>Редактируемая цена:&nbsp;</div>
-                                <Checkbox
-
-                                    checked={editedPrice}
-                                    color='primary'
-                                    inputProps={{ 'aria-label': 'primary checkbox' }}
-                                />
-                            </div>
-                            <div className={classes.row}>
-                                <div className={classes.nameField}>
-                                    Цена:&nbsp;
-                                </div>
-                                <div className={classes.value}>
-                                    {price} сом
-                                </div>
-                            </div>
-                            <div className={classes.row}>
-                                <div className={classes.nameField}>
-                                    Единица измерения:&nbsp;
-                                </div>
-                                <div className={classes.value}>
-                                    {unit}
-                                </div>
-                            </div>
-                            <div className={classes.row}>
-                                <div className={classes.nameField}>
-                                    Категория:&nbsp;
-                                </div>
-                                <div className={classes.value}>
-                                    {category?category.name:'Несортированно'}
-                                </div>
-                            </div>
-                            {
-                                tnved?
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>
-                                            Kод ТНВЭД:&nbsp;
-                                        </div>
-                                        <div className={classes.value}>
-                                            {tnved}
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-                            <div className={classes.row}>
-                                <div className={classes.nameField}>
-                                    Признак маркировки:&nbsp;
-                                </div>
-                                <div className={classes.value}>
-                                    {mark?'присутсвует':'отсутсвует'}
-                                </div>
-                            </div>
-                            </>
-                            :
-                            <>
-                            {
-                                router.query.id!=='new'?
+                    {
+                        data.object!==null?
+                            !profile.add?
+                                <>
                                     <div className={classes.row}>
                                         <div className={classes.nameField}>
                                             Регистрация:&nbsp;
@@ -210,212 +107,361 @@ const Item = React.memo((props) => {
                                             {pdDDMMYYHHMM(data.object.createdAt)}
                                         </div>
                                     </div>
-                                    :
-                                    null
-                            }
-                            {
-                                ['admin', 'superadmin'].includes(profile.role)?router.query.id==='new'?
-                                    <AutocomplectOnline
-                                        error={!legalObject||!legalObject._id}
-                                        setElement={setLegalObject}
-                                        getElements={async (search)=>{return await getLegalObjects({search})}}
-                                        label={'налогоплательщика'}
-                                    />
-                                    :
-                                    <Link href='/legalobject/[id]' as={`/legalobject/${legalObject._id}`}>
-                                        <a>
-                                            <div className={classes.row}>
-                                                <div className={classes.nameField}>
-                                                    Налогоплательщик:&nbsp;
-                                                </div>
-                                                <div className={classes.value}>
-                                                    {data.object.legalObject.name}
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </Link>
-                                    :
-                                    null
-                            }
-                            <FormControl className={classes.input}>
-                                <InputLabel>Тип</InputLabel>
-                                <Select value={type} onChange={handleType}>
-                                    {types.map((element)=>
-                                        <MenuItem key={element} value={element}>{element}</MenuItem>
-                                    )}
-                                </Select>
-                            </FormControl>
-                            <TextField
-                                error={!name}
-                                label='Название'
-                                value={name}
-                                className={classes.input}
-                                onChange={(event)=>{setName(event.target.value)}}
-                            />
-                            <FormControl className={ classes.input}>
-                                <InputLabel>Штрих-код</InputLabel>
-                                <Input
-                                    type={'text'}
-                                    value={barCode}
-                                    onChange={(event)=>{setBarCode(event.target.value)}}
-                                    className={classes.input}
-                                    onBlur={async()=>{
-                                        if(barCode.length) {
-                                            let itemBarCode = await getItemBarCode({barCode})
-                                            if (itemBarCode&&itemBarCode.name) setName(itemBarCode.name)
-                                        }
-                                    }}
-                                    endAdornment={
-                                        isMobileApp?
-                                            <InputAdornment position='end'>
-                                                <IconButton aria-label='scanner' onClick={()=>{
-                                                    openScanner({_idx: 0, path: `item/${router.query.id}`})
-                                                }}>
-                                                    <ControlCamera/>
-                                                </IconButton>
-                                            </InputAdornment>
+                                    {
+                                        ['admin', 'superadmin'].includes(profile.role)?
+                                            <Link href='/legalobject/[id]' as={`/legalobject/${data.object.legalObject._id}`}>
+                                                <a>
+                                                    <div className={classes.row}>
+                                                        <div className={classes.nameField}>
+                                                            Налогоплательщик:&nbsp;
+                                                        </div>
+                                                        <div className={classes.value}>
+                                                            {data.object.legalObject.name}
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </Link>
                                             :
                                             null
                                     }
-                                />
-                            </FormControl>
-                            <div className={classes.row} style={{alignItems: 'flex-end'}}>
-                                <div className={classes.nameField}>Редактируемая цена:&nbsp;</div>
-                                <Checkbox
+                                    <div className={classes.row}>
+                                        <div className={classes.nameField}>
+                                            Тип:&nbsp;
+                                        </div>
+                                        <div className={classes.value}>
+                                            {type}
+                                        </div>
+                                    </div>
+                                    <div className={classes.row}>
+                                        <div className={classes.nameField}>
+                                            Название:&nbsp;
+                                        </div>
+                                        <div className={classes.value}>
+                                            {name}
+                                        </div>
+                                    </div>
+                                    {
+                                        barCode?
+                                            <div className={classes.row}>
+                                                <div className={classes.nameField}>
+                                                    Штрих-код:&nbsp;
+                                                </div>
+                                                <div className={classes.value}>
+                                                    {barCode}
+                                                </div>
+                                            </div>
+                                            :
+                                            null
+                                    }
+                                    <div className={classes.row} style={{alignItems: 'flex-end'}}>
+                                        <div className={classes.nameField}>Редактируемая цена:&nbsp;</div>
+                                        <Checkbox
 
-                                    checked={editedPrice}
-                                    onChange={()=>{setEditedPrice(!editedPrice)}}
-                                    color='primary'
-                                    inputProps={{ 'aria-label': 'primary checkbox' }}
-                                />
-                            </div>
-                            <TextField
-                                type={isMobileApp?'number':'text'}
-                                error={!price&&!editedPrice}
-                                label='Цена'
-                                value={price}
-                                className={classes.input}
-                                onChange={(event)=>{setPrice(inputFloat(event.target.value))}}
-                            />
-                            <TextField
-                                error={!unit}
-                                label='Единица измерения'
-                                value={unit}
-                                className={classes.input}
-                                onChange={(event)=>{setUnit(event.target.value)}}
-                            />
-                            <TextField
-                                label='Категория'
-                                value={category?category.name:'Несортированно'}
-                                className={classes.input}
-                                onClick={()=>{
-                                    setFullDialog('Категория', <Category type={type} setCategory={setCategory}/>)
-                                    showFullDialog(true)
-                                }}
-                            />
-                            <TextField
-                                label='Код ТНВЭД'
-                                value={tnved}
-                                className={classes.input}
-                                onChange={(event)=>{setTnved(event.target.value)}}
-                            />
-                            <div className={classes.row} style={{alignItems: 'flex-end'}}>
-                                <div className={classes.nameField}>Признак маркировки:&nbsp;</div>
-                                <Checkbox
-
-                                    checked={mark}
-                                    onChange={()=>{setMark(!mark)}}
-                                    color='primary'
-                                    inputProps={{ 'aria-label': 'primary checkbox' }}
-                                />
-                            </div>
-                            <div className={classes.row} style={{alignItems: 'flex-end'}}>
-                                <div className={classes.nameField}>Быстрый доступ:&nbsp;</div>
-                                <Checkbox
-
-                                    checked={quick}
-                                    onChange={()=>{setQuick(!quick)}}
-                                    color='primary'
-                                    inputProps={{ 'aria-label': 'primary checkbox' }}
-                                />
-                            </div>
-                            <TextField
-                                type={isMobileApp?'number':'text'}
-                                label='Порядок быстрого доступа'
-                                value={priority}
-                                className={classes.input}
-                                onChange={(event)=>{setPriority(inputInt(event.target.value))}}
-                            />
-                            <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
-                                <Button color='primary' onClick={()=>{
-                                    if (name.length&&unit.length&&legalObject) {
-                                        const action = async() => {
-                                            if(router.query.id==='new') {
-                                                price = checkFloat(price)
-                                                if(checkFloat(price)||editedPrice) {
-                                                    let res = await addItem({
-                                                        legalObject: legalObject._id,
-                                                        category: category ? category._id : category,
-                                                        priority: checkInt(priority),
-                                                        price,
-                                                        editedPrice,
-                                                        unit,
-                                                        barCode,
-                                                        name,
-                                                        type,
-                                                        tnved,
-                                                        mark,
-                                                        quick
-                                                    })
-                                                    Router.push(`/item/${res}`)
-                                                    showSnackBar('Успешно', 'success')
+                                            checked={editedPrice}
+                                            color='primary'
+                                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                                        />
+                                    </div>
+                                    <div className={classes.row}>
+                                        <div className={classes.nameField}>
+                                            Цена:&nbsp;
+                                        </div>
+                                        <div className={classes.value}>
+                                            {price} сом
+                                        </div>
+                                    </div>
+                                    <div className={classes.row}>
+                                        <div className={classes.nameField}>
+                                            Единица измерения:&nbsp;
+                                        </div>
+                                        <div className={classes.value}>
+                                            {unit}
+                                        </div>
+                                    </div>
+                                    <div className={classes.row}>
+                                        <div className={classes.nameField}>
+                                            Категория:&nbsp;
+                                        </div>
+                                        <div className={classes.value}>
+                                            {category?category.name:'Несортированно'}
+                                        </div>
+                                    </div>
+                                    <div className={classes.row}>
+                                        <div className={classes.nameField}>
+                                            НДС:&nbsp;
+                                        </div>
+                                        <div className={classes.value}>
+                                            {ndsTypes[ndsType_v2]}
+                                        </div>
+                                    </div>
+                                    <div className={classes.row}>
+                                        <div className={classes.nameField}>
+                                            НСП:&nbsp;
+                                        </div>
+                                        <div className={classes.value}>
+                                            {nspTypes[nspType_v2]}
+                                        </div>
+                                    </div>
+                                    {
+                                        tnved?
+                                            <div className={classes.row}>
+                                                <div className={classes.nameField}>
+                                                    Kод ТНВЭД:&nbsp;
+                                                </div>
+                                                <div className={classes.value}>
+                                                    {tnved}
+                                                </div>
+                                            </div>
+                                            :
+                                            null
+                                    }
+                                    <div className={classes.row}>
+                                        <div className={classes.nameField}>
+                                            Признак маркировки:&nbsp;
+                                        </div>
+                                        <div className={classes.value}>
+                                            {mark?'присутсвует':'отсутсвует'}
+                                        </div>
+                                    </div>
+                                </>
+                                :
+                                <>
+                                    {
+                                        router.query.id!=='new'?
+                                            <div className={classes.row}>
+                                                <div className={classes.nameField}>
+                                                    Регистрация:&nbsp;
+                                                </div>
+                                                <div className={classes.value}>
+                                                    {pdDDMMYYHHMM(data.object.createdAt)}
+                                                </div>
+                                            </div>
+                                            :
+                                            null
+                                    }
+                                    {
+                                        ['admin', 'superadmin'].includes(profile.role)?router.query.id==='new'?
+                                                <AutocomplectOnline
+                                                    error={!legalObject||!legalObject._id}
+                                                    setElement={setLegalObject}
+                                                    getElements={async (search)=>{return await getLegalObjects({search})}}
+                                                    label={'налогоплательщика'}
+                                                />
+                                                :
+                                                <Link href='/legalobject/[id]' as={`/legalobject/${legalObject._id}`}>
+                                                    <a>
+                                                        <div className={classes.row}>
+                                                            <div className={classes.nameField}>
+                                                                Налогоплательщик:&nbsp;
+                                                            </div>
+                                                            <div className={classes.value}>
+                                                                {data.object.legalObject.name}
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </Link>
+                                            :
+                                            null
+                                    }
+                                    <FormControl className={classes.input}>
+                                        <InputLabel>Тип</InputLabel>
+                                        <Select value={type} onChange={handleType}>
+                                            {types.map((element)=>
+                                                <MenuItem key={element} value={element}>{element}</MenuItem>
+                                            )}
+                                        </Select>
+                                    </FormControl>
+                                    <TextField
+                                        error={!name}
+                                        label='Название'
+                                        value={name}
+                                        className={classes.input}
+                                        onChange={(event)=>{setName(event.target.value)}}
+                                    />
+                                    <FormControl className={ classes.input}>
+                                        <InputLabel>Штрих-код</InputLabel>
+                                        <Input
+                                            type={'text'}
+                                            value={barCode}
+                                            onChange={(event)=>{setBarCode(event.target.value)}}
+                                            className={classes.input}
+                                            onBlur={async()=>{
+                                                if(barCode.length) {
+                                                    let itemBarCode = await getItemBarCode({barCode})
+                                                    if (itemBarCode&&itemBarCode.name) setName(itemBarCode.name)
                                                 }
-                                                else
-                                                    showSnackBar('Укажите цену')
+                                            }}
+                                            endAdornment={
+                                                isMobileApp?
+                                                    <InputAdornment position='end'>
+                                                        <IconButton aria-label='scanner' onClick={()=>{
+                                                            openScanner({_idx: 0, path: `item/${router.query.id}`})
+                                                        }}>
+                                                            <ControlCamera/>
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                    :
+                                                    null
                                             }
-                                            else {
-                                                let element = {category: category?category._id:category, _id: router.query.id, }
-                                                if (editedPrice!==data.object.editedPrice) element.editedPrice = editedPrice
-                                                if (name!==data.object.name) element.name = name
-                                                if (type!==data.object.type) element.type = type
-                                                if (barCode!==data.object.barCode) element.barCode = barCode
-                                                if (unit!==data.object.unit) element.unit = unit
-                                                if (tnved!==data.object.tnved) element.tnved = tnved
-                                                if (mark!==data.object.mark) element.mark = mark
-                                                if (quick!==data.object.quick) element.quick = quick
-                                                if (price!==data.object.price&&(checkFloat(price)||editedPrice)) element.price = checkFloat(price)
-                                                if (priority!==data.object.priority) element.priority = checkInt(priority)
-                                                await setItem(element)
-                                                Router.reload()
-                                            }
-                                        }
-                                        setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                        showMiniDialog(true)
-                                    } else
-                                        showSnackBar('Заполните все поля')
-                                }}>
-                                    Сохранить
-                                </Button>
-                                {
-                                    router.query.id!=='new'?
-                                        <Button color='secondary' onClick={()=>{
-                                            const action = async() => {
-                                                await deleteItem(router.query.id)
-                                                Router.push(`/items/${data.object.legalObject._id}`)
-                                            }
-                                            setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                            showMiniDialog(true)
+                                        />
+                                    </FormControl>
+                                    <div className={classes.row} style={{alignItems: 'flex-end'}}>
+                                        <div className={classes.nameField}>Редактируемая цена:&nbsp;</div>
+                                        <Checkbox
+
+                                            checked={editedPrice}
+                                            onChange={()=>{setEditedPrice(!editedPrice)}}
+                                            color='primary'
+                                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                                        />
+                                    </div>
+                                    <TextField
+                                        type={isMobileApp?'number':'text'}
+                                        error={!price&&!editedPrice}
+                                        label='Цена'
+                                        value={price}
+                                        className={classes.input}
+                                        onChange={(event)=>{setPrice(inputFloat(event.target.value))}}
+                                    />
+                                    <TextField
+                                        error={!unit}
+                                        label='Единица измерения'
+                                        value={unit}
+                                        className={classes.input}
+                                        onChange={(event)=>{setUnit(event.target.value)}}
+                                    />
+                                    <TextField
+                                        label='Категория'
+                                        value={category?category.name:'Несортированно'}
+                                        className={classes.input}
+                                        onClick={()=>{
+                                            setFullDialog('Категория', <Category type={type} setCategory={setCategory}/>)
+                                            showFullDialog(true)
+                                        }}
+                                    />
+                                    <FormControl className={classes.input}>
+                                        <InputLabel>НДС</InputLabel>
+                                        <Select value={ndsType_v2} onChange={handleNdsType_v2}>
+                                            {ndsTypes.map((element)=>
+                                                <MenuItem key={element} value={element}>{element}</MenuItem>
+                                            )}
+                                        </Select>
+                                    </FormControl>
+                                    <FormControl className={classes.input}>
+                                        <InputLabel>НСП</InputLabel>
+                                        <Select value={nspType_v2} onChange={handleNspType_v2}>
+                                            {nspTypes.map((element)=>
+                                                <MenuItem key={element} value={element}>{element}</MenuItem>
+                                            )}
+                                        </Select>
+                                    </FormControl>
+                                    <TextField
+                                        label='Код ТНВЭД'
+                                        value={tnved}
+                                        className={classes.input}
+                                        onChange={(event)=>{setTnved(event.target.value)}}
+                                    />
+                                    <div className={classes.row} style={{alignItems: 'flex-end'}}>
+                                        <div className={classes.nameField}>Признак маркировки:&nbsp;</div>
+                                        <Checkbox
+
+                                            checked={mark}
+                                            onChange={()=>{setMark(!mark)}}
+                                            color='primary'
+                                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                                        />
+                                    </div>
+                                    <div className={classes.row} style={{alignItems: 'flex-end'}}>
+                                        <div className={classes.nameField}>Быстрый доступ:&nbsp;</div>
+                                        <Checkbox
+
+                                            checked={quick}
+                                            onChange={()=>{setQuick(!quick)}}
+                                            color='primary'
+                                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                                        />
+                                    </div>
+                                    <TextField
+                                        type={isMobileApp?'number':'text'}
+                                        label='Порядок быстрого доступа'
+                                        value={priority}
+                                        className={classes.input}
+                                        onChange={(event)=>{setPriority(inputInt(event.target.value))}}
+                                    />
+                                    <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
+                                        <Button color='primary' onClick={()=>{
+                                            if (name.length&&unit.length&&legalObject) {
+                                                const action = async() => {
+                                                    if(router.query.id==='new') {
+                                                        price = checkFloat(price)
+                                                        if(checkFloat(price)||editedPrice) {
+                                                            let res = await addItem({
+                                                                legalObject: legalObject._id,
+                                                                category: category ? category._id : category,
+                                                                priority: checkInt(priority),
+                                                                price,
+                                                                editedPrice,
+                                                                unit,
+                                                                barCode,
+                                                                name,
+                                                                type,
+                                                                tnved,
+                                                                ...ndsType_v2?{ndsType_v2: ndsTypes.indexOf(ndsType_v2)}:{},
+                                                                ...nspType_v2?{nspType_v2: nspTypes.indexOf(nspType_v2)}:{},
+                                                                mark,
+                                                                quick
+                                                            })
+                                                            Router.push(`/item/${res}`)
+                                                            showSnackBar('Успешно', 'success')
+                                                        }
+                                                        else
+                                                            showSnackBar('Укажите цену')
+                                                    }
+                                                    else {
+                                                        let element = {category: category?category._id:category, _id: router.query.id, }
+                                                        if (editedPrice!==data.object.editedPrice) element.editedPrice = editedPrice
+                                                        if (name!==data.object.name) element.name = name
+                                                        if (type!==data.object.type) element.type = type
+                                                        if (barCode!==data.object.barCode) element.barCode = barCode
+                                                        if (unit!==data.object.unit) element.unit = unit
+                                                        if (tnved!==data.object.tnved) element.tnved = tnved
+                                                        if (nspType_v2!==data.object.nspType_v2) element.nspType_v2 = nspTypes.indexOf(nspType_v2)
+                                                        if (ndsType_v2!==data.object.ndsType_v2) element.ndsType_v2 = ndsTypes.indexOf(ndsType_v2)
+                                                        if (mark!==data.object.mark) element.mark = mark
+                                                        if (quick!==data.object.quick) element.quick = quick
+                                                        if (price!==data.object.price&&(checkFloat(price)||editedPrice)) element.price = checkFloat(price)
+                                                        if (priority!==data.object.priority) element.priority = checkInt(priority)
+                                                        await setItem(element)
+                                                        Router.reload()
+                                                    }
+                                                }
+                                                setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                showMiniDialog(true)
+                                            } else
+                                                showSnackBar('Заполните все поля')
                                         }}>
-                                            Удалить
+                                            Сохранить
                                         </Button>
-                                        :
-                                        null
-                                }
-                            </div>
-                            </>
-                        :
-                        'Ничего не найдено'
-                }
+                                        {
+                                            router.query.id!=='new'?
+                                                <Button color='secondary' onClick={()=>{
+                                                    const action = async() => {
+                                                        await deleteItem(router.query.id)
+                                                        Router.push(`/items/${data.object.legalObject._id}`)
+                                                    }
+                                                    setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                    showMiniDialog(true)
+                                                }}>
+                                                    Удалить
+                                                </Button>
+                                                :
+                                                null
+                                        }
+                                    </div>
+                                </>
+                            :
+                            'Ничего не найдено'
+                    }
                 </CardContent>
             </Card>
         </App>

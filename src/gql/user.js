@@ -108,7 +108,6 @@ export const getUsersTrash = async({skip, search}, client)=>{
     }
 }
 
-
 export const getUser = async({_id}, client)=>{
     try{
         client = client? client : new SingletonApolloClient().getClient()
@@ -120,6 +119,7 @@ export const getUser = async({_id}, client)=>{
                         user(_id: $_id) {
                             _id
                             IP
+                            enteredExpired
                             createdAt
                             updatedAt
                             lastActive

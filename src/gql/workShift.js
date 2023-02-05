@@ -24,11 +24,11 @@ export const getWorkShifts = async({skip, legalObject, branch, cashier, filter, 
                             cashless
                             cash
                             sale
-                            cashStart
                             cashEnd
                             deposit
                             withdraw
                             discount
+                            expired
                             start
                             extra
                             end
@@ -72,10 +72,10 @@ export const getWorkShift = async({_id}, client)=>{
                             paidConsignation
                             prepayment
                             returned
+                            expired
                             cashless
                             cash
                             sale
-                            cashStart
                             cashEnd
                             deposit
                             withdraw
@@ -143,7 +143,6 @@ export const startWorkShift = async({cashbox})=>{
                             cashless
                             cash
                             sale
-                            cashStart
                             cashEnd
                             deposit
                             withdraw

@@ -3,7 +3,7 @@ import Head from 'next/head';
 import React, { useState } from 'react';
 import App from '../../layouts/App';
 import { connect } from 'react-redux'
-import { getLegalObject, setLegalObject, onoffLegalObject, addLegalObject, deleteLegalObject, restoreLegalObject } from '../../src/gql/legalObject'
+import { getLegalObject, setLegalObject, onoffLegalObject, addLegalObject, deleteLegalObject } from '../../src/gql/legalObject'
 import { geTtpDataByINNforBusinessActivity } from '../../src/gql/kkm-2.0'
 import { getUsers } from '../../src/gql/user'
 import legalObjectStyle from '../../src/styleMUI/list'
@@ -265,12 +265,7 @@ const LegalObject = React.memo((props) => {
                                                 <div className={classes.nameField}>
                                                     accessToken:&nbsp;
                                                 </div>
-                                                <div className={classes.value} style={{color:
-                                                    data.object.accessToken&&data.object.accessTokenTTL&&data.object.accessTokenTTL>new Date()?
-                                                        'black'
-                                                        :
-                                                        'red'
-                                                }}>
+                                                <div className={classes.value} style={{color: data.object.accessTokenExpired?'red':'black'}}>
                                                     {
                                                         data.object.accessToken&&data.object.accessTokenTTL?
                                                             pdDDMMYYHHMM(data.object.accessTokenTTL)
@@ -283,12 +278,7 @@ const LegalObject = React.memo((props) => {
                                                 <div className={classes.nameField}>
                                                     refreshToken:&nbsp;
                                                 </div>
-                                                <div className={classes.value} style={{color:
-                                                    data.object.refreshToken&&data.object.refreshTokenTTL&&data.object.refreshTokenTTL>new Date()?
-                                                        'black'
-                                                        :
-                                                        'red'
-                                                }}>
+                                                <div className={classes.value} style={{color: data.object.accessTokenExpired?'red':'black'}}>
                                                     {
                                                         data.object.refreshToken&&data.object.refreshTokenTTL?
                                                             pdDDMMYYHHMM(data.object.refreshTokenTTL)

@@ -27,13 +27,6 @@ export const getReports = async({skip, date, legalObject, cashbox, filter, workS
                             extra
                             cash
                             cashless
-                            saleAll
-                            consignationAll
-                            paidConsignationAll
-                            prepaymentAll
-                            returnedAll
-                            buyAll
-                            returnedBuyAll
                             sale
                             saleCount
                             consignation
@@ -85,14 +78,6 @@ export const getReport = async({_id}, client)=>{
                             extra
                             cash
                             cashless
-                            saleAll
-                            consignationAll
-                            paidConsignationAll
-                            prepaymentAll
-                            returnedAll
-                            syncData
-                            buyAll
-                            returnedBuyAll
                             sale
                             saleCount
                             consignation

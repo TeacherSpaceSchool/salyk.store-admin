@@ -1,6 +1,6 @@
 import initialApp from '../../src/initialApp'
 import Head from 'next/head';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import App from '../../layouts/App';
 import { connect } from 'react-redux'
 import {getWorkShift, _setWorkShift, endWorkShift} from '../../src/gql/workShift'
@@ -48,12 +48,6 @@ const WorkShift = React.memo((props) => {
     let handleCloseQuick = () => {
         setAnchorElQuick(null);
     }
-    let [expired, setExpired] = useState(false);
-    useEffect(()=>{
-        if(!data.object.end){
-            setExpired(((new Date()-data.object.start)/1000/60/60)>24)
-        }
-    }, []);
     return (
         <App pageName={data.object?router.query.id==='new'?'Добавить':`Смена №${data.object.number}`:'Ничего не найдено'}>
             <Head>
@@ -145,8 +139,8 @@ const WorkShift = React.memo((props) => {
                     data.object!==null?
                        <>
                        {
-                           !data.object.end?
-                               <div className={classes.nameField} style={{color: expired?'red':'green'}}>{expired?'Cмена просрочена':'Работает'}</div>
+                           data.object.end?
+                               <div className={classes.nameField} style={{color: data.object.expired?'red':'green'}}>{data.object.expired?'Cмена просрочена':'Работает'}</div>
                                :
                                null
                        }
@@ -227,22 +221,14 @@ const WorkShift = React.memo((props) => {
                                :
                                null
                        }
-                       <div className={classes.row}>
-                           <div className={classes.nameField}>
-                               Наличных на начало:&nbsp;
-                           </div>
-                           <div className={classes.value}>
-                               {data.object.cashStart} сом
-                           </div>
-                       </div>
                        {
-                           cashEnd!=undefined?
+                           cashEnd?
                                <div className={classes.row}>
                                    <div className={classes.nameField}>
-                                       Наличных на конец:&nbsp;
+                                       Наличных в кассе:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {cashEnd} сом
+                                       {cashEnd.toFixed(2)} сом
                                    </div>
                                </div>
                                :
@@ -255,7 +241,7 @@ const WorkShift = React.memo((props) => {
                                        Внесено:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {deposit} сом
+                                       {deposit.toFixed(2)} сом
                                    </div>
                                </div>
                                :
@@ -268,7 +254,7 @@ const WorkShift = React.memo((props) => {
                                        Изъято:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {withdraw} сом
+                                       {withdraw.toFixed(2)} сом
                                    </div>
                                </div>
                                :
@@ -281,7 +267,7 @@ const WorkShift = React.memo((props) => {
                                        Наличными:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {data.object.cash} сом
+                                       {data.object.cash.toFixed(2)} сом
                                    </div>
                                </div>
                                :
@@ -294,7 +280,7 @@ const WorkShift = React.memo((props) => {
                                        Безналичными:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {data.object.cashless} сом
+                                       {data.object.cashless.toFixed(2)} сом
                                    </div>
                                </div>
                                :
@@ -307,7 +293,7 @@ const WorkShift = React.memo((props) => {
                                        Скидки:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {data.object.discount} сом
+                                       {data.object.discount.toFixed(2)} сом
                                    </div>
                                </div>
                                :
@@ -320,7 +306,7 @@ const WorkShift = React.memo((props) => {
                                        Наценки:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {data.object.extra} сом
+                                       {data.object.extra.toFixed(2)} сом
                                    </div>
                                </div>
                                :
@@ -333,7 +319,7 @@ const WorkShift = React.memo((props) => {
                                        Продаж:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {data.object.sale} сом | {data.object.saleCount} шт
+                                       {data.object.sale.toFixed(2)} сом | {data.object.saleCount} шт
                                    </div>
                                </div>
                                :
@@ -346,7 +332,7 @@ const WorkShift = React.memo((props) => {
                                        Возврат:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {data.object.returned} сом | {data.object.returnedCount} шт
+                                       {data.object.returned.toFixed(2)} сом | {data.object.returnedCount} шт
                                    </div>
                                </div>
                                :
@@ -359,7 +345,7 @@ const WorkShift = React.memo((props) => {
                                        Кредит:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {data.object.consignation} сом | {data.object.consignationCount} шт
+                                       {data.object.consignation.toFixed(2)} сом | {data.object.consignationCount} шт
                                    </div>
                                </div>
                                :
@@ -372,7 +358,7 @@ const WorkShift = React.memo((props) => {
                                        Погашение кредита:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {data.object.paidConsignation} сом | {data.object.paidConsignationCount} шт
+                                       {data.object.paidConsignation.toFixed(2)} сом | {data.object.paidConsignationCount} шт
                                    </div>
                                </div>
                                :
@@ -385,7 +371,7 @@ const WorkShift = React.memo((props) => {
                                        Аванс:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {data.object.prepayment} сом | {data.object.prepaymentCount} шт
+                                       {data.object.prepayment.toFixed(2)} сом | {data.object.prepaymentCount} шт
                                    </div>
                                </div>
                                :
@@ -398,7 +384,7 @@ const WorkShift = React.memo((props) => {
                                        Покупка:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {data.object.buy} сом | {data.object.buyCount} шт
+                                       {data.object.buy.toFixed(2)} сом | {data.object.buyCount} шт
                                    </div>
                                </div>
                                :
@@ -411,7 +397,7 @@ const WorkShift = React.memo((props) => {
                                        Возврат покупки:&nbsp;
                                    </div>
                                    <div className={classes.value}>
-                                       {data.object.returnedBuy} сом | {data.object.returnedBuyCount} шт
+                                       {data.object.returnedBuy.toFixed(2)} сом | {data.object.returnedBuyCount} шт
                                    </div>
                                </div>
                                :
@@ -422,7 +408,7 @@ const WorkShift = React.memo((props) => {
                                !data.object.end?
                                    <>
                                    {
-                                       !expired?
+                                       !data.object.expired?
                                            <>
                                            {
                                                'кассир'===profile.role?
@@ -494,13 +480,16 @@ const WorkShift = React.memo((props) => {
                                            null
                                    }
                                    {
-                                       profile.role!=='admin'||profile.add||expired?
+                                       profile.role!=='admin'||profile.add||data.object.expired?
                                            <Button color='secondary' onClick={()=>{
                                                const action = async() => {
-                                                   let report = await endWorkShift(...['управляющий', 'супервайзер', 'admin', 'superadmin'].includes(profile.role)?[router.query.id]:[])
-                                                   Router.push(`/report/${report}?type=Z`)
+                                                   let res = await _setWorkShift({deposit: 0, comment: 'Закрытие смены', withdraw: cashEnd})
+                                                   if(res==='OK') {
+                                                       let report = await endWorkShift(...['управляющий', 'супервайзер', 'admin', 'superadmin'].includes(profile.role) ? [router.query.id] : [])
+                                                       Router.push(`/report/${report}?type=Z`)
+                                                   }
                                                }
-                                               setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                               setMiniDialog('Закрыть смену и обнулить кассу?', <Confirmation action={action}/>)
                                                showMiniDialog(true)
                                            }}>
                                                Закрыть смену

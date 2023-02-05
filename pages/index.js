@@ -23,7 +23,7 @@ import TextField from '@material-ui/core/TextField';
 import PointofsaleIcon from '../icons/pointofsale.svg';
 import { inputFloat, checkFloat } from '../src/lib'
 import IconButton from '@material-ui/core/IconButton';
-import {ndsTypesValue, nspTypes, nspTypesValue} from '../src/const'
+import {ndsTypesValue, nspTypesValue} from '../src/const'
 import {getLegalObject} from '../src/gql/legalObject'
 import Buy from '../components/dialog/Buy'
 const height = 400
@@ -37,14 +37,11 @@ const Index = React.memo((props) => {
     const { showLoad } = props.appActions;
     const { showSnackBar } = props.snackbarActions;
     let [allAmount, setAllAmount] = useState(0);
-    let [expired, setExpired] = useState(false);
     let [list, setList] = useState(data.list?data.list:[]);
     useEffect(()=>{
         if(list.length&&'кассир'===profile.role){
-            expired = ((new Date()-list[0].start)/1000/60/60)>24
-            if(expired)
+            if(list[0].expired)
                 showSnackBar('Cмена просрочена', 'error')
-            setExpired(expired)
         }
     }, []);
     useEffect(() => {
@@ -255,7 +252,7 @@ const Index = React.memo((props) => {
                                         <>
                                         {list.map((element, idx)=>
                                             <LazyLoad scrollContainer={'.App-body'} key={element._id} height={height} offset={[height, 0]} debounce={0} once={true}  placeholder={<CardWorkshiftPlaceholder height={height}/>}>
-                                                <CardWorkshift element={element} idx={idx}/>
+                                                <CardWorkshift element={element} idx={idx} setList={setList}/>
                                             </LazyLoad>
                                         )}
                                         {
@@ -267,7 +264,7 @@ const Index = React.memo((props) => {
                                                 null
                                         }
                                         {
-                                            'кассир'===profile.role&&!expired?
+                                            'кассир'===profile.role&&!list[0].expired?
                                                 <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD} style={{height: 80, justifyContent: 'center'}}>
                                                     <div className={classes.row} style={{
                                                         width: '100%',
@@ -282,62 +279,32 @@ const Index = React.memo((props) => {
                                                             onChange={(event)=>{
                                                                 setAllAmount(inputFloat(event.target.value))
                                                             }}
-                                                            onKeyPress={event => {
-                                                                if (event.key === 'Enter') {
-                                                                    allAmount = checkFloat(allAmount)
-                                                                    let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
-                                                                    let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
-                                                                    let allPrecent = 100+ndsPrecent+nspPrecent
-                                                                    if (allAmount > 0) {
-                                                                        let items = [{
-                                                                            name: 'Продажа',
-                                                                            unit: 'шт',
-                                                                            count: 1,
-                                                                            price: allAmount,
-                                                                            amountStart: allAmount,
-                                                                            discount: '',
-                                                                            discountType: 'сом',
-                                                                            extra: '',
-                                                                            extraType: 'сом',
-                                                                            amountEnd: allAmount,
-                                                                        }]
-                                                                        setMiniDialog('Оплата', <Buy
-                                                                            allPrecent={allPrecent}
-                                                                            ndsPrecent={ndsPrecent}
-                                                                            nspPrecent={nspPrecent}
-                                                                            setAllAmount={setAllAmount}
-                                                                            amountStart={allAmount}
-                                                                            items={items}
-                                                                            consignation={0}
-                                                                            usedPrepayment={0}
-                                                                            type='Продажа'/>)
-                                                                        showMiniDialog(true)
-                                                                    }
-                                                                }
-                                                            }}
                                                         />
                                                         <IconButton aria-label='scanner' onClick={async ()=>{
                                                             allAmount = checkFloat(allAmount)
-                                                            let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
-                                                            let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
-                                                            let allPrecent = 100+ndsPrecent+nspPrecent
                                                             if (allAmount > 0) {
+                                                                let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
+                                                                let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
+                                                                let allPrecent = 100+ndsPrecent+nspPrecent
+                                                                let nds = checkFloat(allAmount/allPrecent*ndsPrecent)
+                                                                let nsp = checkFloat(allAmount/allPrecent*nspPrecent)
                                                                 let items = [{
                                                                     name: 'Продажа',
                                                                     unit: 'шт',
                                                                     count: 1,
                                                                     price: allAmount,
                                                                     amountStart: allAmount,
-                                                                    discount: '',
-                                                                    discountType: 'сом',
-                                                                    extra: '',
-                                                                    extraType: 'сом',
+                                                                    discount: 0,
+                                                                    extra: 0,
                                                                     amountEnd: allAmount,
+                                                                    ndsPrecent,
+                                                                    nspPrecent,
+                                                                    nds,
+                                                                    nsp
                                                                 }]
                                                                 setMiniDialog('Оплата', <Buy
-                                                                    allPrecent={allPrecent}
-                                                                    ndsPrecent={ndsPrecent}
-                                                                    nspPrecent={nspPrecent}
+                                                                    allNsp={nsp}
+                                                                    allNds={nds}
                                                                     amountStart={allAmount}
                                                                     setAllAmount={setAllAmount}
                                                                     items={items}
@@ -373,17 +340,18 @@ const Index = React.memo((props) => {
                                                         cashbox?
                                                             <center>
                                                                 <Button size='large' color='primary' onClick={async ()=>{
-                                                                    let now = new Date()
-                                                                    if(cashbox.fnExpiresAt&&cashbox.fnExpiresAt<now)
+                                                                    if(cashbox.fnExpiresAt&&!cashbox.fnWork)
                                                                         showSnackBar('Касса просроченна')
-                                                                    else if(cashbox.endPayment<now)
+                                                                    else if(!cashbox.paidWork)
                                                                         showSnackBar('Пожалуйста оплатите за кассу')
                                                                     else {
                                                                         showLoad(true)
                                                                         list = await startWorkShift({cashbox: cashbox._id})
                                                                         showLoad(false)
-                                                                        if(list)
+                                                                        if(list) {
+                                                                            list.needDeposit = true
                                                                             setList([list])
+                                                                        }
                                                                         else
                                                                             showSnackBar('Ошибка', 'error')
                                                                     }

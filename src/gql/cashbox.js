@@ -24,6 +24,8 @@ export const getCashboxes = async({search, skip, legalObject, branch, filter, al
                             endPayment
                             del
                             sync
+                            paidWork
+                            fnWork
                         }
                     }`,
             })
@@ -107,6 +109,8 @@ export const getCashbox = async({_id}, client)=>{
                             sync
                             syncMsg
                             syncData
+                            paidWork
+                            fnWork
                         }
                     }`,
             })
@@ -126,20 +130,6 @@ export const deleteCashbox = async(_id)=>{
                         deleteCashbox(_id: $_id)
                     }`})
         return res.data.deleteCashbox
-    } catch(err){
-        console.error(err)
-    }
-}
-
-export const clearCashbox = async(_id)=>{
-    try{
-        const client = new SingletonApolloClient().getClient()
-        await client.mutate({
-            variables: {_id},
-            mutation : gql`
-                    mutation ($_id: ID!) {
-                        clearCashbox(_id: $_id)
-                    }`})
     } catch(err){
         console.error(err)
     }

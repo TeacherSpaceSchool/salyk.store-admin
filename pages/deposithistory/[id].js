@@ -55,31 +55,9 @@ const Receipt = React.memo((props) => {
                             background: 'white',
                             marginTop: 20
                         }} ref={receiptRef}>
-                            {
-                                ['admin', 'superadmin'].includes(profile.role)?
-                                    <Link href='/legalobject/[id]' as={`/legalobject/${data.object.legalObject._id}`}>
-                                        <a>
-                                            <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{data.object.legalObject.name}</h3>
-                                        </a>
-                                    </Link>
-                                    :
-                                    <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{data.object.legalObject.name}</h3>
-                            }
-                            {
-                                ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
-                                    <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
-                                        <a>
-                                            <div style={{textAlign: 'center', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
-                                        </a>
-                                    </Link>
-                                    :
-                                    <div style={{textAlign: 'center', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
-                            }
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(data.object.createdAt)}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Внесение в кассу</span></div>
+                            <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>Внесение в кассу</h3>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК №{data.object.number}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(data.object.createdAt)}</span></div>
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
                                     <Link href='/cashbox/[id]' as={`/cashbox/${data.object.cashbox._id}`}>
@@ -110,8 +88,30 @@ const Receipt = React.memo((props) => {
                                     :
                                     <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Кассир: {data.object.cashier.name}</span></div>
                             }
+                            {
+                                ['admin', 'superadmin'].includes(profile.role)?
+                                    <Link href='/legalobject/[id]' as={`/legalobject/${data.object.legalObject._id}`}>
+                                        <a>
+                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.legalObject.name}</span></div>
+                                        </a>
+                                    </Link>
+                                    :
+                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.legalObject.name}</span></div>
+                            }
+                            {
+                                ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
+                                    <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
+                                        <a>
+                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
+                                        </a>
+                                    </Link>
+                                    :
+                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
+                            }
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
                             <div style={{textAlign: 'center', height: 12, marginTop: 10, marginBottom: 10}}>**********************************************</div>
-                            <div style={{textAlign: 'right', marginBottom: 5, fontWeight: 'bold'}}>ИТОГО: {data.object.amount}</div>
+                            <div style={{textAlign: 'right', marginBottom: 5, fontWeight: 'bold'}}>ИТОГО: {data.object.amount.toFixed(2)}</div>
                             {
                                 data.object.comment?
                                     <div style={{textAlign: 'right', marginBottom: 5}}>Комментарий: {data.object.comment}</div>
@@ -153,18 +153,18 @@ const Receipt = React.memo((props) => {
                                         }
 
                                         let _data = [
-                                            {message: data.object.legalObject.name, align: 'center'},
-                                            {message: `${data.object.branch.name}, ${data.object.branch.address}`, align: 'center'},
-                                            {message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`, align: 'left'},
-                                            {message: 'Внесение в кассу', align: 'left'},
+                                            {message: 'Внесение в кассу', align: 'center', bold: true},
                                             {message: `ЧЕК №${data.object.number}`, align: 'left'},
-                                            {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
-                                            {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
+                                            {message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`, align: 'left'},
                                             {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
                                             {message: `Смена №${data.object.workShift.number}`, align: 'left'},
                                             {message: `Кассир: ${data.object.cashier.name}`, align: 'left'},
+                                            {message: data.object.legalObject.name, align: 'center'},
+                                            {message: `${data.object.branch.name}, ${data.object.branch.address}`, align: 'center'},
+                                            {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
+                                            {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
                                             {message: '********************************', align: 'center'},
-                                            {message: `ИТОГО: ${data.object.amountEnd}`, align: 'right', bold: true}
+                                            {message: `ИТОГО: ${data.object.amount.toFixed(2)}`, align: 'right', bold: true}
                                         ]
                                         if(data.object.comment)
                                             _data.push({message: `Комментарий: ${data.object.comment}`, align: 'right'})

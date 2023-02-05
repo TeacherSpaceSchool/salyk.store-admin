@@ -96,7 +96,7 @@ const CardDepositHistorys = React.memo((props) => {
                                 Внесено:&nbsp;
                             </div>
                             <div className={classes.value}>
-                                {element.amount} сом
+                                {element.amount.toFixed(2)} сом
                             </div>
                         </div>
                     </CardContent>

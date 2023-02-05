@@ -96,7 +96,7 @@ const CardWithdrawHistorys = React.memo((props) => {
                             Изъято:&nbsp;
                         </div>
                         <div className={classes.value}>
-                            {element.amount} сом
+                            {element.amount.toFixed(2)} сом
                         </div>
                     </div>
                 </CardContent>

@@ -105,8 +105,6 @@ export const getSale = async({_id, type, cashbox, number}, client)=>{
                             typePayment
                             type
                             returned
-                            ndsPrecent
-                            nspPrecent
                             paid
                             usedPrepayment
                             change
@@ -129,6 +127,10 @@ export const getSale = async({_id, type, cashbox, number}, client)=>{
                                 amountEnd
                                 tnved
                                 mark
+                                nds
+                                nsp
+                                ndsPrecent
+                                nspPrecent
                             }
                         }
                     }`,
@@ -139,13 +141,13 @@ export const getSale = async({_id, type, cashbox, number}, client)=>{
     }
 }
 
-export const addSale = async({ndsPrecent, nspPrecent, sale, client, typePayment, comment, type, paid, usedPrepayment, change, extra, discount, amountEnd, nds, nsp, items})=>{
+export const addSale = async({sale, client, typePayment, comment, type, paid, usedPrepayment, change, extra, discount, amountEnd, nds, nsp, items})=>{
     try{
         let res = await (new SingletonApolloClient().getClient()).mutate({
-            variables: {ndsPrecent, nspPrecent, sale, client, typePayment, type, comment, paid, usedPrepayment, change, extra, discount, amountEnd, nds, nsp, items},
+            variables: {sale, client, typePayment, type, comment, paid, usedPrepayment, change, extra, discount, amountEnd, nds, nsp, items},
             mutation : gql`
-                    mutation ($sale: ID, $ndsPrecent: Float!, $nspPrecent: Float!, $client: ID, $typePayment: String!, $comment: String, $type: String!, $paid: Float!, $usedPrepayment: Float!, $change: Float!, $extra: Float!, $discount: Float!, $amountEnd: Float!, $nds: Float!, $nsp: Float!, $items: [InputItemSale]!) {
-                        addSale(nspPrecent: $nspPrecent, ndsPrecent: $ndsPrecent, sale: $sale, client: $client, comment: $comment, typePayment: $typePayment, type: $type, paid: $paid, usedPrepayment: $usedPrepayment, change: $change, extra: $extra, discount: $discount, amountEnd: $amountEnd, nds: $nds, nsp: $nsp, items: $items)
+                    mutation ($sale: ID, $client: ID, $typePayment: String!, $comment: String, $type: String!, $paid: Float!, $usedPrepayment: Float!, $change: Float!, $extra: Float!, $discount: Float!, $amountEnd: Float!, $nds: Float!, $nsp: Float!, $items: [InputItemSale]!) {
+                        addSale(sale: $sale, client: $client, comment: $comment, typePayment: $typePayment, type: $type, paid: $paid, usedPrepayment: $usedPrepayment, change: $change, extra: $extra, discount: $discount, amountEnd: $amountEnd, nds: $nds, nsp: $nsp, items: $items)
                     }`})
         return res.data.addSale
     } catch(err){

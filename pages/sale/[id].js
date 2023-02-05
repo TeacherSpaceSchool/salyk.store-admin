@@ -98,44 +98,9 @@ const Receipt = React.memo((props) => {
                             background: 'white',
                             marginTop: 20
                         }} ref={receiptRef}>
-                            {
-                                ['admin', 'superadmin'].includes(profile.role)?
-                                    <Link href='/legalobject/[id]' as={`/legalobject/${data.object.legalObject._id}`}>
-                                        <a>
-                                            <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{data.object.legalObject.name}</h3>
-                                        </a>
-                                    </Link>
-                                    :
-                                    <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{data.object.legalObject.name}</h3>
-                            }
-                            {
-                                ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
-                                    <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
-                                        <a>
-                                            <div style={{textAlign: 'center', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
-                                        </a>
-                                    </Link>
-                                    :
-                                    <div style={{textAlign: 'center', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
-                            }
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(data.object.createdAt)}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.type}</span></div>
+                            <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{data.object.type}</h3>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК №{data.object.number}</span></div>
-                            {
-                                data.object.sale?
-                                    profile.role?
-                                        <Link href='/sale/[id]' as={`/sale/${data.object.sale._id}`}>
-                                            <a>
-                                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК ОСНОВАНИЯ №{data.object.sale.number}</span></div>
-                                            </a>
-                                        </Link>
-                                        :
-                                        <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК ОСНОВАНИЯ №{data.object.sale.number}</span></div>
-                                    :
-                                    null
-                            }
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(data.object.createdAt)}</span></div>
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
                                     <Link href='/cashbox/[id]' as={`/cashbox/${data.object.cashbox._id}`}>
@@ -167,6 +132,41 @@ const Receipt = React.memo((props) => {
                                     <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Кассир: {data.object.cashier.name}</span></div>
                             }
                             {
+                                ['admin', 'superadmin'].includes(profile.role)?
+                                    <Link href='/legalobject/[id]' as={`/legalobject/${data.object.legalObject._id}`}>
+                                        <a>
+                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.legalObject.name}</span></div>
+                                        </a>
+                                    </Link>
+                                    :
+                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.legalObject.name}</span></div>
+                            }
+                            {
+                                ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
+                                    <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
+                                        <a>
+                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
+                                        </a>
+                                    </Link>
+                                    :
+                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
+                            }
+                            {
+                                data.object.sale?
+                                    profile.role?
+                                        <Link href='/sale/[id]' as={`/sale/${data.object.sale._id}`}>
+                                            <a>
+                                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК ОСНОВАНИЯ №{data.object.sale.number}</span></div>
+                                            </a>
+                                        </Link>
+                                        :
+                                        <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК ОСНОВАНИЯ №{data.object.sale.number}</span></div>
+                                    :
+                                    null
+                            }
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
+                               {
                                 data.object.client?
                                     profile.role?
                                         <Link href='/client/[id]' as={`/client/${data.object.client._id}`}>
@@ -183,23 +183,26 @@ const Receipt = React.memo((props) => {
                             {data.object.items?data.object.items.map((item, idx)=>
                                 <div key={`item${idx}`} className={classes.column}>
                                     <div style={{textAlign: 'left', marginBottom: 5}}>{item.name}{item.mark?' | M':''}{item.tnved?` | ${item.tnved}`:''}</div>
-                                    <div style={{textAlign: 'right', marginBottom: 5}}>{item.price} * {item.count} {item.unit} = {item.amountStart}</div>
+                                    <div style={{textAlign: 'right', marginBottom: 5}}>{item.price.toFixed(2)} * {item.count} {item.unit} = {item.amountStart.toFixed(2)}</div>
+                                    <div style={{textAlign: 'right', marginBottom: 5}}>
+                                        {`НДС ${checkFloat(item.ndsPrecent)}%: ${checkFloat(item.nds)} | НСП ${checkFloat(item.nspPrecent)}%: ${checkFloat(item.nsp)}`}
+                                    </div>
                                     {
                                         item.discount||item.extra?
                                             <>
                                             {
                                                 item.discount?
-                                                    <div style={{textAlign: 'right', marginBottom: 5}}>{'Продажа'===data.object.type?'Скидка':'Уценка'}: {item.discount}</div>
+                                                    <div style={{textAlign: 'right', marginBottom: 5}}>{'Продажа'===data.object.type?'Скидка':'Уценка'}: {item.discount.toFixed(2)}</div>
                                                     :
                                                     null
                                             }
                                             {
                                                 item.extra?
-                                                    <div style={{textAlign: 'right', marginBottom: 5}}>Наценка: {item.extra}</div>
+                                                    <div style={{textAlign: 'right', marginBottom: 5}}>Наценка: {item.extra.toFixed(2)}</div>
                                                     :
                                                     null
                                             }
-                                            <div style={{textAlign: 'right', marginBottom: 5}}>Итого: {item.amountEnd}</div>
+                                            <div style={{textAlign: 'right', marginBottom: 5}}>Итого: {item.amountEnd.toFixed(2)}</div>
                                             </>
                                             :
                                             null
@@ -209,33 +212,33 @@ const Receipt = React.memo((props) => {
                             <div style={{textAlign: 'center', height: 12, marginTop: 10, marginBottom: 10}}>**********************************************</div>
                             {
                                 data.object.discount?
-                                    <div style={{textAlign: 'right', marginBottom: 5}}>{'Продажа'===data.object.type?'Скидка':'Уценка'}: {data.object.discount}</div>
+                                    <div style={{textAlign: 'right', marginBottom: 5}}>{'Продажа'===data.object.type?'Скидка':'Уценка'}: {data.object.discount.toFixed(2)}</div>
                                     :
                                     null
                             }
                             {
                                 data.object.extra?
-                                    <div style={{textAlign: 'right', marginBottom: 5}}>Наценка: {data.object.extra}</div>
+                                    <div style={{textAlign: 'right', marginBottom: 5}}>Наценка: {data.object.extra.toFixed(2)}</div>
                                     :
                                     null
                             }
-                            <div style={{textAlign: 'right', marginBottom: 5}}>НДС {data.object.ndsPrecent}%: {data.object.nds}</div>
-                            <div style={{textAlign: 'right', marginBottom: 5}}>НСП {data.object.nspPrecent}%: {data.object.nsp}</div>
-                            <div style={{textAlign: 'right', marginBottom: 5, fontWeight: 'bold'}}>ИТОГО: {data.object.amountEnd}</div>
-                            <div style={{textAlign: 'right', marginBottom: 5}}>{data.object.typePayment}: {data.object.paid}</div>
+                            <div style={{textAlign: 'right', marginBottom: 5}}>НДС: {data.object.nds.toFixed(2)}</div>
+                            <div style={{textAlign: 'right', marginBottom: 5}}>НСП: {data.object.nsp.toFixed(2)}</div>
+                            <div style={{textAlign: 'right', marginBottom: 5, fontWeight: 'bold'}}>ИТОГО: {data.object.amountEnd.toFixed(2)}</div>
+                            <div style={{textAlign: 'right', marginBottom: 5}}>{data.object.typePayment}: {data.object.paid.toFixed(2)}</div>
                             {
                                 data.object.usedPrepayment?
-                                    <div style={{textAlign: 'right', marginBottom: 5}}>Авансом: {data.object.usedPrepayment}</div>
+                                    <div style={{textAlign: 'right', marginBottom: 5}}>Авансом: {data.object.usedPrepayment.toFixed(2)}</div>
                                     :
                                     null
                             }
                             {
-                                data.object.type==='Кредит'||data.object.type==='Возврат'&&data.object.paid<data.object.amountEnd?
-                                    <div style={{textAlign: 'right', marginBottom: 5}}>Кредитом: {checkFloat(data.object.amountEnd-data.object.paid)}</div>
+                                data.object.type==='Кредит'||data.object.type==='Возврат продажи'&&data.object.paid<data.object.amountEnd?
+                                    <div style={{textAlign: 'right', marginBottom: 5}}>Кредитом: {(checkFloat(data.object.amountEnd-data.object.paid)).toFixed(2)}</div>
                                     :
                                     null
                             }
-                            <div style={{textAlign: 'right', marginBottom: 5}}>Сдача: {data.object.change}</div>
+                            <div style={{textAlign: 'right', marginBottom: 5}}>Сдача: {data.object.change.toFixed(2)}</div>
                             {
                                 data.object.comment?
                                     <div style={{textAlign: 'right', marginBottom: 5}}>Комментарий: {data.object.comment}</div>
@@ -304,29 +307,30 @@ const Receipt = React.memo((props) => {
                                                 ]
                                                 for(let i=0; i<data.object.items.length; i++) {
                                                     _data.push({message: `${data.object.items[i].name}${data.object.items[i].mark?' | M':''}${data.object.items[i].tnved?` | ${data.object.items[i].tnved}`:''}`, align: 'left'})
-                                                    _data.push({message: `${data.object.items[i].price} * ${data.object.items[i].count} ${data.object.items[i].unit} = ${data.object.items[i].amountStart}`, align: 'right'})
+                                                    _data.push({message: `${data.object.items[i].price.toFixed(2)} * ${data.object.items[i].count} ${data.object.items[i].unit} = ${data.object.items[i].amountStart.toFixed(2)}`, align: 'right'})
+                                                    _data.push({message: `НДС ${checkFloat(data.object.items[i].ndsPrecent)}%: ${checkFloat(data.object.items[i].nds)} | НСП ${checkFloat(data.object.items[i].nspPrecent)}%: ${checkFloat(data.object.items[i].nsp)}`, align: 'right'})
                                                     if(data.object.items[i].discount||data.object.items[i].extra){
                                                         if(data.object.items[i].discount)
-                                                            _data.push({message: `${'Продажа'===data.object.type?'Скидка':'Уценка'}: ${data.object.items[i].discount}`, align: 'right'})
+                                                            _data.push({message: `${'Продажа'===data.object.type?'Скидка':'Уценка'}: ${data.object.items[i].discount.toFixed(2)}`, align: 'right'})
                                                         if(data.object.items[i].extra)
-                                                            _data.push({message: `Наценка: ${data.object.items[i].extra}`, align: 'right'})
-                                                        _data.push({message: `Итого: ${data.object.items[i].amountEnd}`, align: 'right'})
+                                                            _data.push({message: `Наценка: ${data.object.items[i].extra.toFixed(2)}`, align: 'right'})
+                                                        _data.push({message: `Итого: ${data.object.items[i].amountEnd.toFixed(2)}`, align: 'right'})
                                                     }
                                                 }
                                                 _data.push({message: '********************************', align: 'center'})
                                                 if(data.object.discount)
-                                                    _data.push({message: `${'Продажа'===data.object.type?'Скидка':'Уценка'}: ${data.object.discount}`, align: 'right'})
+                                                    _data.push({message: `${'Продажа'===data.object.type?'Скидка':'Уценка'}: ${data.object.discount.toFixed(2)}`, align: 'right'})
                                                 if(data.object.extra)
-                                                    _data.push({message: `Наценка: ${data.object.extra}`, align: 'right'})
-                                                _data.push({message: `НДС ${data.object.ndsPrecent}%: ${data.object.nds}`, align: 'right'})
-                                                _data.push({message: `НСП ${data.object.nspPrecent}%: ${data.object.nsp}`, align: 'right'})
-                                                _data.push({message: `ИТОГО: ${data.object.amountEnd}`, align: 'right', bold: true})
-                                                _data.push({message: `${data.object.typePayment}: ${data.object.paid}`, align: 'right'})
+                                                    _data.push({message: `Наценка: ${data.object.extra.toFixed(2)}`, align: 'right'})
+                                                _data.push({message: `НДС: ${data.object.nds.toFixed(2)}`, align: 'right'})
+                                                _data.push({message: `НСП: ${data.object.nsp.toFixed(2)}`, align: 'right'})
+                                                _data.push({message: `ИТОГО: ${data.object.amountEnd.toFixed(2)}`, align: 'right', bold: true})
+                                                _data.push({message: `${data.object.typePayment}: ${data.object.paid.toFixed(2)}`, align: 'right'})
                                                 if(data.object.usedPrepayment)
-                                                    _data.push({message: `Авансом: ${data.object.usedPrepayment}`, align: 'right'})
-                                                if(data.object.type==='Кредит'||data.object.type==='Возврат'&&data.object.paid<data.object.amountEnd)
-                                                    _data.push({message: `Кредитом: ${checkFloat(data.object.amountEnd-data.object.paid)}`, align: 'right'})
-                                                _data.push({message: `Сдача: ${data.object.change}`, align: 'right'})
+                                                    _data.push({message: `Авансом: ${data.object.usedPrepayment.toFixed(2)}`, align: 'right'})
+                                                if(data.object.type==='Кредит'||data.object.type==='Возврат продажи'&&data.object.paid<data.object.amountEnd)
+                                                    _data.push({message: `Кредитом: ${(checkFloat(data.object.amountEnd-data.object.paid)).toFixed(2)}`, align: 'right'})
+                                                _data.push({message: `Сдача: ${data.object.change.toFixed(2)}`, align: 'right'})
                                                 if(data.object.comment)
                                                     _data.push({message: `Комментарий: ${data.object.comment}`, align: 'right'})
                                                 if(data.object.syncMsg!=='Фискальный режим отключен') {

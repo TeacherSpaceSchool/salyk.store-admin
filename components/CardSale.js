@@ -14,7 +14,7 @@ import SyncOff from '@material-ui/icons/SyncDisabled';
 const colors = {
     'Продажа': 'green',
     'Кредит': 'orange',
-    'Возврат': 'red',
+    'Возврат продажи': 'red',
     'Погашение кредита': 'green',
     'Аванс': 'green',
     'Возврат аванса': 'red',
@@ -119,7 +119,7 @@ const CardSale = React.memo((props) => {
                                         Скидка:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {checkFloat(element.discountItems+element.discount)} сом
+                                        {(checkFloat(element.discountItems+element.discount)).toFixed(2)} сом
                                     </div>
                                 </div>
                                 :
@@ -132,7 +132,7 @@ const CardSale = React.memo((props) => {
                                         Наценка:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {checkFloat(element.extraItems+element.extra)} сом
+                                        {(checkFloat(element.extraItems+element.extra)).toFixed(2)} сом
                                     </div>
                                 </div>
                                 :
@@ -145,7 +145,7 @@ const CardSale = React.memo((props) => {
                                         Кредит:&nbsp;
                                     </div>
                                     <div className={classes.value}>
-                                        {checkFloat(element.amountEnd-element.paid)} сом
+                                        {(checkFloat(element.amountEnd-element.paid)).toFixed(2)} сом
                                     </div>
                                 </div>
                                 :
@@ -156,7 +156,7 @@ const CardSale = React.memo((props) => {
                                 Итого:&nbsp;
                             </div>
                             <div className={classes.value}>
-                                {element.amountEnd} сом
+                                {element.amountEnd.toFixed(2)} сом
                             </div>
                         </div>
                     </CardContent>

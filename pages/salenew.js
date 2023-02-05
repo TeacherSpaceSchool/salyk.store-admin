@@ -44,7 +44,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import BarcodeScannerIcon from '../icons/barcode-scanner.svg';
 import { openScanner } from '../src/lib';
 
-const types = ['Продажа', 'Возврат продажи', 'Погашение кредита', 'Аванс', 'Возврат аванса', 'Покупка', 'Возврат покупки']
+const types = ['Продажа', 'Возврат продажи', /*'Погашение кредита', 'Аванс', 'Возврат аванса', */'Покупка', 'Возврат покупки']
 
 const Selnew = React.memo((props) => {
     const classes = pageListStyle();
@@ -73,6 +73,8 @@ const Selnew = React.memo((props) => {
     let calculateAmountItem = (item) => {
         item.amountStart = checkFloat(item.count*item.price)
         item.amountEnd = checkFloat(item.amountStart + (item.extraType==='%'?item.amountStart/100*item.extra:checkFloat(item.extra)) - (item.discountType==='%'?item.amountStart/100*item.discount:item.discount))
+        item.nds = checkFloat(item.amountEnd/item.allPrecent*item.ndsPrecent)
+        item.nsp = checkFloat(item.amountEnd/item.allPrecent*item.nspPrecent)
     };
     let addItem = (item) => {
         if(item) {
@@ -87,7 +89,16 @@ const Selnew = React.memo((props) => {
                 }
             }
             if(!search) {
+                let ndsPrecent = checkFloat(ndsTypesValue[item.ndsType_v2!=undefined?item.ndsType_v2:legalObject.ndsType_v2])
+                let nspPrecent = checkFloat(nspTypesValue[item.nspType_v2!=undefined?item.nspType_v2:legalObject.nspType_v2])
+                let allPrecent = 100+ndsPrecent+nspPrecent
+                let nds = checkFloat(allAmount/allPrecent*ndsPrecent)
+                let nsp = checkFloat(allAmount/allPrecent*nspPrecent)
                 setItems([{
+                    ndsPrecent,
+                    nspPrecent,
+                    nds,
+                    nsp,
                     editedPrice: item.editedPrice,
                     _id: item._id,
                     name: item.name,
@@ -186,7 +197,16 @@ const Selnew = React.memo((props) => {
                             }
                         }
                         if(!search) {
+                            let ndsPrecent = checkFloat(ndsTypesValue[scanItems[0].ndsType_v2!=undefined?scanItems[0].ndsType_v2:legalObject.ndsType_v2])
+                            let nspPrecent = checkFloat(nspTypesValue[scanItems[0].nspType_v2!=undefined?scanItems[0].nspType_v2:legalObject.nspType_v2])
+                            let allPrecent = 100+ndsPrecent+nspPrecent
+                            let nds = checkFloat(allAmount/allPrecent*ndsPrecent)
+                            let nsp = checkFloat(allAmount/allPrecent*nspPrecent)
                             items = [{
+                                ndsPrecent,
+                                nspPrecent,
+                                nds,
+                                nsp,
                                 editedPrice: scanItems[0].editedPrice,
                                 _id: scanItems[0]._id,
                                 name: scanItems[0].name,
@@ -309,6 +329,10 @@ const Selnew = React.memo((props) => {
                                                                 amountEnd: item.amountEnd,
                                                                 tnved: item.tnved,
                                                                 mark: item.mark,
+                                                                ndsPrecent: item.ndsPrecent,
+                                                                nspPrecent: item.nspPrecent,
+                                                                nds: item.nds,
+                                                                nsp: item.nsp
                                                             }
                                                         }))
                                                     }
@@ -429,11 +453,18 @@ const Selnew = React.memo((props) => {
                                                         </div>
                                                         {
                                                             item.editedPrice?
-                                                                <input style={{width: 100, textAlign: 'left'}} type={isMobileApp?'number':'text'} className={classes.counternmbrBasket} value={item.price} onChange={(event) => {
-                                                                    items[idx].price = inputFloat(event.target.value)
-                                                                    calculateAmountItem(items[idx])
-                                                                    setItems([...items])
-                                                                }}/>
+                                                                <input style={{width: 100, textAlign: 'left'}} type={isMobileApp?'number':'text'} className={classes.counternmbrBasket} value={item.price}
+                                                                    onClick={()=>{
+                                                                        items[idx].price = ''
+                                                                        calculateAmountItem(items[idx])
+                                                                        setItems([...items])
+                                                                    }}
+                                                                    onChange={(event) => {
+                                                                        items[idx].price = inputFloat(event.target.value)
+                                                                        calculateAmountItem(items[idx])
+                                                                        setItems([...items])
+                                                                    }}
+                                                                />
                                                                 :
                                                                 <div className={classes.valueFieldBasket} style={{width: '100%'}}>
                                                                     {item.price}
@@ -724,12 +755,9 @@ const Selnew = React.memo((props) => {
                             if('Возврат аванса'===type&&allAmount>usedPrepayment)
                                 showSnackBar('Сумма слишком велика')
                             else {
-                                if (allAmount > 0) {
+                                if (allAmount >= 0) {
                                     if (!type.includes('Возврат') || sale) {
                                         allAmount = checkFloat(allAmount)
-                                        let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
-                                        let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
-                                        let allPrecent = 100+ndsPrecent+nspPrecent
                                         if (['Аванс', 'Погашение кредита', 'Возврат аванса'].includes(type)) {
                                             items = [{
                                                 name: comment.length ? comment : type,
@@ -742,6 +770,8 @@ const Selnew = React.memo((props) => {
                                                 extra: '',
                                                 extraType: 'сом',
                                                 amountEnd: allAmount,
+                                                nds: 0,
+                                                nsp: 0
                                             }]
                                         }
                                         let consignation = 0
@@ -750,12 +780,16 @@ const Selnew = React.memo((props) => {
                                         let cashbox
                                         if (['Покупка', 'Возврат аванса', 'Возврат продажи'].includes(type))
                                             cashbox = await getCashbox({_id: data.cashbox})
+                                        let allNsp = 0, allNds = 0
+                                        for(let i=0; i<items.length; i++) {
+                                            allNds += items[i].nds
+                                            allNsp += items[i].nsp
+                                        }
                                         setMiniDialog('Оплата', <Buy
                                             sale={sale}
                                             _setComment={setComment}
-                                            ndsPrecent={ndsPrecent}
-                                            nspPrecent={nspPrecent}
-                                            allPrecent={allPrecent}
+                                            allNsp={allNsp}
+                                            allNds={allNds}
                                             amountStart={allAmount}
                                             client={client}
                                             items={items}
@@ -801,7 +835,7 @@ Selnew.getInitialProps = async function(ctx) {
         }
 
     let workShifts = await getWorkShifts({filter: 'active'}, ctx.req ? await getClientGqlSsr(ctx.req) : undefined)
-    if(!workShifts.length||((new Date()-workShifts[0].start)/1000/60/60)>24) {
+    if(!workShifts.length||workShifts[0].expired) {
         if (ctx.res) {
             ctx.res.writeHead(302, {
                 Location: '/'

@@ -3,7 +3,7 @@ import Head from 'next/head';
 import React, { useState } from 'react';
 import App from '../../layouts/App';
 import { connect } from 'react-redux'
-import {getCashbox, _setCashbox, addCashbox, deleteCashbox, restoreCashbox, clearCashbox} from '../../src/gql/cashbox'
+import {getCashbox, _setCashbox, addCashbox, deleteCashbox} from '../../src/gql/cashbox'
 import {generateReportX} from '../../src/gql/report'
 import {getLegalObjects} from '../../src/gql/legalObject'
 import {getFns} from '../../src/gql/kkm-2.0'
@@ -275,7 +275,7 @@ const Cashbox = React.memo((props) => {
                                     <div className={classes.nameField}>
                                         Истечение регистрации ФМ:&nbsp;
                                     </div>
-                                    <div className={classes.value} style={{color: data.object.fnExpiresAt&&data.object.fnExpiresAt>=new Date()?'green':'red'}}>
+                                    <div className={classes.value} style={{color: data.object.fnWork?'green':'red'}}>
                                         {pdDDMMYYYY(data.object.fnExpiresAt)}
                                     </div>
                                 </div>
@@ -297,28 +297,17 @@ const Cashbox = React.memo((props) => {
                         }
                         {
                             router.query.id!=='new'?
-                                ['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.add?
-                                    <Link href='/payment/[id]' as={'/payment/new'}>
-                                        <a>
-                                            <div className={classes.row}>
-                                                <div className={classes.nameField}>
-                                                    Оплачен до:&nbsp;
-                                                </div>
-                                                <div className={classes.value} style={{color: data.object.endPayment&&data.object.endPayment>=new Date()?'green':'red'}}>
-                                                    {data.object.endPayment?pdDDMMYYHHMM(data.object.endPayment):'не оплачен'}
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </Link>
-                                    :
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>
-                                            Оплачен до:&nbsp;
-                                        </div>
-                                        <div className={classes.value} style={{color: data.object.endPayment&&data.object.endPayment>=new Date()?'green':'red'}}>
-                                            {data.object.endPayment?pdDDMMYYHHMM(data.object.endPayment):'не оплачен'}
-                                        </div>
+                                <div className={classes.row} onClick={() => {
+                                    if(['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.add)
+                                        Router.push('/payment/new')
+                                }}>
+                                    <div className={classes.nameField}>
+                                        Оплачен до:&nbsp;
                                     </div>
+                                    <div className={classes.value} style={{color: data.object.paidWork?'green':'red'}}>
+                                        {data.object.endPayment?pdDDMMYYHHMM(data.object.endPayment):'не оплачен'}
+                                    </div>
+                                </div>
                                 :
                                 null
                         }
@@ -460,20 +449,6 @@ const Cashbox = React.memo((props) => {
                                                 showMiniDialog(true)*/
                                             }}>
                                                 Х-Отчет
-                                            </Button>
-                                            :
-                                            null
-                                    }
-                                    {
-                                        router.query.id!=='new'&&'superadmin'===profile.role&&!data.object.presentCashier?
-                                            <Button color='primary' onClick={()=>{
-                                                const action = async() => {
-                                                    await clearCashbox(router.query.id)
-                                                }
-                                                setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                                showMiniDialog(true)
-                                            }}>
-                                                Обнулить
                                             </Button>
                                             :
                                             null
