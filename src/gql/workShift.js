@@ -168,14 +168,14 @@ export const startWorkShift = async({cashbox})=>{
     }
 }
 
-export const _setWorkShift = async({deposit, withdraw, comment})=>{
+export const _setWorkShift = async({_id, deposit, withdraw, comment})=>{
     try{
         const client = new SingletonApolloClient().getClient()
         let res = await client.mutate({
-            variables: {deposit, withdraw, comment},
+            variables: {_id, deposit, withdraw, comment},
             mutation : gql`
-                    mutation ($deposit: Float, $withdraw: Float, $comment: String) {
-                        setWorkShift(deposit: $deposit, withdraw: $withdraw, comment: $comment) 
+                    mutation ($_id: ID, $deposit: Float, $withdraw: Float, $comment: String) {
+                        setWorkShift(_id: $_id, deposit: $deposit, withdraw: $withdraw, comment: $comment) 
                     }`})
         return res.data.setWorkShift
     } catch(err){

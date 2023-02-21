@@ -158,9 +158,11 @@ const User = React.memo((props) => {
                                 onClose={handleCloseQuick}
                             >
                                 <Link href='/workshifts/[id]' as={`/workshifts/${legalObject._id}`}>
-                                    <MenuItem onClick={()=>{setCashier({_id: router.query.id, name})}}>
-                                        Смены
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem onClick={()=>{setCashier({_id: router.query.id, name})}}>
+                                            Смены
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                             </Menu>
                             <Button onClick={handleMenuQuick} color='primary'>

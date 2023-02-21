@@ -110,9 +110,11 @@ const Client = React.memo((props) => {
                                 onClose={handleCloseQuick}
                             >
                                 <Link href='/sales/[id]' as={`/sales/${data.object.legalObject._id}`}>
-                                    <MenuItem onClick={()=>{props.appActions.setClient({_id: router.query.id, name})}}>
-                                        Операции
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem onClick={()=>{props.appActions.setClient({_id: router.query.id, name})}}>
+                                            Операции
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                             </Menu>
                             <Button onClick={handleMenuQuick} color='primary'>
@@ -253,9 +255,11 @@ const Client = React.memo((props) => {
                                         onClose={handleCloseQuick}
                                     >
                                         <Link href='/sales/[id]' as={`/sales/${data.object.legalObject._id}`}>
-                                            <MenuItem onClick={()=>{props.appActions.setClient({_id: router.query.id, name})}}>
-                                                Операции
-                                            </MenuItem>
+                                            <a>
+                                                <MenuItem onClick={()=>{props.appActions.setClient({_id: router.query.id, name})}}>
+                                                    Операции
+                                                </MenuItem>
+                                            </a>
                                         </Link>
                                     </Menu>
                                     <Button onClick={handleMenuQuick} color='primary'>

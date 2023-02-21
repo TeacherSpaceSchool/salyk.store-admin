@@ -81,29 +81,39 @@ const WorkShift = React.memo((props) => {
                                 onClose={handleCloseQuick}
                             >
                                 <Link href='/sales/[id]' as={`/sales/${data.object.legalObject._id}`}>
-                                    <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
-                                        Операции
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
+                                            Операции
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href='/deposithistorys/[id]' as={`/deposithistorys/${data.object.legalObject._id}`}>
-                                    <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
-                                        Внесения
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
+                                            Внесения
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${data.object.legalObject._id}`}>
-                                    <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
-                                        Изъятия
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
+                                            Изъятия
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${data.object.legalObject._id}?type=X`}>
-                                    <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
-                                        X-Отчет
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
+                                            X-Отчет
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${data.object.legalObject._id}?type=Z`}>
-                                    <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
-                                        Z-Отчет
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem onClick={()=>{setWorkShift({_id: router.query.id, number: data.object.number})}}>
+                                            Z-Отчет
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                             </Menu>
                             <Button onClick={handleMenuQuick} color='primary'>
@@ -483,7 +493,7 @@ const WorkShift = React.memo((props) => {
                                        profile.role!=='admin'||profile.add||data.object.expired?
                                            <Button color='secondary' onClick={()=>{
                                                const action = async() => {
-                                                   let res = await _setWorkShift({deposit: 0, comment: 'Закрытие смены', withdraw: cashEnd})
+                                                   let res = await _setWorkShift({_id: data.object._id, deposit: 0, comment: 'Закрытие смены', withdraw: cashEnd})
                                                    if(res==='OK') {
                                                        let report = await endWorkShift(...['управляющий', 'супервайзер', 'admin', 'superadmin'].includes(profile.role) ? [router.query.id] : [])
                                                        Router.push(`/report/${report}?type=Z`)

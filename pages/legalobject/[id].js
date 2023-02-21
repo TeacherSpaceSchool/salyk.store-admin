@@ -143,64 +143,88 @@ const LegalObject = React.memo((props) => {
                                 onClose={handleCloseQuick}
                             >
                                 <Link href='/branchs/[id]' as={`/branchs/${router.query.id}`}>
-                                    <MenuItem>
-                                        Объекты
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            Объекты
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href='/cashboxes/[id]' as={`/cashboxes/${router.query.id}`}>
-                                    <MenuItem>
-                                        Кассы
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            Кассы
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href='/users/[id]' as={`/users/${router.query.id}`}>
-                                    <MenuItem>
-                                        Сотрудники
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            Сотрудники
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href='/items/[id]' as={`/items/${router.query.id}`}>
-                                    <MenuItem>
-                                        Товары
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            Товары
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href='/districts/[id]' as={`/districts/${router.query.id}`}>
-                                    <MenuItem>
-                                        Районы
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            Районы
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href='/clients/[id]' as={`/clients/${router.query.id}`}>
-                                    <MenuItem>
-                                        Клиенты
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            Клиенты
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href='/workshifts/[id]' as={`/workshifts/${router.query.id}`}>
-                                    <MenuItem>
-                                        Смены
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            Смены
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href='/sales/[id]' as={`/sales/${router.query.id}`}>
-                                    <MenuItem>
-                                        Операции
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            Операции
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href='/deposithistorys/[id]' as={`/deposithistorys/${router.query.id}`}>
-                                    <MenuItem>
-                                        Внесения
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            Внесения
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${router.query.id}`}>
-                                    <MenuItem>
-                                        Изъятия
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            Изъятия
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${router.query.id}?type=X`}>
-                                    <MenuItem>
-                                        X-Отчет
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            X-Отчет
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                                 <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${router.query.id}?type=Z`}>
-                                    <MenuItem>
-                                        Z-Отчет
-                                    </MenuItem>
+                                    <a>
+                                        <MenuItem>
+                                            Z-Отчет
+                                        </MenuItem>
+                                    </a>
                                 </Link>
                             </Menu>
                             <Button onClick={handleMenuQuick} color='primary'>

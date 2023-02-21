@@ -58,12 +58,12 @@ const Receipt = React.memo((props) => {
                         }} ref={receiptRef}>
                             <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{
                                 data.object.syncData[router.query.idx][0]==='registerCashbox'?
-                                    'Регистрация ФМ'
+                                    'РЕГИСТРАЦИЯ ФМ'
                                     :
                                     data.object.syncData[router.query.idx][0]==='reregisterCashbox'?
-                                        'Перерегистрация ФМ'
+                                        'ПЕРЕРЕГИСТРАЦИЯ ФМ'
                                         :
-                                        'Закрытие ФМ'
+                                        'ЗАКРЫТИЕ ФМ'
                             }</h3>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК №{parseInt(router.query.idx)+1}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(syncData.date)}</span></div>
@@ -129,12 +129,12 @@ const Receipt = React.memo((props) => {
                                         let _data = [
                                             {message: `${
                                                     data.object.syncData[router.query.idx][0]==='registerCashbox'?
-                                                        'Регистрация ФМ'
+                                                        'РЕГИСТРАЦИЯ ФМ'
                                                         :
                                                         data.object.syncData[router.query.idx][0]==='reregisterCashbox'?
-                                                            'Перерегистрация ФМ'
+                                                            'ПЕРЕРЕГИСТРАЦИЯ ФМ'
                                                             :
-                                                            'Закрытие ФМ'
+                                                            'ЗАКРЫТИЕ ФМ'
                                                 }`, align: 'center', bold: true},
                                             {message: `ЧЕК №${parseInt(router.query.idx)+1}`, align: 'left'},
                                             {message: `Дата: ${pdDDMMYYHHMM(syncData.date)}`, align: 'left'},

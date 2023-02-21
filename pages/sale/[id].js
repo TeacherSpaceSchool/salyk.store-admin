@@ -98,8 +98,8 @@ const Receipt = React.memo((props) => {
                             background: 'white',
                             marginTop: 20
                         }} ref={receiptRef}>
-                            <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{data.object.type}</h3>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК №{data.object.number}</span></div>
+                            <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{(data.object.type).toUpperCase()}</h3>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>КАССОВЫЙ ЧЕК №{data.object.number}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(data.object.createdAt)}</span></div>
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
@@ -291,17 +291,17 @@ const Receipt = React.memo((props) => {
                                                 }
 
                                                 let _data = [
-                                                    {message: data.object.legalObject.name, align: 'center'},
-                                                    {message: `${data.object.branch.name}, ${data.object.branch.address}`, align: 'center'},
+                                                    {message: (data.object.type).toUpperCase(), align: 'left'},
+                                                    {message: `КАССОВЫЙ ЧЕК №${data.object.number}`, align: 'left'},
                                                     {message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`, align: 'left'},
-                                                    {message: data.object.type, align: 'left'},
-                                                    {message: `ЧЕК №${data.object.number}`, align: 'left'},
-                                                    ...data.object.sale?[{message: `ЧЕК ОСНОВАНИЯ №${data.object.sale.number}`, align: 'left'}]:[],
-                                                    {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
-                                                    {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
                                                     {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
                                                     {message: `Смена №${data.object.workShift.number}`, align: 'left'},
                                                     {message: `Кассир: ${data.object.cashier.name}`, align: 'left'},
+                                                    {message: data.object.legalObject.name, align: 'center'},
+                                                    {message: `${data.object.branch.name}, ${data.object.branch.address}`, align: 'center'},
+                                                    ...data.object.sale?[{message: `ЧЕК ОСНОВАНИЯ №${data.object.sale.number}`, align: 'left'}]:[],
+                                                    {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
+                                                    {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
                                                     ...data.object.client?[{message: `Покупатель: ${data.object.client.number}`, align: 'left'}]:[],
                                                     {message: '********************************', align: 'center'},
                                                 ]

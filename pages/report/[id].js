@@ -49,11 +49,11 @@ const Receipt = React.memo((props) => {
         setReadyPrint(process.browser&&receiptRef.current&&data.object)
     }, [process.browser, receiptRef.current]);
     return (
-        <App pageName={data.object!==null?`${data.object.type}-Отчет №${data.object.number}`:'Ничего не найдено'}>
+        <App pageName={data.object!==null?`${data.object.type}-ОТЧЕТ №${data.object.number}`:'Ничего не найдено'}>
             <Head>
-                <title>{data.object!==null?`${data.object.type}-Отчет №${data.object.number}`:'Ничего не найдено'}</title>
+                <title>{data.object!==null?`${data.object.type}-ОТЧЕТ №${data.object.number}`:'Ничего не найдено'}</title>
                 <meta name='description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
-                <meta property='og:title' content={data.object!==null?`${data.object.type}-Отчет №${data.object.number}`:'Ничего не найдено'} />
+                <meta property='og:title' content={data.object!==null?`${data.object.type}-ОТЧЕТ №${data.object.number}`:'Ничего не найдено'} />
                 <meta property='og:description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:type' content='website' />
                 <meta property='og:image' content={`${urlMain}/512x512.png`} />
@@ -95,7 +95,7 @@ const Receipt = React.memo((props) => {
                                 background: 'white',
                                 marginTop: 20
                             }} ref={receiptRef}>
-                                <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{`${data.object.type}-Отчет №${data.object.number}`}</h3>
+                                <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{`${data.object.type}-ОТЧЕТ №${data.object.number}`}</h3>
                                 <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {`${pdDDMMYYHHMM(data.object.start)}${data.object.end?` - ${pdDDMMYYHHMM(data.object.end)}`:''}`}</span></div>
                                 {
                                     ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
@@ -222,7 +222,7 @@ const Receipt = React.memo((props) => {
                                                 setPrinter(_printer)
                                             }
                                             let _data = [
-                                                {message: `${data.object.type}-Отчет №${data.object.number}`, align: 'center', bold: true},
+                                                {message: `${data.object.type}-ОТЧЕТ №${data.object.number}`, align: 'center', bold: true},
                                                 {message: `Дата: ${`${pdDDMMYYHHMM(data.object.start)}${data.object.end?` - ${pdDDMMYYHHMM(data.object.end)}`:''}`}`, align: 'left'},
                                                 {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
                                                 {message: `Смена №${data.object.workShift.number}`, align: 'left'},
@@ -307,7 +307,7 @@ const Receipt = React.memo((props) => {
                                             printWindow.focus();
                                         }
                                     }}>Печать</Button>
-                                    <Pdf targetRef={receiptRef} filename={`${data.object.type}-Отчет №${data.object.number}`}
+                                    <Pdf targetRef={receiptRef} filename={`${data.object.type}-ОТЧЕТ №${data.object.number}`}
                                          options = {{
                                              format: [receiptRef.current.offsetHeight*0.8, receiptRef.current.offsetWidth*0.75+1]
                                          }}>

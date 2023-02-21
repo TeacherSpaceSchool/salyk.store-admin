@@ -55,7 +55,7 @@ const Receipt = React.memo((props) => {
                             background: 'white',
                             marginTop: 20
                         }} ref={receiptRef}>
-                            <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>Внесение в кассу</h3>
+                            <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>ВНЕСЕНИЕ В КАССУ</h3>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК №{data.object.number}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(data.object.createdAt)}</span></div>
                             {
@@ -153,7 +153,7 @@ const Receipt = React.memo((props) => {
                                         }
 
                                         let _data = [
-                                            {message: 'Внесение в кассу', align: 'center', bold: true},
+                                            {message: 'ВНЕСЕНИЕ В КАССУ', align: 'center', bold: true},
                                             {message: `ЧЕК №${data.object.number}`, align: 'left'},
                                             {message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`, align: 'left'},
                                             {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},

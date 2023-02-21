@@ -99,34 +99,46 @@ const Cashbox = React.memo((props) => {
                                         onClose={handleCloseQuick}
                                     >
                                         <Link href='/workshifts/[id]' as={`/workshifts/${legalObject._id}`}>
+                                            <a>
                                             <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
                                                 Смены
                                             </MenuItem>
+                                            </a>
                                         </Link>
                                         <Link href='/sales/[id]' as={`/sales/${legalObject._id}`}>
+                                            <a>
                                             <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
                                                 Операции
                                             </MenuItem>
+                                            </a>
                                         </Link>
                                         <Link href='/deposithistorys/[id]' as={`/deposithistorys/${legalObject._id}`}>
+                                            <a>
                                             <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
                                                 Внесения
                                             </MenuItem>
+                                            </a>
                                         </Link>
                                         <Link href='/withdrawhistorys/[id]' as={`/withdrawhistorys/${legalObject._id}`}>
+                                            <a>
                                             <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
                                                 Изъятия
                                             </MenuItem>
+                                            </a>
                                         </Link>
                                         <Link href={{pathname: '/reports/[id]', query: {type: 'X'}}} as={`/reports/${legalObject._id}?type=X`}>
+                                            <a>
                                             <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
                                                 X-Отчет
                                             </MenuItem>
+                                            </a>
                                         </Link>
                                         <Link href={{pathname: '/reports/[id]', query: {type: 'Z'}}} as={`/reports/${legalObject._id}?type=Z`}>
+                                            <a>
                                             <MenuItem onClick={()=>{setCashbox({_id: router.query.id, name})}}>
                                                 Z-Отчет
                                             </MenuItem>
+                                            </a>
                                         </Link>
                                     </Menu>
                                     <Button onClick={handleMenuQuick} color='primary'>
