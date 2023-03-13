@@ -26,7 +26,6 @@ import { getConsignation } from '../src/gql/consignation'
 import { getPrepayment } from '../src/gql/prepayment'
 import { getItems } from '../src/gql/item'
 import { inputFloat, checkFloat } from '../src/lib'
-import { ndsTypesValue, nspTypesValue } from '../src/const'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
@@ -89,12 +88,13 @@ const Selnew = React.memo((props) => {
                 }
             }
             if(!search) {
-                let ndsPrecent = checkFloat(ndsTypesValue[item.ndsType_v2!=undefined?item.ndsType_v2:legalObject.ndsType_v2])
-                let nspPrecent = checkFloat(nspTypesValue[item.nspType_v2!=undefined?item.nspType_v2:legalObject.nspType_v2])
+                let ndsPrecent = checkFloat(legalObject.ndsTypeRate_v2)
+                let nspPrecent = checkFloat(legalObject.nspTypeRate_v2)
                 let allPrecent = 100+ndsPrecent+nspPrecent
-                let nds = checkFloat(allAmount/allPrecent*ndsPrecent)
-                let nsp = checkFloat(allAmount/allPrecent*nspPrecent)
+                let nds = checkFloat(item.price/allPrecent*ndsPrecent)
+                let nsp = checkFloat(item.price/allPrecent*nspPrecent)
                 setItems([{
+                    allPrecent,
                     ndsPrecent,
                     nspPrecent,
                     nds,
@@ -197,12 +197,13 @@ const Selnew = React.memo((props) => {
                             }
                         }
                         if(!search) {
-                            let ndsPrecent = checkFloat(ndsTypesValue[scanItems[0].ndsType_v2!=undefined?scanItems[0].ndsType_v2:legalObject.ndsType_v2])
-                            let nspPrecent = checkFloat(nspTypesValue[scanItems[0].nspType_v2!=undefined?scanItems[0].nspType_v2:legalObject.nspType_v2])
+                            let ndsPrecent = checkFloat(legalObject.ndsTypeRate_v2)
+                            let nspPrecent = checkFloat(legalObject.nspTypeRate_v2)
                             let allPrecent = 100+ndsPrecent+nspPrecent
-                            let nds = checkFloat(allAmount/allPrecent*ndsPrecent)
-                            let nsp = checkFloat(allAmount/allPrecent*nspPrecent)
+                            let nds = checkFloat(scanItems[0].price/allPrecent*ndsPrecent)
+                            let nsp = checkFloat(scanItems[0].price/allPrecent*nspPrecent)
                             items = [{
+                                allPrecent,
                                 ndsPrecent,
                                 nspPrecent,
                                 nds,
@@ -329,6 +330,7 @@ const Selnew = React.memo((props) => {
                                                                 amountEnd: item.amountEnd,
                                                                 tnved: item.tnved,
                                                                 mark: item.mark,
+                                                                allPrecent: 100+item.ndsPrecent+item.nspPrecent,
                                                                 ndsPrecent: item.ndsPrecent,
                                                                 nspPrecent: item.nspPrecent,
                                                                 nds: item.nds,
@@ -759,6 +761,11 @@ const Selnew = React.memo((props) => {
                                     if (!type.includes('Возврат') || sale) {
                                         allAmount = checkFloat(allAmount)
                                         if (['Аванс', 'Погашение кредита', 'Возврат аванса'].includes(type)) {
+                                            let ndsPrecent = checkFloat(legalObject.ndsTypeRate_v2)
+                                            let nspPrecent = checkFloat(legalObject.nspTypeRate_v2)
+                                            let allPrecent = 100+ndsPrecent+nspPrecent
+                                            let nds = checkFloat(allAmount/allPrecent*ndsPrecent)
+                                            let nsp = checkFloat(allAmount/allPrecent*nspPrecent)
                                             items = [{
                                                 name: comment.length ? comment : type,
                                                 unit: 'шт',
@@ -770,8 +777,11 @@ const Selnew = React.memo((props) => {
                                                 extra: '',
                                                 extraType: 'сом',
                                                 amountEnd: allAmount,
-                                                nds: 0,
-                                                nsp: 0
+                                                allPrecent,
+                                                ndsPrecent,
+                                                nspPrecent,
+                                                nds,
+                                                nsp
                                             }]
                                         }
                                         let consignation = 0

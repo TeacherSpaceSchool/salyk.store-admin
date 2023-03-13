@@ -15,9 +15,8 @@ import {pdDDMMYYHHMM} from '../../src/lib'
 import { connectPrinterByBluetooth, printEsPosData } from '../../src/printer'
 import Button from '@material-ui/core/Button';
 import dynamic from 'next/dynamic'
-const Pdf = dynamic(import('react-to-pdf'), { ssr: false });
 import Link from 'next/link';
-import {taxSystems} from '../../src/const'
+const Pdf = dynamic(import('react-to-pdf'), { ssr: false });
 
 const Receipt = React.memo((props) => {
     const classes = saleStyle();
@@ -100,16 +99,26 @@ const Receipt = React.memo((props) => {
                             }
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
-                                    <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
-                                        <a>
-                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
-                                        </a>
-                                    </Link>
+                                    <>
+                                        <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
+                                            <a>
+                                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}</span></div>
+                                            </a>
+                                        </Link>
+                                        <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
+                                            <a>
+                                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.address}</span></div>
+                                            </a>
+                                        </Link>
+                                    </>
                                     :
-                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
+                                    <>
+                                        <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}</span></div>
+                                        <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.address}</span></div>
+                                    </>
                             }
                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:data.object.legalObject.taxSystemName_v2}</span></div>
                             <div style={{textAlign: 'center', height: 12, marginTop: 10, marginBottom: 10}}>**********************************************</div>
                             <div style={{textAlign: 'right', marginBottom: 5, fontWeight: 'bold'}}>ИТОГО: {data.object.amount.toFixed(2)}</div>
                             {
@@ -160,9 +169,10 @@ const Receipt = React.memo((props) => {
                                             {message: `Смена №${data.object.workShift.number}`, align: 'left'},
                                             {message: `Кассир: ${data.object.cashier.name}`, align: 'left'},
                                             {message: data.object.legalObject.name, align: 'left'},
-                                            {message: `${data.object.branch.name}, ${data.object.branch.address}`, align: 'left'},
+                                            {message: data.object.branch.name, align: 'left'},
+                                            {message: data.object.branch.address, align: 'left'},
                                             {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
-                                            {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
+                                            {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:data.object.legalObject.taxSystemName_v2}`, align: 'left'},
                                             {message: '********************************', align: 'center'},
                                             {message: `ИТОГО: ${data.object.amount.toFixed(2)}`, align: 'right', bold: true}
                                         ]

@@ -43,15 +43,6 @@ const Item = React.memo((props) => {
     const { data } = props;
     const { isMobileApp } = props.app;
     const { showSnackBar } = props.snackbarActions;
-
-    let [ndsType_v2, setNdsType_v2] = useState(data.object&&data.object.ndsType_v2!=undefined?ndsTypes[data.object.ndsType_v2]:null);
-    let handleNdsType_v2 = (event) => {
-        setNdsType_v2(event.target.value)
-    };
-    let [nspType_v2, setNspType_v2] = useState(data.object&&data.object.nspType_v2!=undefined?nspTypes[data.object.nspType_v2]:null);
-    let handleNspType_v2 = (event) => {
-        setNspType_v2(event.target.value)
-    };
     let [legalObject, setLegalObject] = useState(data.object?data.object.legalObject:undefined);
     let [name, setName] = useState(data.object?data.object.name:'');
     let [price, setPrice] = useState(data.object?data.object.price:'');
@@ -184,22 +175,6 @@ const Item = React.memo((props) => {
                                         </div>
                                         <div className={classes.value}>
                                             {category?category.name:'Несортированно'}
-                                        </div>
-                                    </div>
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>
-                                            НДС:&nbsp;
-                                        </div>
-                                        <div className={classes.value}>
-                                            {ndsTypes[ndsType_v2]}
-                                        </div>
-                                    </div>
-                                    <div className={classes.row}>
-                                        <div className={classes.nameField}>
-                                            НСП:&nbsp;
-                                        </div>
-                                        <div className={classes.value}>
-                                            {nspTypes[nspType_v2]}
                                         </div>
                                     </div>
                                     {
@@ -339,22 +314,6 @@ const Item = React.memo((props) => {
                                             showFullDialog(true)
                                         }}
                                     />
-                                    <FormControl className={classes.input}>
-                                        <InputLabel>НДС</InputLabel>
-                                        <Select value={ndsType_v2} onChange={handleNdsType_v2}>
-                                            {ndsTypes.map((element)=>
-                                                <MenuItem key={element} value={element}>{element}</MenuItem>
-                                            )}
-                                        </Select>
-                                    </FormControl>
-                                    <FormControl className={classes.input}>
-                                        <InputLabel>НСП</InputLabel>
-                                        <Select value={nspType_v2} onChange={handleNspType_v2}>
-                                            {nspTypes.map((element)=>
-                                                <MenuItem key={element} value={element}>{element}</MenuItem>
-                                            )}
-                                        </Select>
-                                    </FormControl>
                                     <TextField
                                         label='Код ТНВЭД'
                                         value={tnved}
@@ -406,8 +365,6 @@ const Item = React.memo((props) => {
                                                                 name,
                                                                 type,
                                                                 tnved,
-                                                                ...ndsType_v2?{ndsType_v2: ndsTypes.indexOf(ndsType_v2)}:{},
-                                                                ...nspType_v2?{nspType_v2: nspTypes.indexOf(nspType_v2)}:{},
                                                                 mark,
                                                                 quick
                                                             })
@@ -425,8 +382,6 @@ const Item = React.memo((props) => {
                                                         if (barCode!==data.object.barCode) element.barCode = barCode
                                                         if (unit!==data.object.unit) element.unit = unit
                                                         if (tnved!==data.object.tnved) element.tnved = tnved
-                                                        if (nspType_v2!==data.object.nspType_v2) element.nspType_v2 = nspTypes.indexOf(nspType_v2)
-                                                        if (ndsType_v2!==data.object.ndsType_v2) element.ndsType_v2 = ndsTypes.indexOf(ndsType_v2)
                                                         if (mark!==data.object.mark) element.mark = mark
                                                         if (quick!==data.object.quick) element.quick = quick
                                                         if (price!==data.object.price&&(checkFloat(price)||editedPrice)) element.price = checkFloat(price)

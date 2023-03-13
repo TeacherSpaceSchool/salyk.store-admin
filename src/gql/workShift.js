@@ -64,7 +64,7 @@ export const getWorkShift = async({_id}, client)=>{
                             _id
                             createdAt
                             number
-                            legalObject {_id name inn rateTaxe taxSystem_v2}
+                            legalObject {_id name inn rateTaxe taxSystemName_v2}
                             branch {_id name address}
                             cashier {_id name role}
                             cashbox {_id name rnmNumber fn registrationNumber}

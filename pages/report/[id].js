@@ -20,7 +20,6 @@ import SyncOn from '@material-ui/icons/Sync';
 import SyncOff from '@material-ui/icons/SyncDisabled';
 import ViewText from '../../components/dialog/ViewText';
 import Link from 'next/link';
-import {taxSystems} from '../../src/const'
 const Pdf = dynamic(import('react-to-pdf'), { ssr: false });
 
 const Receipt = React.memo((props) => {
@@ -128,20 +127,27 @@ const Receipt = React.memo((props) => {
                                         <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.legalObject.name}</span></div>
                                 }
                                 {
-                                    data.object.branch?
-                                        ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
+                                    ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
+                                        <>
                                             <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
                                                 <a>
-                                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
+                                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}</span></div>
                                                 </a>
                                             </Link>
-                                            :
-                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
+                                            <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
+                                                <a>
+                                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.address}</span></div>
+                                                </a>
+                                            </Link>
+                                        </>
                                         :
-                                        null
+                                        <>
+                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}</span></div>
+                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.address}</span></div>
+                                        </>
                                 }
                                 <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
-                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:data.object.legalObject.taxSystemName_v2}</span></div>
                                 <div style={{textAlign: 'center', height: 12, marginTop: 10, marginBottom: 10}}>**********************************************</div>
                                 {
                                     data.object.cashEnd?
@@ -227,9 +233,10 @@ const Receipt = React.memo((props) => {
                                                 {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
                                                 {message: `Смена №${data.object.workShift.number}`, align: 'left'},
                                                 {message: data.object.legalObject.name, align: 'left'},
-                                                ...data.object.branch?[{message: `${data.object.branch.name}, ${data.object.branch.address}`, align: 'left'}]:[],
+                                                ...data.object.branch?[{message: data.object.branch.name, align: 'left'}]:[],
+                                                ...data.object.branch?[{message: data.object.branch.address, align: 'left'}]:[],
                                                 {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
-                                                {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
+                                                {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:data.object.legalObject.taxSystemName_v2}`, align: 'left'},
                                                 {message: '********************************', align: 'center'},
                                                 ...data.object.cashEnd?[
                                                     {message: `  Наличных в кассе`, align: 'left'},

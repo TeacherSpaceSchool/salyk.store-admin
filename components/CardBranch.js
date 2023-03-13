@@ -10,7 +10,6 @@ import * as mini_dialogActions from '../redux/actions/mini_dialog'
 import { pdDDMMYYHHMM } from '../src/lib'
 import SyncOn from '@material-ui/icons/Sync';
 import SyncOff from '@material-ui/icons/SyncDisabled';
-import { bTypes, pTypes } from '../src/const'
 
 const CardBranch = React.memo((props) => {
     const classes = cardBranchStyle();
@@ -63,7 +62,7 @@ const CardBranch = React.memo((props) => {
                                 Тип:&nbsp;
                             </div>
                             <div className={classes.value}>
-                                {element.pType_v2?pTypes[element.pType_v2]:element.pType}
+                                {element.entrepreneurshipObjectName_v2?element.entrepreneurshipObjectName_v2:element.pType}
                             </div>
                         </div>
                         <div className={classes.row}>
@@ -71,7 +70,7 @@ const CardBranch = React.memo((props) => {
                                 Деятельность:&nbsp;
                             </div>
                             <div className={classes.value}>
-                                {element.bType_v2?bTypes[element.bType_v2]:element.bType}
+                                {element.businessActivityName_v2?element.businessActivityName_v2:element.bType}
                             </div>
                         </div>
                         <div className={classes.row}>

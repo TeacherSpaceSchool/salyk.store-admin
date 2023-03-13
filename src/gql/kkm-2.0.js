@@ -46,6 +46,63 @@ export const getFns = async(_id)=>{
     }
 }
 
+export const getTaxSystems = async()=>{
+    try{
+        let client = new SingletonApolloClient().getClient()
+        let res = await client
+            .query({
+                query: gql`
+                    query {
+                        taxSystems {
+                            code
+                            name
+                        }
+                    }`,
+            })
+        return res.data.taxSystems
+    } catch(err){
+        console.error(err)
+    }
+}
+
+export const getNspTypes = async()=>{
+    try{
+        let client = new SingletonApolloClient().getClient()
+        let res = await client
+            .query({
+                query: gql`
+                    query {
+                        nspTypes {
+                            code
+                            name
+                        }
+                    }`,
+            })
+        return res.data.nspTypes
+    } catch(err){
+        console.error(err)
+    }
+}
+
+export const getNdsTypes = async()=>{
+    try{
+        let client = new SingletonApolloClient().getClient()
+        let res = await client
+            .query({
+                query: gql`
+                    query {
+                        ndsTypes {
+                            code
+                            name
+                        }
+                    }`,
+            })
+        return res.data.ndsTypes
+    } catch(err){
+        console.error(err)
+    }
+}
+
 export const deleteFn = async({_id, fn})=>{
     try{
         const client = new SingletonApolloClient().getClient()
@@ -74,6 +131,82 @@ export const reserveFn = async(_id)=>{
                         }
                     }`})
         return res.data.reserveFn
+    } catch(err){
+        console.error(err)
+    }
+}
+
+export const getBusinessActivities = async()=>{
+    try{
+        let client = new SingletonApolloClient().getClient()
+        let res = await client
+            .query({
+                query: gql`
+                    query {
+                        businessActivities {
+                            code
+                            name
+                        }
+                    }`,
+            })
+        return res.data.businessActivities
+    } catch(err){
+        console.error(err)
+    }
+}
+
+export const getEntrepreneurshipObjects = async()=>{
+    try{
+        let client = new SingletonApolloClient().getClient()
+        let res = await client
+            .query({
+                query: gql`
+                    query {
+                        entrepreneurshipObjects {
+                            code
+                            name
+                        }
+                    }`,
+            })
+        return res.data.entrepreneurshipObjects
+    } catch(err){
+        console.error(err)
+    }
+}
+
+export const getTaxAuthorityDepartments = async()=>{
+    try{
+        let client = new SingletonApolloClient().getClient()
+        let res = await client
+            .query({
+                query: gql`
+                    query {
+                        taxAuthorityDepartments {
+                            code
+                            name
+                        }
+                    }`,
+            })
+        return res.data.taxAuthorityDepartments
+    } catch(err){
+        console.error(err)
+    }
+}
+
+export const getCalcItemAttributes = async()=>{
+    try{
+        let client = new SingletonApolloClient().getClient()
+        let res = await client
+            .query({
+                query: gql`
+                    query {
+                        calcItemAttributes {
+                            code
+                            name
+                        }
+                    }`,
+            })
+        return res.data.calcItemAttributes
     } catch(err){
         console.error(err)
     }

@@ -10,7 +10,6 @@ import dialogContentStyle from '../../src/styleMUI/dialogContent'
 import { checkFloat, inputFloat } from '../../src/lib';
 import { addSale } from '../../src/gql/sale';
 import Link from 'next/link';
-import { withoutNdsNsp } from '../../src/const'
 import TextField from '@material-ui/core/TextField';
 import * as appActions from '../../redux/actions/app'
 
@@ -33,10 +32,7 @@ const BuyBasket =  React.memo(
         let [commentShow, setCommentShow] = useState(false);
         let [change, setChange] = useState('');
         useEffect(() => {
-            amountEnd = amountStart - consignation
-            if (typePayment === 'Безналичный')
-                amountEnd -= allNsp
-            amountEnd = checkFloat(amountEnd)
+            amountEnd = checkFloat(amountStart - consignation)
             setAmountEnd(amountEnd)
             if (typePayment === 'Безналичный')
                 paid = amountEnd
@@ -248,8 +244,8 @@ const BuyBasket =  React.memo(
                                                 amountEnd,
                                                 usedPrepayment: 'Продажа'===type?usedPrepayment:0,
                                                 comment,
-                                                nds: withoutNdsNsp.includes(type)?0:checkFloat(allNds),
-                                                nsp: withoutNdsNsp.includes(type)||typePayment==='Безналичный'?0:checkFloat(allNsp)
+                                                nds: checkFloat(allNds),
+                                                nsp: checkFloat(allNsp)
                                             })
                                             if(res){
                                                 setRes(res)

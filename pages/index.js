@@ -23,7 +23,6 @@ import TextField from '@material-ui/core/TextField';
 import PointofsaleIcon from '../icons/pointofsale.svg';
 import { inputFloat, checkFloat } from '../src/lib'
 import IconButton from '@material-ui/core/IconButton';
-import {ndsTypesValue, nspTypesValue} from '../src/const'
 import {getLegalObject} from '../src/gql/legalObject'
 import Buy from '../components/dialog/Buy'
 const height = 400
@@ -283,8 +282,8 @@ const Index = React.memo((props) => {
                                                         <IconButton aria-label='scanner' onClick={async ()=>{
                                                             allAmount = checkFloat(allAmount)
                                                             if (allAmount > 0) {
-                                                                let ndsPrecent = checkFloat(ndsTypesValue[legalObject.ndsType_v2])
-                                                                let nspPrecent = checkFloat(nspTypesValue[legalObject.nspType_v2])
+                                                                let ndsPrecent = checkFloat(legalObject.ndsTypeRate_v2)
+                                                                let nspPrecent = checkFloat(legalObject.nspTypeRate_v2)
                                                                 let allPrecent = 100+ndsPrecent+nspPrecent
                                                                 let nds = checkFloat(allAmount/allPrecent*ndsPrecent)
                                                                 let nsp = checkFloat(allAmount/allPrecent*nspPrecent)

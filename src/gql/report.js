@@ -64,7 +64,7 @@ export const getReport = async({_id}, client)=>{
                             _id
                             number
                             createdAt
-                            legalObject {_id name address inn rateTaxe taxSystem_v2}
+                            legalObject {_id name address inn rateTaxe taxSystemName_v2}
                             cashbox {_id name rnmNumber fn registrationNumber}
                             branch {_id name address}
                             workShift {_id number}
@@ -93,6 +93,7 @@ export const getReport = async({_id}, client)=>{
                             returnedBuy
                             returnedBuyCount
                             sync
+                            syncData
                             syncMsg
                         }
                     }`,

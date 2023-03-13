@@ -95,13 +95,13 @@ export const getSale = async({_id, type, cashbox, number}, client)=>{
                             qr
                             syncData
                             number
-                            legalObject {_id name inn rateTaxe taxSystem_v2}
+                            legalObject {_id name inn rateTaxe taxSystemName_v2}
                             branch {_id name address}
                             cashier {_id name}
                             cashbox {_id name rnmNumber fn registrationNumber}
                             workShift {_id number}
                             client {_id name}
-                            sale {_id number}
+                            sale {_id number cashbox {fn}}
                             typePayment
                             type
                             returned

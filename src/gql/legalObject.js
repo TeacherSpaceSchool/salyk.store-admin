@@ -128,9 +128,12 @@ export const getLegalObject = async({_id}, client)=>{
                             syncMsg
                             sync
                             agent {_id name}
-                            taxSystem_v2
-                            ndsType_v2
-                            nspType_v2
+                            taxSystemName_v2
+                            taxSystemCode_v2
+                            ndsTypeCode_v2
+                            ndsTypeRate_v2
+                            nspTypeCode_v2
+                            nspTypeRate_v2
                             ugns_v2
                             vatPayer_v2
                             taxpayerType_v2
@@ -206,8 +209,8 @@ export const addLegalObject = async(element)=>{
         let res = await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($agent: ID, $accessLogin: String!, $accessPassword: String!, $taxSystem_v2: Int!, $ndsType_v2: Int!, $nspType_v2: Int!, $ugns_v2: Int!, $vatPayer_v2: Boolean!, $taxpayerType_v2: String!, $name: String!, $ofd: Boolean!, $inn: String!, $email: [String]!, $address: String!, $phone: [String]!, $responsiblePerson: String!) {
-                        addLegalObject(agent: $agent, accessLogin: $accessLogin, accessPassword: $accessPassword, taxSystem_v2: $taxSystem_v2, ndsType_v2: $ndsType_v2, nspType_v2: $nspType_v2, ugns_v2: $ugns_v2, taxpayerType_v2: $taxpayerType_v2, vatPayer_v2: $vatPayer_v2, name: $name, ofd: $ofd, inn: $inn, email: $email, address: $address, phone: $phone, responsiblePerson: $responsiblePerson)
+                    mutation ($agent: ID, $accessLogin: String!, $accessPassword: String!, $taxSystemName_v2: String!, $taxSystemCode_v2: Int!, $ndsTypeCode_v2: Int!, $ndsTypeRate_v2: Int!, $nspTypeCode_v2: Int!, $nspTypeRate_v2: Int!, $ugns_v2: Int!, $vatPayer_v2: Boolean!, $taxpayerType_v2: String!, $name: String!, $ofd: Boolean!, $inn: String!, $email: [String]!, $address: String!, $phone: [String]!, $responsiblePerson: String!) {
+                        addLegalObject(agent: $agent, accessLogin: $accessLogin, accessPassword: $accessPassword, taxSystemName_v2: $taxSystemName_v2, taxSystemCode_v2: $taxSystemCode_v2, ndsTypeCode_v2: $ndsTypeCode_v2, ndsTypeRate_v2: $ndsTypeRate_v2, nspTypeCode_v2: $nspTypeCode_v2, nspTypeRate_v2: $nspTypeRate_v2, ugns_v2: $ugns_v2, taxpayerType_v2: $taxpayerType_v2, vatPayer_v2: $vatPayer_v2, name: $name, ofd: $ofd, inn: $inn, email: $email, address: $address, phone: $phone, responsiblePerson: $responsiblePerson)
                     }`})
         return res.data.addLegalObject
     } catch(err){
@@ -218,12 +221,13 @@ export const addLegalObject = async(element)=>{
 export const setLegalObject = async(element)=>{
     try{
         const client = new SingletonApolloClient().getClient()
-        await client.mutate({
+        let res = await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($agent: ID, $_id: ID!, $name: String, $accessLogin: String, $accessPassword: String, $ofd: Boolean, $email: [String], $address: String, $phone: [String], $responsiblePerson: String, $taxpayerType_v2: String, $taxSystem_v2: Int, $ndsType_v2: Int, $nspType_v2: Int, $ugns_v2: Int, $vatPayer_v2: Boolean) {
-                        setLegalObject(agent: $agent, _id: $_id, ofd: $ofd, accessLogin: $accessLogin, accessPassword: $accessPassword, name: $name, email: $email, address: $address, phone: $phone, responsiblePerson: $responsiblePerson, taxpayerType_v2: $taxpayerType_v2, taxSystem_v2: $taxSystem_v2, ndsType_v2: $ndsType_v2, nspType_v2: $nspType_v2, ugns_v2: $ugns_v2, vatPayer_v2: $vatPayer_v2)
+                    mutation ($agent: ID, $_id: ID!, $name: String, $accessLogin: String, $accessPassword: String, $ofd: Boolean, $email: [String], $address: String, $phone: [String], $responsiblePerson: String, $taxpayerType_v2: String, $taxSystemName_v2: String, $taxSystemCode_v2: Int, $ndsTypeRate_v2: Int, $ndsTypeCode_v2: Int, $nspTypeRate_v2: Int, $nspTypeCode_v2: Int, $ugns_v2: Int, $vatPayer_v2: Boolean) {
+                        setLegalObject(agent: $agent, _id: $_id, ofd: $ofd, accessLogin: $accessLogin, accessPassword: $accessPassword, name: $name, email: $email, address: $address, phone: $phone, responsiblePerson: $responsiblePerson, taxpayerType_v2: $taxpayerType_v2, taxSystemName_v2: $taxSystemName_v2, taxSystemCode_v2: $taxSystemCode_v2, ndsTypeCode_v2: $ndsTypeCode_v2, ndsTypeRate_v2: $ndsTypeRate_v2, nspTypeCode_v2: $nspTypeCode_v2, nspTypeRate_v2: $nspTypeRate_v2, ugns_v2: $ugns_v2, vatPayer_v2: $vatPayer_v2)
                     }`})
+        return res.data.setLegalObject
     } catch(err){
         console.error(err)
     }

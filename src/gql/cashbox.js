@@ -100,8 +100,8 @@ export const getCashbox = async({_id}, client)=>{
                             fn
                             fnExpiresAt
                             name
-                            legalObject {name _id inn taxSystem_v2 vatPayer_v2}
-                            branch {name _id bType_v2 pType_v2 ugns_v2 calcItemAttribute address}
+                            legalObject {name _id inn taxSystemName_v2 vatPayer_v2}
+                            branch {name _id businessActivityName_v2 entrepreneurshipObjectName_v2 ugnsName_v2 calcItemAttributeName_v2 address}
                             presentCashier {name _id role}
                             endPayment
                             cash

@@ -16,7 +16,6 @@ import { connectPrinterByBluetooth, printEsPosData } from '../../../src/printer'
 import Button from '@material-ui/core/Button';
 import dynamic from 'next/dynamic'
 import Link from 'next/link';
-import {taxSystems, calcItemAttributes, ugnsTypes, bTypes, pTypes} from '../../../src/const'
 const Pdf = dynamic(import('react-to-pdf'), { ssr: false });
 
 const Receipt = React.memo((props) => {
@@ -89,23 +88,33 @@ const Receipt = React.memo((props) => {
                             }
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
-                                    <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
-                                        <a>
-                                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
-                                        </a>
-                                    </Link>
+                                    <>
+                                        <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
+                                            <a>
+                                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}</span></div>
+                                            </a>
+                                        </Link>
+                                        <Link href='/branch/[id]' as={`/branch/${data.object.branch._id}`}>
+                                            <a>
+                                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.address}</span></div>
+                                            </a>
+                                        </Link>
+                                    </>
                                     :
-                                    <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}, {data.object.branch.address}</span></div>
+                                    <>
+                                        <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.name}</span></div>
+                                        <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>{data.object.branch.address}</span></div>
+                                    </>
                             }
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.taxSystemName_v2}</span></div>
                              <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>**********************************************</span></p>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Истечение регистрации ФМ: {pdDDMMYYYY(data.object.fnExpiresAt)}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Налоговый орган: {ugnsTypes[data.object.branch.ugns_v2]}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Налоговый орган: {data.object.branch.ugnsName_v2}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Плательщик НДС: {data.object.legalObject.vatPayer_v2?'Да':'Нет'}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Тип: {pTypes[data.object.branch.pType_v2]}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Деятельность: {bTypes[data.object.branch.bType_v2]}</span></div>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Предметы расчета: {calcItemAttributes[data.object.branch.calcItemAttribute]}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Тип: {data.object.branch.entrepreneurshipObjectName_v2}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Деятельность: {data.object.branch.businessActivityName_v2}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Предметы расчета: {data.object.branch.calcItemAttributeName_v2}</span></div>
                             <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>*********************ФП*********************</span></p>
                             <div style={{textAlign: 'right', marginBottom: 5}}>РН ККМ: {data.object.registrationNumber}</div>
                             <div style={{textAlign: 'right', marginBottom: 5}}>ФМ: {data.object.fn}</div>
@@ -125,7 +134,6 @@ const Receipt = React.memo((props) => {
                                             _printer = await connectPrinterByBluetooth()
                                             setPrinter(_printer)
                                         }
-
                                         let _data = [
                                             {message: `${
                                                     data.object.syncData[router.query.idx][0]==='registerCashbox'?
@@ -140,16 +148,17 @@ const Receipt = React.memo((props) => {
                                             {message: `Дата: ${pdDDMMYYHHMM(syncData.date)}`, align: 'left'},
                                             {message: `Касса: ${data.object.name}`, align: 'left'},
                                             {message: data.object.legalObject.name, align: 'left'},
-                                            {message: `${data.object.branch.name}, ${data.object.branch.address}`, align: 'left'},
+                                            {message: data.object.branch.name, align: 'left'},
+                                            {message: data.object.branch.address, align: 'left'},
                                             {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
-                                            {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:taxSystems[data.object.legalObject.taxSystem_v2]}`, align: 'left'},
+                                            {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:data.object.legalObject.taxSystemName_v2}`, align: 'left'},
                                             {message: `********************************`, align: 'center'},
                                             {message: `Истечение регистрации ФМ: ${pdDDMMYYYY(data.object.fnExpiresAt)}`, align: 'left'},
-                                            {message: `Налоговый орган: ${ugnsTypes[data.object.branch.ugns_v2]}`, align: 'left'},
+                                            {message: `Налоговый орган: ${data.object.branch.ugnsName_v2}`, align: 'left'},
                                             {message: `Плательщик НДС: ${data.object.legalObject.vatPayer_v2?'Да':'Нет'}`, align: 'left'},
-                                            {message: `Тип: ${pTypes[data.object.branch.pType_v2]}`, align: 'left'},
-                                            {message: `Деятельность: ${bTypes[data.object.branch.bType_v2]}`, align: 'left'},
-                                            {message: `Предметы расчета: ${calcItemAttributes[data.object.branch.calcItemAttribute]}`, align: 'left'},
+                                            {message: `Тип: ${data.object.branch.entrepreneurshipObjectName_v2}`, align: 'left'},
+                                            {message: `Деятельность: ${data.object.branch.businessActivityName_v2}`, align: 'left'},
+                                            {message: `Предметы расчета: ${data.object.branch.calcItemAttributeName_v2}`, align: 'left'},
                                             {message: '***************ФП***************', align: 'center', bold: true},
                                             {message: `РН ККМ: ${data.object.registrationNumber}`, align: 'left'},
                                             {message: `ФМ: ${data.object.fn}`, align: 'left'},

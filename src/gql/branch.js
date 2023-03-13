@@ -13,14 +13,21 @@ export const getBranchs = async({search, skip, legalObject}, client)=>{
                             _id
                             createdAt
                             legalObject {name _id}
+                            
                             bType
                             pType
                             ugns
+                            
+                            businessActivityCode_v2
+                            businessActivityName_v2
+                            entrepreneurshipObjectCode_v2
+                            entrepreneurshipObjectName_v2
+                            ugnsCode_v2
+                            ugnsName_v2
+                            calcItemAttributeCode_v2
+                            calcItemAttributeName_v2
                             administrativeArea_v2
-                            bType_v2
-                            pType_v2
-                            ugns_v2
-                            calcItemAttribute
+                            
                             name
                             address
                             locality
@@ -67,15 +74,22 @@ export const getBranchsTrash = async({search, skip}, client)=>{
                         branchsTrash(skip: $skip, search: $search) {
                             _id
                             createdAt
-                            calcItemAttribute
                             legalObject {name _id}
+                            
                             bType
                             pType
                             ugns
-                            bType_v2
-                            pType_v2
+                            
+                            businessActivityCode_v2
+                            businessActivityName_v2
+                            entrepreneurshipObjectCode_v2
+                            entrepreneurshipObjectName_v2
+                            ugnsCode_v2
+                            ugnsName_v2
+                            calcItemAttributeCode_v2
+                            calcItemAttributeName_v2
                             administrativeArea_v2
-                            ugns_v2
+                            
                             name
                             address
                             locality
@@ -105,15 +119,22 @@ export const getBranch = async({_id}, client)=>{
                         branch(_id: $_id) {
                             _id
                             createdAt
-                            calcItemAttribute
                             legalObject {name _id}
+                            
                             bType
                             pType
                             ugns
-                            bType_v2
-                            pType_v2
-                            ugns_v2
+                            
+                            businessActivityCode_v2
+                            businessActivityName_v2
+                            entrepreneurshipObjectCode_v2
+                            entrepreneurshipObjectName_v2
+                            ugnsCode_v2
+                            ugnsName_v2
+                            calcItemAttributeCode_v2
+                            calcItemAttributeName_v2
                             administrativeArea_v2
+                            
                             name
                             address
                             locality
@@ -168,8 +189,8 @@ export const addBranch = async(element)=>{
         let res = await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($legalObject: ID!, $administrativeArea_v2: String!, $calcItemAttribute: Int!, $bType_v2: Int!, $pType_v2: Int!, $ugns_v2: Int!, $address: String!, $name: String!, $locality: String!, $postalCode: String!, $route: String!, $streetNumber: String!, $geo: [Float]) {
-                        addBranch(legalObject: $legalObject, administrativeArea_v2: $administrativeArea_v2, calcItemAttribute: $calcItemAttribute, bType_v2: $bType_v2, pType_v2: $pType_v2, ugns_v2: $ugns_v2, address: $address, name: $name, locality: $locality, postalCode: $postalCode, route: $route, streetNumber: $streetNumber, geo: $geo)
+                    mutation ($legalObject: ID!, $businessActivityCode_v2: Int!, $businessActivityName_v2: String!, $entrepreneurshipObjectCode_v2: Int!, $entrepreneurshipObjectName_v2: String!, $ugnsCode_v2: Int!, $ugnsName_v2: String!, $calcItemAttributeCode_v2: Int!, $calcItemAttributeName_v2: String!, $administrativeArea_v2: String!, $address: String!, $name: String!, $locality: String!, $postalCode: String!, $route: String!, $streetNumber: String!, $geo: [Float]) {
+                        addBranch(legalObject: $legalObject, businessActivityCode_v2: $businessActivityCode_v2, businessActivityName_v2: $businessActivityName_v2, entrepreneurshipObjectCode_v2: $entrepreneurshipObjectCode_v2, entrepreneurshipObjectName_v2: $entrepreneurshipObjectName_v2, ugnsCode_v2: $ugnsCode_v2, ugnsName_v2: $ugnsName_v2, calcItemAttributeCode_v2: $calcItemAttributeCode_v2, calcItemAttributeName_v2: $calcItemAttributeName_v2, administrativeArea_v2: $administrativeArea_v2, address: $address, name: $name, locality: $locality, postalCode: $postalCode, route: $route, streetNumber: $streetNumber, geo: $geo)
                     }`})
         return res.data.addBranch
     } catch(err){
@@ -183,8 +204,8 @@ export const _setBranch = async(element)=>{
         let res = await client.mutate({
             variables: element,
             mutation : gql`
-                    mutation ($_id: ID!, $bType_v2: Int, $administrativeArea_v2: String, $calcItemAttribute: Int, $pType_v2: Int, $ugns_v2: Int, $name: String, $address: String, $locality: String, $postalCode: String, $route: String, $streetNumber: String, $geo: [Float]) {
-                        setBranch(_id: $_id, bType_v2: $bType_v2 administrativeArea_v2: $administrativeArea_v2, pType_v2: $pType_v2, calcItemAttribute: $calcItemAttribute, ugns_v2: $ugns_v2, name: $name, address: $address, locality: $locality, postalCode: $postalCode, route: $route, streetNumber: $streetNumber, geo: $geo)
+                    mutation ($_id: ID!, $businessActivityCode_v2: Int, $businessActivityName_v2: String, $entrepreneurshipObjectCode_v2: Int, $entrepreneurshipObjectName_v2: String, $ugnsCode_v2: Int, $ugnsName_v2: String, $calcItemAttributeCode_v2: Int, $calcItemAttributeName_v2: String, $administrativeArea_v2: String, $name: String, $address: String, $locality: String, $postalCode: String, $route: String, $streetNumber: String, $geo: [Float]) {
+                        setBranch(_id: $_id, businessActivityCode_v2: $businessActivityCode_v2, businessActivityName_v2: $businessActivityName_v2, entrepreneurshipObjectCode_v2: $entrepreneurshipObjectCode_v2, entrepreneurshipObjectName_v2: $entrepreneurshipObjectName_v2, ugnsCode_v2: $ugnsCode_v2, ugnsName_v2: $ugnsName_v2, calcItemAttributeCode_v2: $calcItemAttributeCode_v2, calcItemAttributeName_v2: $calcItemAttributeName_v2, administrativeArea_v2: $administrativeArea_v2, name: $name, address: $address, locality: $locality, postalCode: $postalCode, route: $route, streetNumber: $streetNumber, geo: $geo)
                     }`})
         return res.data.setBranch
     } catch(err){
