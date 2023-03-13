@@ -247,6 +247,12 @@ const Receipt = React.memo((props) => {
                                 <div style={{textAlign: 'right', marginBottom: 5, fontWeight: 'bold'}}>ИТОГО: {data.object.amountEnd.toFixed(2)}</div>
                                 <div style={{textAlign: 'right', marginBottom: 5}}>{data.object.typePayment}: {data.object.paid.toFixed(2)}</div>
                                 {
+                                    data.object.paid===data.object.amountEnd?
+                                        <div style={{textAlign: 'right', marginBottom: 5}}>Способ расчета: Полный расчет</div>
+                                        :
+                                        null
+                                }
+                                {
                                     data.object.usedPrepayment?
                                         <div style={{textAlign: 'right', marginBottom: 5}}>Авансом: {data.object.usedPrepayment.toFixed(2)}</div>
                                         :
@@ -350,6 +356,8 @@ const Receipt = React.memo((props) => {
                                                         _data.push({message: `НСП: ${data.object.nsp.toFixed(2)}`, align: 'right'})
                                                         _data.push({message: `ИТОГО: ${data.object.amountEnd.toFixed(2)}`, align: 'right', bold: true})
                                                         _data.push({message: `${data.object.typePayment}: ${data.object.paid.toFixed(2)}`, align: 'right'})
+                                                        if(data.object.paid===data.object.amountEnd)
+                                                            _data.push({message: 'Способ расчета: Полный расчет', align: 'right'})
                                                         if(data.object.usedPrepayment)
                                                             _data.push({message: `Авансом: ${data.object.usedPrepayment.toFixed(2)}`, align: 'right'})
                                                         if(data.object.type==='Кредит'||data.object.type==='Возврат продажи'&&data.object.paid<data.object.amountEnd)
