@@ -55,8 +55,6 @@ const LegalObject = React.memo((props) => {
     const { isMobileApp } = props.app;
     const { showSnackBar } = props.snackbarActions;
     const { showLoad } = props.appActions;
-    let [accessLogin, setAccessLogin] = useState(data.object?data.object.accessLogin:'');
-    let [accessPassword, setAccessPassword] = useState(data.object?data.object.accessPassword:'');
     let [inn, setInn] = useState(data.object?data.object.inn:'');
     let [taxSystemCode_v2, setTaxSystemCode_v2] = useState(data.object.taxSystemCode_v2);
     let [taxSystemName_v2, setTaxSystemName_v2] = useState(data.object.taxSystemName_v2);
@@ -78,7 +76,7 @@ const LegalObject = React.memo((props) => {
         setMiniDialog('Ставка НДС', <SetFMData list={await getNdsTypes()} selectData={(code, name) => {
             setNdsTypeCode_v2(parseInt(code))
             setNdsTypeRate_v2(name)
-        }} defaultCode={taxSystemCode_v2}/>)
+        }} defaultCode={ndsTypeCode_v2}/>)
         showMiniDialog(true)
     };
     let [nspTypeCode_v2, setNspTypeCode_v2] = useState(data.object.nspTypeCode_v2);
@@ -87,7 +85,7 @@ const LegalObject = React.memo((props) => {
         setMiniDialog('Ставка НСП', <SetFMData list={await getNspTypes()} selectData={(code, name) => {
             setNspTypeCode_v2(parseInt(code))
             setNspTypeRate_v2(name)
-        }} defaultCode={taxSystemCode_v2}/>)
+        }} defaultCode={nspTypeCode_v2}/>)
         showMiniDialog(true)
     };
     let [agent, setAgent] = useState(data.object?{...data.object.agent}:undefined);
@@ -310,47 +308,6 @@ const LegalObject = React.memo((props) => {
                                 {
                                     ['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.add?
                                         <>
-                                            {
-                                                router.query.id!=='new'&&'оператор'!==profile.role?
-                                                    <>
-                                                        <div className={classes.row}>
-                                                            <div className={classes.nameField}>
-                                                                Регистрация:&nbsp;
-                                                            </div>
-                                                            <div className={classes.value}>
-                                                                {pdDDMMYYHHMM(data.object.createdAt)}
-                                                            </div>
-                                                        </div>
-                                                        <div className={classes.row}>
-                                                            <div className={classes.nameField}>
-                                                                accessToken:&nbsp;
-                                                            </div>
-                                                            <div className={classes.value} style={{color: data.object.accessTokenExpired?'red':'black'}}>
-                                                                {
-                                                                    data.object.accessToken&&data.object.accessTokenTTL?
-                                                                        pdDDMMYYHHMM(data.object.accessTokenTTL)
-                                                                        :
-                                                                        'Отсутсвует'
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                        <div className={classes.row}>
-                                                            <div className={classes.nameField}>
-                                                                refreshToken:&nbsp;
-                                                            </div>
-                                                            <div className={classes.value} style={{color: data.object.accessTokenExpired?'red':'black'}}>
-                                                                {
-                                                                    data.object.refreshToken&&data.object.refreshTokenTTL?
-                                                                        pdDDMMYYHHMM(data.object.refreshTokenTTL)
-                                                                        :
-                                                                        'Отсутсвует'
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    </>
-                                                    :
-                                                    null
-                                            }
                                             <div className={classes.row}>
                                                 <div className={classes.nameField} style={{marginBottom: 0}}>
                                                     Плательщик НДС:&nbsp;
@@ -371,20 +328,6 @@ const LegalObject = React.memo((props) => {
                                             <a href={'https://cloud.salyk.kg/#/sign-in'} target='_blank' className={classes.value} style={{marginLeft: 10, marginBottom: 0, marginTop: 10}}>
                                                 Зарегестировать в облачном фискальном модуле
                                             </a>
-                                            <TextField
-                                                error={!accessLogin}
-                                                label='AccessLogin'
-                                                value={accessLogin}
-                                                onChange={(event)=>{setAccessLogin(event.target.value)}}
-                                                className={classes.input}
-                                            />
-                                            <TextField
-                                                error={!accessPassword}
-                                                label='AccessPassword'
-                                                value={accessPassword}
-                                                onChange={(event)=>{setAccessPassword(event.target.value)}}
-                                                className={classes.input}
-                                            />
                                             <TextField
                                                 error={!inn}
                                                 label='ИНН'
@@ -550,17 +493,17 @@ const LegalObject = React.memo((props) => {
                                             </div>
                                             <TextField
                                                 inputProps = {{readOnly: true}}
-                                                error={!ndsTypeRate_v2}
+                                                error={ndsTypeRate_v2==undefined}
                                                 label='Ставка НДС'
-                                                value={ndsTypeRate_v2?`${ndsTypeRate_v2}%`:''}
+                                                value={ndsTypeRate_v2!=undefined?`${ndsTypeRate_v2}%`:''}
                                                 className={classes.input}
                                                 onClick={handleNdsType_v2}
                                             />
                                             <TextField
                                                 inputProps = {{readOnly: true}}
-                                                error={!nspTypeRate_v2}
+                                                error={nspTypeRate_v2==undefined}
                                                 label='Ставка НСП'
-                                                value={nspTypeRate_v2?`${nspTypeRate_v2}%`:''}
+                                                value={nspTypeRate_v2!=undefined?`${nspTypeRate_v2}%`:''}
                                                 className={classes.input}
                                                 onClick={handleNspType_v2}
                                             />
@@ -692,7 +635,7 @@ const LegalObject = React.memo((props) => {
                                                     <Button color='primary' onClick={()=>{
                                                         let checkPhone = phone&&validPhones1(phone)
                                                         let checkMail = !email||validMails(email)
-                                                        if (ndsTypeCode_v2!=undefined&&nspTypeCode_v2!=undefined&&taxSystemName_v2&&name&&inn&&address&&checkPhone&&checkMail&&taxpayerType_v2&&ugnsName_v2&&responsiblePerson&&accessLogin&&accessPassword) {
+                                                        if (ndsTypeCode_v2!=undefined&&nspTypeCode_v2!=undefined&&taxSystemName_v2&&name&&inn&&address&&checkPhone&&checkMail&&taxpayerType_v2&&ugnsName_v2&&responsiblePerson) {
                                                             const action = async() => {
                                                                 if(router.query.id==='new') {
                                                                     let res = await addLegalObject({
@@ -700,8 +643,6 @@ const LegalObject = React.memo((props) => {
                                                                         taxSystemName_v2,
                                                                         taxSystemCode_v2,
                                                                         name,
-                                                                        accessLogin,
-                                                                        accessPassword,
                                                                         inn,
                                                                         ofd,
                                                                         address,
@@ -725,8 +666,6 @@ const LegalObject = React.memo((props) => {
                                                                     if (nspTypeRate_v2!==data.object.nspTypeRate_v2) element.nspTypeRate_v2 = parseInt(nspTypeRate_v2)
                                                                     if (ndsTypeCode_v2!==data.object.ndsTypeCode_v2) element.ndsTypeCode_v2 = ndsTypeCode_v2
                                                                     if (ndsTypeRate_v2!==data.object.ndsTypeRate_v2) element.ndsTypeRate_v2 = parseInt(ndsTypeRate_v2)
-                                                                    if (accessLogin!==data.object.accessLogin) element.accessLogin = accessLogin
-                                                                    if (accessPassword!==data.object.accessPassword) element.accessPassword = accessPassword
                                                                     if (name!==data.object.name) element.name = name
                                                                     if (address!==data.object.address) element.address = address
                                                                     if (taxSystemName_v2!==data.object.taxSystemName_v2) element.taxSystemName_v2 = taxSystemName_v2
@@ -817,8 +756,6 @@ LegalObject.getInitialProps = async function(ctx) {
                     ofd: true,
                     name: '',
                     inn: '',
-                    accessLogin: '',
-                    accessPassword: '',
                     address: '',
                     phone: [],
                     responsiblePerson: ''

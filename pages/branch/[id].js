@@ -504,6 +504,7 @@ const Branch = React.memo((props) => {
                                                                         businessActivityName_v2,
                                                                         entrepreneurshipObjectCode_v2,
                                                                         entrepreneurshipObjectName_v2,
+                                                                        administrativeArea_v2,
                                                                         ugnsCode_v2,
                                                                         ugnsName_v2,
                                                                         calcItemAttributeCode_v2,
@@ -516,8 +517,10 @@ const Branch = React.memo((props) => {
                                                                         streetNumber,
                                                                         geo
                                                                     })
-                                                                    Router.push(`/branch/${res}`)
-                                                                    showSnackBar('Успешно', 'success')
+                                                                    if(res!=='ERROR') {
+                                                                        Router.push(`/branch/${res}`)
+                                                                        showSnackBar('Успешно', 'success')
+                                                                    }
                                                                 }
                                                                 else {
                                                                     let element = {_id: router.query.id}

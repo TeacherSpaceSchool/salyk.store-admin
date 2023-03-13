@@ -493,7 +493,7 @@ const WorkShift = React.memo((props) => {
                                        profile.role!=='admin'||profile.add||data.object.expired?
                                            <Button color='secondary' onClick={()=>{
                                                const action = async() => {
-                                                   localStorage.items = null
+                                                   localStorage.items = '[]'
                                                    let res = await _setWorkShift({_id: data.object._id, deposit: 0, comment: 'Закрытие смены', withdraw: cashEnd})
                                                    if(res==='OK') {
                                                        let report = await endWorkShift(...['управляющий', 'супервайзер', 'admin', 'superadmin'].includes(profile.role) ? [router.query.id] : [])
