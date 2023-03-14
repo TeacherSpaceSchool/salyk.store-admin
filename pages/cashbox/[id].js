@@ -467,29 +467,45 @@ const Cashbox = React.memo((props) => {
                                     }
                                     {
                                         profile.add?
-                                            <Button color='primary' onClick={()=>{
-                                                if(name.length&&legalObject&&branch&&fn) {
-                                                    const action = async() => {
-                                                        if(router.query.id==='new') {
+                                            router.query.id === 'new' ?
+                                                <Button color='primary' onClick={()=>{
+                                                    if(name.length&&legalObject&&branch&&fn) {
+                                                        const action = async() => {
                                                             let res = await addCashbox({fn, name, legalObject: legalObject._id, branch: branch._id})
-                                                            Router.push(`/cashbox/${res}`)
-                                                            showSnackBar('Успешно', 'success')
+                                                            if(res!=='ERROR') {
+                                                                Router.push(`/cashbox/${res}`)
+                                                                showSnackBar('Успешно', 'success')
+                                                            }
+                                                            else
+                                                                showSnackBar('Ошибка', 'error')
                                                         }
-                                                        else {
+                                                        setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                        showMiniDialog(true)
+                                                    } else
+                                                        showSnackBar('Заполните все поля')
+                                                }}>
+                                                    Добавить
+                                                </Button>
+                                                :
+                                                <Button color='primary' onClick={()=>{
+                                                    if(name.length&&legalObject&&branch&&fn) {
+                                                        const action = async() => {
                                                             let element = {_id: router.query.id}
                                                             if (name!==data.object.name) element.name = name
                                                             if (branch._id!==data.object.branch._id) element.branch = branch._id
-                                                            await _setCashbox(element)
-                                                            Router.reload()
+                                                            let res = await _setCashbox(element)
+                                                            if(res==='OK')
+                                                                Router.reload()
+                                                            else
+                                                                showSnackBar('Ошибка', 'error')
                                                         }
-                                                    }
-                                                    setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                                    showMiniDialog(true)
-                                                } else
-                                                    showSnackBar('Заполните все поля')
-                                            }}>
-                                                Сохранить
-                                            </Button>
+                                                        setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                        showMiniDialog(true)
+                                                    } else
+                                                        showSnackBar('Заполните все поля')
+                                                }}>
+                                                    Сохранить
+                                                </Button>
                                             :
                                             null
                                     }

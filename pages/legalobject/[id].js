@@ -632,69 +632,86 @@ const LegalObject = React.memo((props) => {
                                         ['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.add?
                                             !data.object.del?
                                                 <>
-                                                    <Button color='primary' onClick={()=>{
-                                                        let checkPhone = phone&&validPhones1(phone)
-                                                        let checkMail = !email||validMails(email)
-                                                        if (ndsTypeCode_v2!=undefined&&nspTypeCode_v2!=undefined&&taxSystemName_v2&&name&&inn&&address&&checkPhone&&checkMail&&taxpayerType_v2&&ugnsName_v2&&responsiblePerson) {
-                                                            const action = async() => {
-                                                                if(router.query.id==='new') {
-                                                                    let res = await addLegalObject({
-                                                                        agent: agent?agent._id:undefined,
-                                                                        taxSystemName_v2,
-                                                                        taxSystemCode_v2,
-                                                                        name,
-                                                                        inn,
-                                                                        ofd,
-                                                                        address,
-                                                                        ndsTypeCode_v2: ndsTypeCode_v2,
-                                                                        ndsTypeRate_v2: parseInt(ndsTypeRate_v2),
-                                                                        nspTypeCode_v2: nspTypeCode_v2,
-                                                                        nspTypeRate_v2: parseInt(nspTypeRate_v2),
-                                                                        phone,
-                                                                        email,
-                                                                        vatPayer_v2,
-                                                                        ugns_v2: ugnsCode_v2,
-                                                                        taxpayerType_v2: taxpayerTypesReverse[taxpayerType_v2],
-                                                                        responsiblePerson
-                                                                    })
-                                                                    Router.push(`/legalobject/${res}`)
-                                                                    showSnackBar('Успешно', 'success')
-                                                                }
-                                                                else {
-                                                                    let element = {_id: router.query.id, agent: agent?agent._id:undefined}
-                                                                    if (nspTypeCode_v2!==data.object.nspTypeCode_v2) element.nspTypeCode_v2 = nspTypeCode_v2
-                                                                    if (nspTypeRate_v2!==data.object.nspTypeRate_v2) element.nspTypeRate_v2 = parseInt(nspTypeRate_v2)
-                                                                    if (ndsTypeCode_v2!==data.object.ndsTypeCode_v2) element.ndsTypeCode_v2 = ndsTypeCode_v2
-                                                                    if (ndsTypeRate_v2!==data.object.ndsTypeRate_v2) element.ndsTypeRate_v2 = parseInt(ndsTypeRate_v2)
-                                                                    if (name!==data.object.name) element.name = name
-                                                                    if (address!==data.object.address) element.address = address
-                                                                    if (taxSystemName_v2!==data.object.taxSystemName_v2) element.taxSystemName_v2 = taxSystemName_v2
-                                                                    if (taxSystemCode_v2!==data.object.taxSystemCode_v2) element.taxSystemCode_v2 = taxSystemCode_v2
-                                                                    if (ugnsCode_v2!==data.object.ugns_v2) element.ugns_v2 = ugnsCode_v2
-                                                                    if (taxpayerType_v2!==data.object.taxpayerType_v2) element.taxpayerType_v2 = taxpayerTypesReverse[taxpayerType_v2]
-                                                                    if (vatPayer_v2!==data.object.vatPayer_v2) element.vatPayer_v2 = vatPayer_v2
-                                                                    if (ofd!==data.object.ofd&&profile.add) element.ofd = ofd
-                                                                    if (responsiblePerson!==data.object.responsiblePerson) element.responsiblePerson = responsiblePerson
-                                                                    if (JSON.stringify(phone)!==JSON.stringify(data.object.phone)) element.phone = phone
-                                                                    if (JSON.stringify(email)!==JSON.stringify(data.object.email)) element.email = email
-                                                                    const res = await setLegalObject(element)
-                                                                    if(res==='OK')
-                                                                        Router.reload()
-                                                                    else if(res==='ERROR')
-                                                                        showSnackBar('Ошибка', 'error')
-                                                                    else if(res==='USED_WORKSHIFT')
-                                                                        showSnackBar('Закройте смены', 'error')
-                                                                }
-                                                            }
-                                                            setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                                            showMiniDialog(true)
-                                                        } else
-                                                            showSnackBar('Заполните все поля')
-                                                    }}>
-                                                        Сохранить
-                                                    </Button>
                                                     {
-                                                        'оператор'!==profile.role&&router.query.id!=='new'?
+                                                        router.query.id === 'new' ?
+                                                            <Button color='primary' onClick={()=>{
+                                                                let checkPhone = phone&&validPhones1(phone)
+                                                                let checkMail = !email||validMails(email)
+                                                                if (ndsTypeCode_v2!=undefined&&nspTypeCode_v2!=undefined&&taxSystemName_v2&&name&&inn&&address&&checkPhone&&checkMail&&taxpayerType_v2&&ugnsName_v2&&responsiblePerson) {
+                                                                    const action = async() => {
+                                                                        let res = await addLegalObject({
+                                                                            agent: agent?agent._id:undefined,
+                                                                            taxSystemName_v2,
+                                                                            taxSystemCode_v2,
+                                                                            name,
+                                                                            inn,
+                                                                            ofd,
+                                                                            address,
+                                                                            ndsTypeCode_v2: ndsTypeCode_v2,
+                                                                            ndsTypeRate_v2: parseInt(ndsTypeRate_v2),
+                                                                            nspTypeCode_v2: nspTypeCode_v2,
+                                                                            nspTypeRate_v2: parseInt(nspTypeRate_v2),
+                                                                            phone,
+                                                                            email,
+                                                                            vatPayer_v2,
+                                                                            ugns_v2: ugnsCode_v2,
+                                                                            taxpayerType_v2: taxpayerTypesReverse[taxpayerType_v2],
+                                                                            responsiblePerson
+                                                                        })
+                                                                        if(res!=='ERROR') {
+                                                                            Router.push(`/legalobject/${res}`)
+                                                                            showSnackBar('Успешно', 'success')
+                                                                        }
+                                                                        else
+                                                                            showSnackBar('Ошибка', 'error')
+                                                                    }
+                                                                    setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                                    showMiniDialog(true)
+                                                                } else
+                                                                    showSnackBar('Заполните все поля')
+                                                            }}>
+                                                                Добавить
+                                                            </Button>
+                                                            :
+                                                            <Button color='primary' onClick={()=>{
+                                                                let checkPhone = phone&&validPhones1(phone)
+                                                                let checkMail = !email||validMails(email)
+                                                                if (ndsTypeCode_v2!=undefined&&nspTypeCode_v2!=undefined&&taxSystemName_v2&&name&&inn&&address&&checkPhone&&checkMail&&taxpayerType_v2&&ugnsName_v2&&responsiblePerson) {
+                                                                    const action = async() => {
+                                                                        let element = {_id: router.query.id, agent: agent?agent._id:undefined}
+                                                                        if (nspTypeCode_v2!==data.object.nspTypeCode_v2) element.nspTypeCode_v2 = nspTypeCode_v2
+                                                                        if (nspTypeRate_v2!==data.object.nspTypeRate_v2) element.nspTypeRate_v2 = parseInt(nspTypeRate_v2)
+                                                                        if (ndsTypeCode_v2!==data.object.ndsTypeCode_v2) element.ndsTypeCode_v2 = ndsTypeCode_v2
+                                                                        if (ndsTypeRate_v2!==data.object.ndsTypeRate_v2) element.ndsTypeRate_v2 = parseInt(ndsTypeRate_v2)
+                                                                        if (name!==data.object.name) element.name = name
+                                                                        if (address!==data.object.address) element.address = address
+                                                                        if (taxSystemName_v2!==data.object.taxSystemName_v2) element.taxSystemName_v2 = taxSystemName_v2
+                                                                        if (taxSystemCode_v2!==data.object.taxSystemCode_v2) element.taxSystemCode_v2 = taxSystemCode_v2
+                                                                        if (ugnsCode_v2!==data.object.ugns_v2) element.ugns_v2 = ugnsCode_v2
+                                                                        if (taxpayerType_v2!==data.object.taxpayerType_v2) element.taxpayerType_v2 = taxpayerTypesReverse[taxpayerType_v2]
+                                                                        if (vatPayer_v2!==data.object.vatPayer_v2) element.vatPayer_v2 = vatPayer_v2
+                                                                        if (ofd!==data.object.ofd&&profile.add) element.ofd = ofd
+                                                                        if (responsiblePerson!==data.object.responsiblePerson) element.responsiblePerson = responsiblePerson
+                                                                        if (JSON.stringify(phone)!==JSON.stringify(data.object.phone)) element.phone = phone
+                                                                        if (JSON.stringify(email)!==JSON.stringify(data.object.email)) element.email = email
+                                                                        const res = await setLegalObject(element)
+                                                                        if(res==='OK')
+                                                                            Router.reload()
+                                                                        else if(res==='ERROR')
+                                                                            showSnackBar('Ошибка', 'error')
+                                                                        else if(res==='USED_WORKSHIFT')
+                                                                            showSnackBar('Закройте смены', 'error')
+                                                                    }
+                                                                    setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                                    showMiniDialog(true)
+                                                                } else
+                                                                    showSnackBar('Заполните все поля')
+                                                            }}>
+                                                                Сохранить
+                                                            </Button>
+                                                    }
+                                                    {
+                                                        ['admin', 'superadmin'].includes(profile.role)&&router.query.id!=='new'?
                                                             <>
                                                                 <Button color={status==='active'?'primary':'secondary'} onClick={()=>{
                                                                     const action = async() => {

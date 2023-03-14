@@ -394,33 +394,51 @@ const Client = React.memo((props) => {
                                     onChange={(event)=>{setInfo(event.target.value)}}
                                 />
                                 <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
-                                    <Button color='primary' onClick={()=>{
-                                        if (name.length&&legalObject) {
-                                            const action = async() => {
-                                                if(router.query.id==='new') {
-                                                    let res = await addClient({legalObject: legalObject._id, phone, name, inn, email, address, info})
-                                                    Router.push(`/client/${res._id}`)
-                                                    showSnackBar('Успешно', 'success')
-                                                }
-                                                else {
-                                                    let element = {_id: router.query.id, }
-                                                    if (name!==data.object.name) element.name = name
-                                                    if (inn!==data.object.inn) element.inn = inn
-                                                    if (address!==data.object.address) element.address = address
-                                                    if (info!==data.object.info) element.info = info
-                                                    if (JSON.stringify(phone)!==JSON.stringify(data.object.phone)) element.phone = phone
-                                                    if (JSON.stringify(email)!==JSON.stringify(data.object.email)) element.email = email
-                                                    await setClient(element)
-                                                    Router.reload()
-                                                }
-                                            }
-                                            setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                            showMiniDialog(true)
-                                        } else
-                                            showSnackBar('Заполните все поля')
-                                    }}>
-                                        Сохранить
-                                    </Button>
+                                    {
+                                        router.query.id==='new'?
+                                            <Button color='primary' onClick={()=>{
+                                                if (name.length&&legalObject) {
+                                                    const action = async() => {
+                                                        let res = await addClient({legalObject: legalObject._id, phone, name, inn, email, address, info})
+                                                        if(res!=='ERROR') {
+                                                            Router.push(`/client/${res._id}`)
+                                                            showSnackBar('Успешно', 'success')
+                                                        }
+                                                        else
+                                                            showSnackBar('Ошибка', 'error')
+                                                    }
+                                                    setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                    showMiniDialog(true)
+                                                } else
+                                                    showSnackBar('Заполните все поля')
+                                            }}>
+                                                Добавить
+                                            </Button>
+                                            :
+                                            <Button color='primary' onClick={()=>{
+                                                if (name.length&&legalObject) {
+                                                    const action = async() => {
+                                                        let element = {_id: router.query.id, }
+                                                        if (name!==data.object.name) element.name = name
+                                                        if (inn!==data.object.inn) element.inn = inn
+                                                        if (address!==data.object.address) element.address = address
+                                                        if (info!==data.object.info) element.info = info
+                                                        if (JSON.stringify(phone)!==JSON.stringify(data.object.phone)) element.phone = phone
+                                                        if (JSON.stringify(email)!==JSON.stringify(data.object.email)) element.email = email
+                                                        let res = await setClient(element)
+                                                        if(res==='OK')
+                                                            Router.reload()
+                                                        else
+                                                            showSnackBar('Ошибка', 'error')
+                                                    }
+                                                    setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                    showMiniDialog(true)
+                                                } else
+                                                    showSnackBar('Заполните все поля')
+                                            }}>
+                                                Сохранить
+                                            </Button>
+                                    }
                                     {
                                         router.query.id!=='new'?
                                             <Button color='secondary' onClick={()=>{

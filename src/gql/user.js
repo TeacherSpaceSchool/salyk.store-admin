@@ -208,12 +208,13 @@ export const addUser = async(element)=>{
 export const setUser = async(element)=>{
     try{
         const client = new SingletonApolloClient().getClient()
-        await client.mutate({
+        let res = await client.mutate({
             variables: element,
             mutation : gql`
                     mutation ($_id: ID!, $statistic: Boolean, $email: [String], $add: Boolean, $credit: Boolean, $payment: Boolean, $login: String, $password: String, $name: String, $phone: [String], $branch: ID) {
                         setUser(_id: $_id, login: $login, statistic: $statistic, email: $email, add: $add, credit: $credit, payment: $payment, password: $password, name: $name, phone: $phone, branch: $branch)
                     }`})
+        return res.data.setUser
     } catch(err){
         console.error(err)
     }

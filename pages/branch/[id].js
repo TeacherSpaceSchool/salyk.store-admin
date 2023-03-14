@@ -494,10 +494,10 @@ const Branch = React.memo((props) => {
                                         ['admin', 'superadmin', 'оператор'].includes(profile.role)&&profile.add?
                                             !data.object.del?
                                                 <>
-                                                    <Button color='primary' onClick={()=>{
-                                                        if (administrativeArea_v2&&calcItemAttributeName_v2&&geo&&legalObject&&name&&address&&locality&&postalCode&&route&&streetNumber&&entrepreneurshipObjectName_v2&&businessActivityName_v2&&ugnsName_v2) {
-                                                            const action = async() => {
-                                                                if(router.query.id==='new') {
+                                                    {router.query.id==='new'?
+                                                        <Button color='primary' onClick={()=>{
+                                                            if (administrativeArea_v2&&calcItemAttributeName_v2&&geo&&legalObject&&name&&address&&locality&&postalCode&&route&&streetNumber&&entrepreneurshipObjectName_v2&&businessActivityName_v2&&ugnsName_v2) {
+                                                                const action = async() => {
                                                                     let res = await addBranch({
                                                                         legalObject: legalObject._id,
                                                                         businessActivityCode_v2,
@@ -521,8 +521,20 @@ const Branch = React.memo((props) => {
                                                                         Router.push(`/branch/${res}`)
                                                                         showSnackBar('Успешно', 'success')
                                                                     }
+                                                                    else
+                                                                        showSnackBar('Ошибка', 'error')
                                                                 }
-                                                                else {
+                                                                setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                                showMiniDialog(true)
+                                                            } else
+                                                                showSnackBar('Заполните все поля')
+                                                        }}>
+                                                            Добавить
+                                                        </Button>
+                                                        :
+                                                        <Button color='primary' onClick={()=>{
+                                                            if (administrativeArea_v2&&calcItemAttributeName_v2&&geo&&legalObject&&name&&address&&locality&&postalCode&&route&&streetNumber&&entrepreneurshipObjectName_v2&&businessActivityName_v2&&ugnsName_v2) {
+                                                                const action = async() => {
                                                                     let element = {_id: router.query.id}
                                                                     if (JSON.stringify(geo)!==JSON.stringify(data.object.geo)) element.geo = geo
                                                                     if (name!==data.object.name) element.name = name
@@ -551,16 +563,16 @@ const Branch = React.memo((props) => {
                                                                     else
                                                                         showSnackBar('Ошибка', 'error')
                                                                 }
-                                                            }
-                                                            setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                                            showMiniDialog(true)
-                                                        } else
-                                                            showSnackBar('Заполните все поля')
-                                                    }}>
-                                                        Сохранить
-                                                    </Button>
+                                                                setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                                showMiniDialog(true)
+                                                            } else
+                                                                showSnackBar('Заполните все поля')
+                                                        }}>
+                                                            Сохранить
+                                                        </Button>
+                                                    }
                                                     {
-                                                        profile.role!=='оператор'?
+                                                        ['admin', 'superadmin'].includes(profile.role)&&router.query.id!=='new'&&profile.add?
                                                             <Button color='secondary' onClick={()=>{
                                                                 const action = async() => {
                                                                     let res = await deleteBranch(router.query.id)

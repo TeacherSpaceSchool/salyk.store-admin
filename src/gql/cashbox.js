@@ -167,12 +167,13 @@ export const addCashbox = async(element)=>{
 export const _setCashbox = async(element)=>{
     try{
         const client = new SingletonApolloClient().getClient()
-        await client.mutate({
+        let res = await client.mutate({
             variables: element,
             mutation : gql`
                     mutation ($_id: ID!, $name: String, $branch: ID) {
                         setCashbox(_id: $_id, name: $name, branch: $branch)
                     }`})
+        return res.data.setCashbox
     } catch(err){
         console.error(err)
     }

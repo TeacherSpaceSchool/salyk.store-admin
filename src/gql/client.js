@@ -93,12 +93,13 @@ export const deleteClient = async(_id)=>{
 export const setClient = async(element, client)=>{
     try{
         client = client? client : new SingletonApolloClient().getClient()
-        await client.mutate({
+        let res = await client.mutate({
             variables: element,
             mutation : gql`
                     mutation ($_id: ID!, $phone: [String], $name: String, $inn: String, $email: [String], $address: String, $info: String) {
                         setClient(_id: $_id, phone: $phone, inn: $inn, name: $name, email: $email, address: $address, info: $info) 
                     }`})
+        return res.data.setClient
     } catch(err){
         console.error(err)
     }

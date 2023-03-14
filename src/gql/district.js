@@ -172,12 +172,13 @@ export const addDistrict = async(element)=>{
 export const setDistrict = async(element)=>{
     try{
         const client = new SingletonApolloClient().getClient()
-        await client.mutate({
+        let res = await client.mutate({
             variables: element,
             mutation : gql`
                     mutation ($_id: ID!, $name: String, $branchs: [ID], $cashiers: [ID], $supervisors: [ID]) {
                         setDistrict(_id: $_id, name: $name, branchs: $branchs, cashiers: $cashiers, supervisors: $supervisors)
                     }`})
+        return res.data.setDistrict
     } catch(err){
         console.error(err)
     }

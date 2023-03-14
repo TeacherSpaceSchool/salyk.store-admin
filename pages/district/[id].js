@@ -227,33 +227,49 @@ const District = React.memo((props) => {
                                 {
                                     profile.add?
                                         <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
-                                            <Button color='primary' onClick={()=>{
-                                                if (legalObject&&name.length) {
-                                                    const action = async() => {
-                                                        if(router.query.id==='new') {
-                                                            let res = await addDistrict({legalObject: legalObject._id, name, branchs: branchs.map(elem=>elem._id), cashiers: cashiers.map(elem=>elem._id), supervisors: supervisors.map(elem=>elem._id)})
-                                                            Router.push(`/district/${res}`)
-                                                            showSnackBar('Успешно', 'success')
-                                                        }
-                                                        else {
-                                                            let element = {_id: router.query.id}
-                                                            if (name!==data.object.name) element.name = name
-                                                            if (JSON.stringify(branchs)!==data.object.branchs) element.branchs = branchs.map(elem=>elem._id)
-                                                            if (JSON.stringify(cashiers)!==data.object.cashiers) element.cashiers = cashiers.map(elem=>elem._id)
-                                                            if (JSON.stringify(supervisors)!==data.object.supervisors) element.supervisors = supervisors.map(elem=>elem._id)
-                                                            {
-                                                                await setDistrict(element)
-                                                                Router.reload()
+                                            {
+                                                router.query.id==='new'?
+                                                    <Button color='primary' onClick={()=>{
+                                                        if (legalObject&&name.length) {
+                                                            const action = async() => {
+                                                                let res = await addDistrict({legalObject: legalObject._id, name, branchs: branchs.map(elem=>elem._id), cashiers: cashiers.map(elem=>elem._id), supervisors: supervisors.map(elem=>elem._id)})
+                                                                if(res!=='ERROR') {
+                                                                    Router.push(`/district/${res}`)
+                                                                    showSnackBar('Успешно', 'success')
+                                                                }
+                                                                else
+                                                                    showSnackBar('Ошибка', 'error')
                                                             }
-                                                        }
-                                                    }
-                                                    setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                                    showMiniDialog(true)
-                                                } else
-                                                    showSnackBar('Заполните все поля')
-                                            }}>
-                                                Сохранить
-                                            </Button>
+                                                            setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                            showMiniDialog(true)
+                                                        } else
+                                                            showSnackBar('Заполните все поля')
+                                                    }}>
+                                                        Добавить
+                                                    </Button>
+                                                    :
+                                                    <Button color='primary' onClick={()=>{
+                                                        if (legalObject&&name.length) {
+                                                            const action = async() => {
+                                                                let element = {_id: router.query.id}
+                                                                if (name!==data.object.name) element.name = name
+                                                                if (JSON.stringify(branchs)!==data.object.branchs) element.branchs = branchs.map(elem=>elem._id)
+                                                                if (JSON.stringify(cashiers)!==data.object.cashiers) element.cashiers = cashiers.map(elem=>elem._id)
+                                                                if (JSON.stringify(supervisors)!==data.object.supervisors) element.supervisors = supervisors.map(elem=>elem._id)
+                                                                let res = await setDistrict(element)
+                                                                if(res==='OK')
+                                                                    Router.reload()
+                                                                else
+                                                                    showSnackBar('Ошибка', 'error')
+                                                            }
+                                                            setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                            showMiniDialog(true)
+                                                        } else
+                                                            showSnackBar('Заполните все поля')
+                                                    }}>
+                                                        Сохранить
+                                                    </Button>
+                                            }
                                             {
                                                 router.query.id!=='new'?
                                                     <Button color='secondary' onClick={()=>{

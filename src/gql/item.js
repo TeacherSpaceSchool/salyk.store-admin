@@ -117,12 +117,13 @@ export const addItem = async({legalObject, category, price, unit, barCode, name,
 export const setItem = async({_id, category, price, unit, barCode, name, type, editedPrice, tnved, mark, quick, priority})=>{
     try{
         const client = new SingletonApolloClient().getClient()
-        await client.mutate({
+        let res = await client.mutate({
             variables: {_id, category, price, unit, barCode, name, type, editedPrice, tnved, mark, quick, priority},
             mutation : gql`
                     mutation ($_id: ID!, $category: ID, $tnved: String, $mark: Boolean, $quick: Boolean, $price: Float, $priority: Int, $editedPrice: Boolean, $unit: String, $barCode: String, $name: String, $type: String) {
                         setItem(_id: $_id, category: $category, tnved: $tnved, mark: $mark, quick: $quick, priority: $priority, editedPrice: $editedPrice, price: $price, unit: $unit, barCode: $barCode, name: $name, type: $type)
                     }`})
+        return res.data.setItem
     } catch(err){
         console.error(err)
     }

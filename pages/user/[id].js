@@ -585,40 +585,60 @@ const User = React.memo((props) => {
                                     profile.add&&profile.role!=='кассир'?
                                         !data.object.del?
                                             <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
-                                                <Button color='primary' onClick={()=>{
-                                                    let checkMail = !email.length||validMails(email)
-                                                    let checkPhone = !phone.length||validPhones1(phone)
-                                                    if(!errorLogin&&checkMail&&checkPhone&&name.length&&login.length&&(password.length>7||router.query.id!=='new')&&role.length) {
-                                                        const action = async() => {
-                                                            if(router.query.id==='new') {
-                                                                let res = await addUser({
-                                                                    login, password, statistic, add, credit, payment, role, name, phone, email, legalObject: legalObject?legalObject._id:undefined, branch: branch?branch._id:undefined
-                                                                })
-                                                                Router.push(`/user/${res}`)
-                                                                showSnackBar('Успешно', 'success')
-                                                            }
-                                                            else {
-                                                                let element = {_id: router.query.id, branch: branch?branch._id:undefined}
-                                                                if (JSON.stringify(phone)!==JSON.stringify(data.object.phone)) element.phone = phone
-                                                                if (name!==data.object.name) element.name = name
-                                                                if (login!==data.object.login) element.login = login
-                                                                if (statistic!==data.object.statistic) element.statistic = statistic
-                                                                if (add!==data.object.add) element.add = add
-                                                                if (credit!==data.object.credit) element.credit = credit
-                                                                if (payment!==data.object.payment) element.payment = payment
-                                                                if (password.length>7) element.password = password
-                                                                if (JSON.stringify(email)!==JSON.stringify(data.object.email)) element.email = email
-                                                                await setUser(element)
-                                                                Router.reload()
-                                                            }
-                                                        }
-                                                        setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                                        showMiniDialog(true)
-                                                    } else
-                                                        showSnackBar('Заполните все поля')
-                                                }}>
-                                                    Сохранить
-                                                </Button>
+                                                {
+                                                    router.query.id==='new'?
+                                                        <Button color='primary' onClick={()=>{
+                                                            let checkMail = !email.length||validMails(email)
+                                                            let checkPhone = !phone.length||validPhones1(phone)
+                                                            if(!errorLogin&&checkMail&&checkPhone&&name.length&&login.length&&(password.length>7||router.query.id!=='new')&&role.length) {
+                                                                const action = async() => {
+                                                                    let res = await addUser({
+                                                                        login, password, statistic, add, credit, payment, role, name, phone, email, legalObject: legalObject?legalObject._id:undefined, branch: branch?branch._id:undefined
+                                                                    })
+                                                                    if(res!=='ERROR') {
+                                                                        Router.push(`/user/${res}`)
+                                                                        showSnackBar('Успешно', 'success')
+                                                                    }
+                                                                    else
+                                                                        showSnackBar('Ошибка', 'error')
+                                                                }
+                                                                setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                                showMiniDialog(true)
+                                                            } else
+                                                                showSnackBar('Заполните все поля')
+                                                        }}>
+                                                            Добавить
+                                                        </Button>
+                                                        :
+                                                        <Button color='primary' onClick={()=>{
+                                                            let checkMail = !email.length||validMails(email)
+                                                            let checkPhone = !phone.length||validPhones1(phone)
+                                                            if(!errorLogin&&checkMail&&checkPhone&&name.length&&login.length&&(password.length>7||router.query.id!=='new')&&role.length) {
+                                                                const action = async() => {
+                                                                    let element = {_id: router.query.id, branch: branch?branch._id:undefined}
+                                                                    if (JSON.stringify(phone)!==JSON.stringify(data.object.phone)) element.phone = phone
+                                                                    if (name!==data.object.name) element.name = name
+                                                                    if (login!==data.object.login) element.login = login
+                                                                    if (statistic!==data.object.statistic) element.statistic = statistic
+                                                                    if (add!==data.object.add) element.add = add
+                                                                    if (credit!==data.object.credit) element.credit = credit
+                                                                    if (payment!==data.object.payment) element.payment = payment
+                                                                    if (password.length>7) element.password = password
+                                                                    if (JSON.stringify(email)!==JSON.stringify(data.object.email)) element.email = email
+                                                                    let res = await setUser(element)
+                                                                    if(res==='OK')
+                                                                        Router.reload()
+                                                                    else
+                                                                        showSnackBar('Ошибка', 'error')
+                                                                }
+                                                                setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                                showMiniDialog(true)
+                                                            } else
+                                                                showSnackBar('Заполните все поля')
+                                                        }}>
+                                                            Сохранить
+                                                        </Button>
+                                                }
                                                 {
                                                     router.query.id!=='new'&&('superadmin'===profile.role||'admin'===profile.role&&role!=='admin'||'управляющий'===profile.role&&role!=='управляющий')?
                                                         <Button color={status==='active'?'primary':'secondary'} onClick={()=>{

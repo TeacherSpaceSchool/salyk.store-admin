@@ -348,55 +348,73 @@ const Item = React.memo((props) => {
                                         onChange={(event)=>{setPriority(inputInt(event.target.value))}}
                                     />
                                     <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
-                                        <Button color='primary' onClick={()=>{
-                                            if (name.length&&unit.length&&legalObject) {
-                                                const action = async() => {
-                                                    if(router.query.id==='new') {
-                                                        price = checkFloat(price)
-                                                        if(checkFloat(price)||editedPrice) {
-                                                            let res = await addItem({
-                                                                legalObject: legalObject._id,
-                                                                category: category ? category._id : category,
-                                                                priority: checkInt(priority),
-                                                                price,
-                                                                editedPrice,
-                                                                unit,
-                                                                barCode,
-                                                                name,
-                                                                type,
-                                                                tnved,
-                                                                mark,
-                                                                quick
-                                                            })
-                                                            Router.push(`/item/${res}`)
-                                                            showSnackBar('Успешно', 'success')
+                                        {
+                                            router.query.id==='new'?
+                                                <Button color='primary' onClick={()=>{
+                                                    price = checkFloat(price)
+                                                    if (name.length&&unit.length&&legalObject&&(checkFloat(price)||editedPrice)) {
+                                                        const action = async() => {
+                                                            if(checkFloat(price)||editedPrice) {
+                                                                let res = await addItem({
+                                                                    legalObject: legalObject._id,
+                                                                    category: category ? category._id : category,
+                                                                    priority: checkInt(priority),
+                                                                    price,
+                                                                    editedPrice,
+                                                                    unit,
+                                                                    barCode,
+                                                                    name,
+                                                                    type,
+                                                                    tnved,
+                                                                    mark,
+                                                                    quick
+                                                                })
+                                                                if(res!=='ERROR') {
+                                                                    Router.push(`/item/${res}`)
+                                                                    showSnackBar('Успешно', 'success')
+                                                                }
+                                                                else
+                                                                    showSnackBar('Ошибка', 'error')
+                                                            }
+                                                            else
+                                                                showSnackBar('Укажите цену')
                                                         }
-                                                        else
-                                                            showSnackBar('Укажите цену')
-                                                    }
-                                                    else {
-                                                        let element = {category: category?category._id:category, _id: router.query.id, }
-                                                        if (editedPrice!==data.object.editedPrice) element.editedPrice = editedPrice
-                                                        if (name!==data.object.name) element.name = name
-                                                        if (type!==data.object.type) element.type = type
-                                                        if (barCode!==data.object.barCode) element.barCode = barCode
-                                                        if (unit!==data.object.unit) element.unit = unit
-                                                        if (tnved!==data.object.tnved) element.tnved = tnved
-                                                        if (mark!==data.object.mark) element.mark = mark
-                                                        if (quick!==data.object.quick) element.quick = quick
-                                                        if (price!==data.object.price&&(checkFloat(price)||editedPrice)) element.price = checkFloat(price)
-                                                        if (priority!==data.object.priority) element.priority = checkInt(priority)
-                                                        await setItem(element)
-                                                        Router.reload()
-                                                    }
-                                                }
-                                                setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
-                                                showMiniDialog(true)
-                                            } else
-                                                showSnackBar('Заполните все поля')
-                                        }}>
-                                            Сохранить
-                                        </Button>
+                                                        setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                        showMiniDialog(true)
+                                                    } else
+                                                        showSnackBar('Заполните все поля')
+                                                }}>
+                                                    Добавить
+                                                </Button>
+                                                :
+                                                <Button color='primary' onClick={()=>{
+                                                    if (name.length&&unit.length&&legalObject) {
+                                                        const action = async() => {
+                                                            let element = {category: category?category._id:category, _id: router.query.id, }
+                                                            if (editedPrice!==data.object.editedPrice) element.editedPrice = editedPrice
+                                                            if (name!==data.object.name) element.name = name
+                                                            if (type!==data.object.type) element.type = type
+                                                            if (barCode!==data.object.barCode) element.barCode = barCode
+                                                            if (unit!==data.object.unit) element.unit = unit
+                                                            if (tnved!==data.object.tnved) element.tnved = tnved
+                                                            if (mark!==data.object.mark) element.mark = mark
+                                                            if (quick!==data.object.quick) element.quick = quick
+                                                            if (price!==data.object.price&&(checkFloat(price)||editedPrice)) element.price = checkFloat(price)
+                                                            if (priority!==data.object.priority) element.priority = checkInt(priority)
+                                                            let res = await setItem(element)
+                                                            if(res==='OK')
+                                                                Router.reload()
+                                                            else
+                                                                showSnackBar('Ошибка', 'error')
+                                                        }
+                                                        setMiniDialog('Вы уверены?', <Confirmation action={action}/>)
+                                                        showMiniDialog(true)
+                                                    } else
+                                                        showSnackBar('Заполните все поля')
+                                                }}>
+                                                    Сохранить
+                                                </Button>
+                                        }
                                         {
                                             router.query.id!=='new'?
                                                 <Button color='secondary' onClick={()=>{
