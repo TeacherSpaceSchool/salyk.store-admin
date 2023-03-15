@@ -93,6 +93,7 @@ export const getSale = async({_id, type, cashbox, number}, client)=>{
                             _id
                             createdAt
                             qr
+                            qrURL
                             syncData
                             number
                             legalObject {_id name inn rateTaxe taxSystemName_v2}

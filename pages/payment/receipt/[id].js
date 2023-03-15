@@ -18,6 +18,8 @@ import { pdDDMMYYHHMM } from '../../../src/lib'
 import Button from '@material-ui/core/Button';
 import { connectPrinterByBluetooth, printEsPosData } from '../../../src/printer'
 import dynamic from 'next/dynamic'
+import Bluetooth from '@material-ui/icons/Bluetooth';
+import Print from '@material-ui/icons/Print';
 const Pdf = dynamic(import('react-to-pdf'), { ssr: false });
 
 const Receipt = React.memo((props) => {
@@ -80,39 +82,60 @@ const Receipt = React.memo((props) => {
                     {
                         readyPrint?
                             <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
-                                <Button color='primary' onClick={async ()=>{
-                                    if(isMobileApp&&navigator.bluetooth){
-                                        let _printer = printer
-                                        if(!_printer) {
-                                            _printer = await connectPrinterByBluetooth()
-                                            setPrinter(_printer)
-                                        }
-                                        let _data = [
-                                            {message: `Оплата №${data.object.number}`, align: 'center'},
-                                            ...data.object.who?[{message: `Оператор: ${data.object.who.role} ${data.object.who.name}`, align: 'center'}]:[],
-                                            {message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`, align: 'center'},
-                                            {message: '********************************', align: 'center'},
-                                            {message: data.object.legalObject.name, align: 'left'},
-                                            {message: `Количество касс: ${data.object.cashboxes.length}`, align: 'right'},
-                                            {message: `Месяцы: ${data.object.months}`, align: 'right'},
-                                            {message: `Дни: ${data.object.days}`, align: 'right'},
-                                            {message: '********************************', align: 'center'},
-                                            {message: `Оплачено: ${data.object.paid}`, align: 'right'},
-                                            {message: `Сдача: ${data.object.change}`, align: 'right'},
-                                            {message: 'ККМ SALYK.STORE v1.1', align: 'center', bold: true},
-                                            {image: data.object.qr}
-                                        ]
-                                        printEsPosData(_printer, _data)
-                                    }
-                                    else {
-                                        let printContents = receiptRef.current.innerHTML;
-                                        let printWindow = window.open();
-                                        printWindow.document.write(printContents);
-                                        printWindow.document.write(`<script type="text/javascript">window.onload = function() { window.print(); ${isMobileApp?'setTimeout(window.close, 1000)':'window.close()'}; };</script>`);
-                                        printWindow.document.close();
-                                        printWindow.focus();
-                                    }
-                                }}>Печать</Button>
+                                {
+                                    !isMobileApp?
+                                        <Button color='primary' onClick={async ()=>{
+                                            let printContents = receiptRef.current.innerHTML;
+                                            let printWindow = window.open();
+                                            printWindow.document.write(printContents);
+                                            printWindow.document.write(`<script type="text/javascript">window.onload = function() { window.print(); ${isMobileApp?'setTimeout(window.close, 1000)':'window.close()'}; };</script>`);
+                                            printWindow.document.close();
+                                            printWindow.focus();
+                                        }}>
+                                            <Print/>&nbsp;Печать
+                                        </Button>
+                                        :
+                                        null
+                                }
+                                {
+                                    navigator.bluetooth ?
+                                        <Button color='primary' onClick={async () => {
+                                            let _printer = printer
+                                            if (!_printer) {
+                                                _printer = await connectPrinterByBluetooth()
+                                                setPrinter(_printer)
+                                            }
+                                            let _data = [
+                                                {message: `Оплата №${data.object.number}`, align: 'center'},
+                                                ...data.object.who ? [{
+                                                    message: `Оператор: ${data.object.who.role} ${data.object.who.name}`,
+                                                    align: 'center'
+                                                }] : [],
+                                                {
+                                                    message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`,
+                                                    align: 'center'
+                                                },
+                                                {message: '********************************', align: 'center'},
+                                                {message: data.object.legalObject.name, align: 'left'},
+                                                {
+                                                    message: `Количество касс: ${data.object.cashboxes.length}`,
+                                                    align: 'right'
+                                                },
+                                                {message: `Месяцы: ${data.object.months}`, align: 'right'},
+                                                {message: `Дни: ${data.object.days}`, align: 'right'},
+                                                {message: '********************************', align: 'center'},
+                                                {message: `Оплачено: ${data.object.paid}`, align: 'right'},
+                                                {message: `Сдача: ${data.object.change}`, align: 'right'},
+                                                {message: 'ККМ SALYK.STORE v1.1', align: 'center', bold: true},
+                                                ...isMobileApp?{image: data.object.qr}:{}
+                                            ]
+                                            printEsPosData(_printer, _data)
+                                        }}>
+                                            <Bluetooth/>Печать
+                                        </Button>
+                                        :
+                                        null
+                                }
                                 <Pdf targetRef={receiptRef} filename={`${data.object.type}-Отчет №${data.object.number}`}
                                      options = {{
                                          format: [receiptRef.current.offsetHeight*0.8, receiptRef.current.offsetWidth*0.75+1]

@@ -20,6 +20,8 @@ import SyncOn from '@material-ui/icons/Sync';
 import SyncOff from '@material-ui/icons/SyncDisabled';
 import ViewText from '../../components/dialog/ViewText';
 import Link from 'next/link';
+import Bluetooth from '@material-ui/icons/Bluetooth';
+import Print from '@material-ui/icons/Print';
 const Pdf = dynamic(import('react-to-pdf'), { ssr: false });
 
 const Receipt = React.memo((props) => {
@@ -220,100 +222,112 @@ const Receipt = React.memo((props) => {
                         {
                             readyPrint?
                                 <div className={isMobileApp?classes.bottomDivM:classes.bottomDivD}>
-                                    <Button color='primary' onClick={async ()=>{
-                                        if(isMobileApp&&navigator.bluetooth){
-                                            let _printer = printer
-                                            if(!_printer) {
-                                                _printer = await connectPrinterByBluetooth()
-                                                setPrinter(_printer)
-                                            }
-                                            let _data = [
-                                                {message: `${data.object.type}-ОТЧЕТ №${data.object.number}`, align: 'center', bold: true},
-                                                {message: `Дата: ${`${pdDDMMYYHHMM(data.object.start)}${data.object.end?` - ${pdDDMMYYHHMM(data.object.end)}`:''}`}`, align: 'left'},
-                                                {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
-                                                {message: `Смена №${data.object.workShift.number}`, align: 'left'},
-                                                {message: data.object.legalObject.name, align: 'left'},
-                                                ...data.object.branch?[{message: data.object.branch.name, align: 'left'}]:[],
-                                                ...data.object.branch?[{message: data.object.branch.address, align: 'left'}]:[],
-                                                {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
-                                                {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:data.object.legalObject.taxSystemName_v2}`, align: 'left'},
-                                                {message: '********************************', align: 'center'},
-                                                ...data.object.cashEnd?[
-                                                    {message: `  Наличных в кассе`, align: 'left'},
-                                                    {message: `Сумма: ${data.object.cashEnd.toFixed(2)}`, align: 'right'}
-                                                ]:[],
-                                                {message: `  Внесено`, align: 'left'},
-                                                {message: `Сумма: ${data.object.deposit.toFixed(2)}`, align: 'right'},
-                                                {message: `  Изъято`, align: 'left'},
-                                                {message: `Сумма: ${data.object.withdraw.toFixed(2)}`, align: 'right'},
-                                                {message: `  Наличными`, align: 'left'},
-                                                {message: `Сумма: ${data.object.cash.toFixed(2)}`, align: 'right'},
-                                                {message: `  Безналичными`, align: 'left'},
-                                                {message: `Сумма: ${data.object.cashless.toFixed(2)}`, align: 'right'},
-                                                {message: `  Скидка`, align: 'left'},
-                                                {message: `Сумма: ${data.object.discount.toFixed(2)}`, align: 'right'},
-                                                {message: `  Наценка`, align: 'left'},
-                                                {message: `Сумма: ${data.object.extra.toFixed(2)}`, align: 'right'},
-                                                {message: `  Продажа`, align: 'left'},
-                                                {message: `Чеков: ${data.object.saleCount} | Сумма: ${data.object.sale.toFixed(2)}`, align: 'right'},
-                                                {message: `  Возврат`, align: 'left'},
-                                                {message: `Чеков: ${data.object.returnedCount} | Сумма: ${data.object.returned.toFixed(2)}`, align: 'right'},
-                                                /*{message: `  Кредит`, align: 'left'},
-                                                {message: `Чеков: ${data.object.consignationCount} | Сумма: ${data.object.consignation.toFixed(2)}`, align: 'right'},
-                                                {message: `  Погашение кредита`, align: 'left'},
-                                                {message: `Чеков: ${data.object.paidConsignationCount} | Сумма: ${data.object.paidConsignation.toFixed(2)}`, align: 'right'},
-                                                {message: `  Аванс`, align: 'left'},
-                                                {message: `Чеков: ${data.object.prepaymentCount} | Сумма: ${data.object.prepayment.toFixed(2)}`, align: 'right'},*/
-                                                {message: `  Покупка`, align: 'left'},
-                                                {message: `Чеков: ${data.object.buyCount} | Сумма: ${data.object.buy.toFixed(2)}`, align: 'right'},
-                                                {message: `  Возврат покупки`, align: 'left'},
-                                                {message: `Чеков: ${data.object.returnedBuyCount} | Сумма: ${data.object.returnedBuy.toFixed(2)}`, align: 'right'}
-                                            ]
-                                            if(data.object.syncMsg!=='Фискальный режим отключен') {
-                                                _data.push({
-                                                    message: '***************ФП***************',
-                                                    align: 'center',
-                                                    bold: true
-                                                })
-                                                if (syncData) {
-                                                    _data.push({
-                                                        message: `РН ККМ: ${syncData.fields[1037]}`,
-                                                        align: 'right'
-                                                    })
-                                                    _data.push({
-                                                        message: `ФМ: ${syncData.fields[1041]}`,
-                                                        align: 'right'
-                                                    })
-                                                    if(syncData.fields[1040])
-                                                        _data.push({
-                                                            message: `ФД: ${syncData.fields[1040]}`,
-                                                            align: 'right'
-                                                        })
-                                                    if(syncData.fields[1077])
-                                                        _data.push({
-                                                            message: `ФПД: ${parseInt(syncData.fields[1077], 16)}`,
-                                                            align: 'right'
-                                                        })
-                                                    _data.push({
-                                                        message: '********************************',
-                                                        align: 'center'
-                                                    })
+                                    {
+                                        !isMobileApp?
+                                            <Button color='primary' onClick={async ()=>{
+                                                let printContents = receiptRef.current.innerHTML;
+                                                let printWindow = window.open();
+                                                printWindow.document.write(printContents);
+                                                printWindow.document.write(`<script type="text/javascript">window.onload = function() { window.print(); ${isMobileApp?'setTimeout(window.close, 1000)':'window.close()'}; };</script>`);
+                                                printWindow.document.close();
+                                                printWindow.focus();
+                                            }}>
+                                                <Print/>&nbsp;Печать
+                                            </Button>
+                                            :
+                                            null
+                                    }
+                                    {
+                                        navigator.bluetooth?
+                                            <Button color='primary' onClick={async ()=>{
+                                                let _printer = printer
+                                                if(!_printer) {
+                                                    _printer = await connectPrinterByBluetooth()
+                                                    setPrinter(_printer)
                                                 }
-                                            }
-                                            else
-                                                _data.push({message: '********************************', align: 'center'})
-                                            _data.push({message: 'ККМ SALYK.STORE v1.1', align: 'center', bold: true})
-                                            printEsPosData(_printer, _data)
-                                        }
-                                        else {
-                                            let printContents = receiptRef.current.innerHTML;
-                                            let printWindow = window.open();
-                                            printWindow.document.write(printContents);
-                                            printWindow.document.write(`<script type="text/javascript">window.onload = function() { window.print(); ${isMobileApp?'setTimeout(window.close, 1000)':'window.close()'}; };</script>`);
-                                            printWindow.document.close();
-                                            printWindow.focus();
-                                        }
-                                    }}>Печать</Button>
+                                                let _data = [
+                                                    {message: `${data.object.type}-ОТЧЕТ №${data.object.number}`, align: 'center', bold: true},
+                                                    {message: `Дата: ${`${pdDDMMYYHHMM(data.object.start)}${data.object.end?` - ${pdDDMMYYHHMM(data.object.end)}`:''}`}`, align: 'left'},
+                                                    {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
+                                                    {message: `Смена №${data.object.workShift.number}`, align: 'left'},
+                                                    {message: data.object.legalObject.name, align: 'left'},
+                                                    ...data.object.branch?[{message: data.object.branch.name, align: 'left'}]:[],
+                                                    ...data.object.branch?[{message: data.object.branch.address, align: 'left'}]:[],
+                                                    {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
+                                                    {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:data.object.legalObject.taxSystemName_v2}`, align: 'left'},
+                                                    {message: '********************************', align: 'center'},
+                                                    ...data.object.cashEnd?[
+                                                        {message: `  Наличных в кассе`, align: 'left'},
+                                                        {message: `Сумма: ${data.object.cashEnd.toFixed(2)}`, align: 'right'}
+                                                    ]:[],
+                                                    {message: `  Внесено`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.deposit.toFixed(2)}`, align: 'right'},
+                                                    {message: `  Изъято`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.withdraw.toFixed(2)}`, align: 'right'},
+                                                    {message: `  Наличными`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.cash.toFixed(2)}`, align: 'right'},
+                                                    {message: `  Безналичными`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.cashless.toFixed(2)}`, align: 'right'},
+                                                    {message: `  Скидка`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.discount.toFixed(2)}`, align: 'right'},
+                                                    {message: `  Наценка`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.extra.toFixed(2)}`, align: 'right'},
+                                                    {message: `  Продажа`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.saleCount} | Сумма: ${data.object.sale.toFixed(2)}`, align: 'right'},
+                                                    {message: `  Возврат`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.returnedCount} | Сумма: ${data.object.returned.toFixed(2)}`, align: 'right'},
+                                                    /*{message: `  Кредит`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.consignationCount} | Сумма: ${data.object.consignation.toFixed(2)}`, align: 'right'},
+                                                    {message: `  Погашение кредита`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.paidConsignationCount} | Сумма: ${data.object.paidConsignation.toFixed(2)}`, align: 'right'},
+                                                    {message: `  Аванс`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.prepaymentCount} | Сумма: ${data.object.prepayment.toFixed(2)}`, align: 'right'},*/
+                                                    {message: `  Покупка`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.buyCount} | Сумма: ${data.object.buy.toFixed(2)}`, align: 'right'},
+                                                    {message: `  Возврат покупки`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.returnedBuyCount} | Сумма: ${data.object.returnedBuy.toFixed(2)}`, align: 'right'}
+                                                ]
+                                                if(data.object.syncMsg!=='Фискальный режим отключен') {
+                                                    _data.push({
+                                                        message: '***************ФП***************',
+                                                        align: 'center',
+                                                        bold: true
+                                                    })
+                                                    if (syncData) {
+                                                        _data.push({
+                                                            message: `РН ККМ: ${syncData.fields[1037]}`,
+                                                            align: 'right'
+                                                        })
+                                                        _data.push({
+                                                            message: `ФМ: ${syncData.fields[1041]}`,
+                                                            align: 'right'
+                                                        })
+                                                        if(syncData.fields[1040])
+                                                            _data.push({
+                                                                message: `ФД: ${syncData.fields[1040]}`,
+                                                                align: 'right'
+                                                            })
+                                                        if(syncData.fields[1077])
+                                                            _data.push({
+                                                                message: `ФПД: ${parseInt(syncData.fields[1077], 16)}`,
+                                                                align: 'right'
+                                                            })
+                                                        _data.push({
+                                                            message: '********************************',
+                                                            align: 'center'
+                                                        })
+                                                    }
+                                                }
+                                                else
+                                                    _data.push({message: '********************************', align: 'center'})
+                                                _data.push({message: 'ККМ SALYK.STORE v1.1', align: 'center', bold: true})
+                                                printEsPosData(_printer, _data)
+                                            }}>
+                                                <Bluetooth/>Печать
+                                            </Button>
+                                            :
+                                            null
+                                    }
                                     <Pdf targetRef={receiptRef} filename={`${data.object.type}-ОТЧЕТ №${data.object.number}`}
                                          options = {{
                                              format: [receiptRef.current.offsetHeight*0.8, receiptRef.current.offsetWidth*0.75+1]

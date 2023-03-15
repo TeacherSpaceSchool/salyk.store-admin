@@ -22,7 +22,7 @@ export const printEsPosData = async (printer, data) => {
                 await printer.writeValue(data[i].message);
         }
         else if(data[i].QR) {
-            data[i].QR = encoder.align('center').qrcode(data[i].QR, 1, 4, 'h').encode();
+            data[i].QR = encoder.align('center').qrcode(data[i].QR, 1, 6, 'h').encode();
             while (data[i].QR.length > 20) {
                 printQR = data[i].QR.slice(0, 20);
                 await printer.writeValue(printQR);
@@ -37,7 +37,7 @@ export const printEsPosData = async (printer, data) => {
             await img.decode();
             img = encoder
                 .align('center')
-                .image(img, 240, 240, 'atkinson')
+                .image(img, 280, 280, 'atkinson')
                 .encode()
             while (img.length > 20) {
                 printImg = img.slice(0, 20);

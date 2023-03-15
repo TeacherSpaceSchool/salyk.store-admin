@@ -15,6 +15,8 @@ import {checkFloat, pdDDMMYYHHMM} from '../../src/lib'
 import { connectPrinterByBluetooth, printEsPosData } from '../../src/printer'
 import Button from '@material-ui/core/Button';
 import dynamic from 'next/dynamic'
+import Bluetooth from '@material-ui/icons/Bluetooth';
+import Print from '@material-ui/icons/Print';
 import SyncOn from '@material-ui/icons/Sync';
 import SyncOff from '@material-ui/icons/SyncDisabled';
 import ViewText from '../../components/dialog/ViewText';
@@ -308,8 +310,24 @@ const Receipt = React.memo((props) => {
                                     {
                                         profile.role?
                                             <>
-                                                <Button color='primary' onClick={async ()=>{
-                                                    if(isMobileApp&&navigator.bluetooth){
+                                            {
+                                                !isMobileApp?
+                                                    <Button color='primary' onClick={async ()=>{
+                                                        let printContents = receiptRef.current.innerHTML;
+                                                        let printWindow = window.open();
+                                                        printWindow.document.write(printContents);
+                                                        printWindow.document.write(`<script type="text/javascript">window.onload = function() { window.print(); window.close()};</script>`);
+                                                        printWindow.document.close();
+                                                        printWindow.focus();
+                                                    }}>
+                                                        <Print/>&nbsp;Печать
+                                                    </Button>
+                                                    :
+                                                    null
+                                            }
+                                            {
+                                                navigator.bluetooth?
+                                                    <Button color='primary' onClick={async ()=>{
                                                         let _printer = printer
                                                         if(!_printer) {
                                                             _printer = await connectPrinterByBluetooth()
@@ -317,7 +335,7 @@ const Receipt = React.memo((props) => {
                                                         }
 
                                                         let _data = [
-                                                            {message: (data.object.type).toUpperCase(), align: 'center'},
+                                                            {message: (data.object.type).toUpperCase(), align: 'center', bold: true},
                                                             {message: `КАССОВЫЙ ЧЕК №${data.object.number}`, align: 'left'},
                                                             {message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`, align: 'left'},
                                                             {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
@@ -397,18 +415,17 @@ const Receipt = React.memo((props) => {
                                                         else
                                                             _data.push({message: '********************************', align: 'center'})
                                                         _data.push({message: 'ККМ SALYK.STORE v1.1', align: 'center', bold: true})
-                                                        _data.push({image: data.object.qr})
+                                                        if(data.object.qrURL)
+                                                            _data.push({QR: data.object.qrURL})
+                                                        else
+                                                            _data.push({image: data.object.qr})
                                                         await printEsPosData(_printer, _data)
-                                                    }
-                                                    else {
-                                                        let printContents = receiptRef.current.innerHTML;
-                                                        let printWindow = window.open();
-                                                        printWindow.document.write(printContents);
-                                                        printWindow.document.write(`<script type="text/javascript">window.onload = function() { window.print(); window.close()};</script>`);
-                                                        printWindow.document.close();
-                                                        printWindow.focus();
-                                                    }
-                                                }}>Печать</Button>
+                                                    }}>
+                                                        <Bluetooth/>Печать
+                                                    </Button>
+                                                    :
+                                                    null
+                                            }
                                                 <Pdf targetRef={receiptRef} filename={`Чек №${data.object.number}`}
                                                      options = {{
                                                          format: [receiptRef.current.offsetHeight*0.8, receiptRef.current.offsetWidth*0.75]
