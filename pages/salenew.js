@@ -757,69 +757,72 @@ const Selnew = React.memo((props) => {
                             if('Возврат аванса'===type&&allAmount>usedPrepayment)
                                 showSnackBar('Сумма слишком велика')
                             else {
-                                if (allAmount >= 0) {
-                                    if (!type.includes('Возврат') || sale) {
-                                        allAmount = checkFloat(allAmount)
-                                        if (['Аванс', 'Погашение кредита', 'Возврат аванса'].includes(type)) {
-                                            let ndsPrecent = checkFloat(legalObject.ndsTypeRate_v2)
-                                            let nspPrecent = checkFloat(legalObject.nspTypeRate_v2)
-                                            let allPrecent = 100+ndsPrecent+nspPrecent
-                                            let nds = checkFloat(allAmount/allPrecent*ndsPrecent)
-                                            let nsp = checkFloat(allAmount/allPrecent*nspPrecent)
-                                            items = [{
-                                                name: comment.length ? comment : type,
-                                                unit: 'шт',
-                                                count: 1,
-                                                price: allAmount,
-                                                amountStart: allAmount,
-                                                discount: '',
-                                                discountType: 'сом',
-                                                extra: '',
-                                                extraType: 'сом',
-                                                amountEnd: allAmount,
-                                                allPrecent,
-                                                ndsPrecent,
-                                                nspPrecent,
-                                                nds,
-                                                nsp
-                                            }]
-                                        }
-                                        let consignation = 0
-                                        if (sale && sale.type === 'Кредит' && type === 'Возврат продажи')
-                                            consignation = checkFloat(sale.amountEnd - sale.paid)
-                                        let cashbox
-                                        if (['Покупка', 'Возврат аванса', 'Возврат продажи'].includes(type))
-                                            cashbox = await getCashbox({_id: data.cashbox})
-                                        let allNsp = 0, allNds = 0
-                                        for(let i=0; i<items.length; i++) {
-                                            allNds += items[i].nds
-                                            allNsp += items[i].nsp
-                                        }
-                                        setMiniDialog('Оплата', <Buy
-                                            sale={sale}
-                                            _setComment={setComment}
-                                            allNsp={allNsp}
-                                            allNds={allNds}
-                                            amountStart={allAmount}
-                                            client={client}
-                                            items={items}
-                                            setType={setType}
-                                            type={type}
-                                            consignation={consignation}
-                                            setItems={setItems}
-                                            setSale={setSale}
-                                            cashbox={cashbox}
-                                            setClient={setClient}
-                                            usedPrepayment={usedPrepayment}
-                                        />)
-                                        showMiniDialog(true)
+                                if (items.length||['Аванс', 'Погашение кредита', 'Возврат аванса'].includes(type)) {
+                                    if (allAmount >= 0) {
+                                        if (!type.includes('Возврат') || sale) {
+                                            allAmount = checkFloat(allAmount)
+                                            if (['Аванс', 'Погашение кредита', 'Возврат аванса'].includes(type)) {
+                                                let ndsPrecent = checkFloat(legalObject.ndsTypeRate_v2)
+                                                let nspPrecent = checkFloat(legalObject.nspTypeRate_v2)
+                                                let allPrecent = 100 + ndsPrecent + nspPrecent
+                                                let nds = checkFloat(allAmount / allPrecent * ndsPrecent)
+                                                let nsp = checkFloat(allAmount / allPrecent * nspPrecent)
+                                                items = [{
+                                                    name: comment.length ? comment : type,
+                                                    unit: 'шт',
+                                                    count: 1,
+                                                    price: allAmount,
+                                                    amountStart: allAmount,
+                                                    discount: '',
+                                                    discountType: 'сом',
+                                                    extra: '',
+                                                    extraType: 'сом',
+                                                    amountEnd: allAmount,
+                                                    allPrecent,
+                                                    ndsPrecent,
+                                                    nspPrecent,
+                                                    nds,
+                                                    nsp
+                                                }]
+                                            }
+                                            let consignation = 0
+                                            if (sale && sale.type === 'Кредит' && type === 'Возврат продажи')
+                                                consignation = checkFloat(sale.amountEnd - sale.paid)
+                                            let cashbox
+                                            if (['Покупка', 'Возврат аванса', 'Возврат продажи'].includes(type))
+                                                cashbox = await getCashbox({_id: data.cashbox})
+                                            let allNsp = 0, allNds = 0
+                                            for (let i = 0; i < items.length; i++) {
+                                                allNds += items[i].nds
+                                                allNsp += items[i].nsp
+                                            }
+                                            setMiniDialog('Оплата', <Buy
+                                                sale={sale}
+                                                _setComment={setComment}
+                                                allNsp={allNsp}
+                                                allNds={allNds}
+                                                amountStart={allAmount}
+                                                client={client}
+                                                items={items}
+                                                setType={setType}
+                                                type={type}
+                                                consignation={consignation}
+                                                setItems={setItems}
+                                                setSale={setSale}
+                                                cashbox={cashbox}
+                                                setClient={setClient}
+                                                usedPrepayment={usedPrepayment}
+                                            />)
+                                            showMiniDialog(true)
 
+                                        } else
+                                            showSnackBar('Укажите операцию')
                                     }
                                     else
-                                        showSnackBar('Укажите операцию')
+                                        showSnackBar('Сумма слишко мала')
                                 }
                                 else
-                                    showSnackBar('Сумма слишко мала')
+                                    showSnackBar('Добавьте позиции')
                             }
                         }}>
                             Оплатить

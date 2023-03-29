@@ -11,7 +11,7 @@ import Radio from '@material-ui/core/Radio';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Cancel from '@material-ui/icons/Cancel';
-import Input from '@material-ui/core/Input';
+import TextField from '@material-ui/core/TextField';
 
 const SetFMData =  React.memo(
     (props) =>{
@@ -25,16 +25,19 @@ const SetFMData =  React.memo(
         };
         return (
             <div className={classes.main} style={{width: width}}>
-                <Input className={classes.input}
-                       value={search}
-                       onChange={handleSearch}
-                       endAdornment={
-                           search?<InputAdornment position='end'>
-                               <IconButton aria-label='Search' onClick={()=>{setSearch('')}}>
-                                   <Cancel />
-                               </IconButton>
-                           </InputAdornment>:null
-                       }/>
+                <TextField
+                    className={classes.input}
+                    value={search}
+                    onChange={handleSearch}
+                    placeholder='Поиск...'
+                    InputProps={{
+                        endAdornment: search?<InputAdornment position='end'>
+                            <IconButton aria-label='Search' onClick={()=>{setSearch('')}}>
+                                <Cancel />
+                            </IconButton>
+                        </InputAdornment>:null
+                    }}
+                />
                 {list.map((element, idx)=> {
                     if(element.name.toLowerCase().includes(search.toLowerCase()))
                         return <div key={`fmData${idx}`} className={classes.row} style={{alignItems: 'center'}}>

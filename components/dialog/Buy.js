@@ -212,15 +212,23 @@ const BuyBasket =  React.memo(
                                         else {
                                             let discountAll = 0, extraAll = 0
                                             for (let i = 0; i < items.length; i++) {
-                                                discountAll = checkFloat(discountAll + items[i].discount)
-                                                extraAll = checkFloat(extraAll + items[i].extra)
+                                                let discount = checkFloat(items[i].discount)
+                                                if(items[i].discountType==='%') {
+                                                    discount = checkFloat(items[i].amountStart/100*items[i].discount)
+                                                }
+                                                discountAll = checkFloat(discountAll + discount)
+                                                let extra = checkFloat(items[i].extra)
+                                                if(items[i].extraType==='%') {
+                                                    extra = checkFloat(items[i].amountStart/100*items[i].extra)
+                                                }
+                                                extraAll = checkFloat(extraAll + extra)
                                                 items[i] = {
                                                     name: items[i].name,
                                                     unit: items[i].unit,
                                                     count: checkFloat(items[i].count),
                                                     price: checkFloat(items[i].price),
-                                                    discount: checkFloat(items[i].discount),
-                                                    extra: checkFloat(items[i].extra),
+                                                    discount,
+                                                    extra,
                                                     amountStart: checkFloat(items[i].amountStart),
                                                     amountEnd: checkFloat(items[i].amountEnd),
                                                     tnved: items[i].tnved,
@@ -231,7 +239,8 @@ const BuyBasket =  React.memo(
                                                     nsp: checkFloat(items[i].nsp),
                                                 }
                                             }
-                                            let res = await addSale({
+                                            console.log(items)
+                                            /*let res = await addSale({
                                                 client: client?client._id:client,
                                                 sale: sale?sale._id:sale,
                                                 typePayment,
@@ -263,7 +272,7 @@ const BuyBasket =  React.memo(
                                                     setAllAmount('')
                                             }
                                             else
-                                                showSnackBar('Ошибка', 'error')
+                                                showSnackBar('Ошибка', 'error')*/
                                         }
                                     }
                                 }
