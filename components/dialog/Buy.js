@@ -239,8 +239,7 @@ const BuyBasket =  React.memo(
                                                     nsp: checkFloat(items[i].nsp),
                                                 }
                                             }
-                                            console.log(items)
-                                            /*let res = await addSale({
+                                            let res = await addSale({
                                                 client: client?client._id:client,
                                                 sale: sale?sale._id:sale,
                                                 typePayment,
@@ -272,7 +271,7 @@ const BuyBasket =  React.memo(
                                                     setAllAmount('')
                                             }
                                             else
-                                                showSnackBar('Ошибка', 'error')*/
+                                                showSnackBar('Ошибка', 'error')
                                         }
                                     }
                                 }
