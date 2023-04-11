@@ -57,7 +57,6 @@ const Receipt = React.memo((props) => {
                             marginTop: 20
                         }} ref={receiptRef}>
                             <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>ИЗЪЯТИЕ ИЗ КАССЫ</h3>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК №{data.object.number}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(data.object.createdAt)}</span></div>
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
@@ -79,6 +78,7 @@ const Receipt = React.memo((props) => {
                                     :
                                     <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Смена №{data.object.workShift.number}</span></div>
                             }
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Документ №{data.object.number}</span></div>
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
                                     <Link href='/user/[id]' as={`/user/${data.object.cashier._id}`}>
@@ -181,10 +181,10 @@ const Receipt = React.memo((props) => {
 
                                             let _data = [
                                                 {message: 'ИЗЪЯТИЕ ИЗ КАССЫ', align: 'center', bold: true},
-                                                {message: `ЧЕК №${data.object.number}`, align: 'left'},
                                                 {message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`, align: 'left'},
                                                 {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
                                                 {message: `Смена №${data.object.workShift.number}`, align: 'left'},
+                                                {message: `Документ №${data.object.number}`, align: 'left'},
                                                 {message: `Кассир: ${data.object.cashier.name}`, align: 'left'},
                                                 {message: data.object.legalObject.name, align: 'left'},
                                                 {message: data.object.branch.name, align: 'left'},

@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 import { urlMain } from '../../redux/constants/other'
 import { getClientGqlSsr } from '../../src/getClientGQL'
 import {checkFloat, pdDDMMYYHHMM} from '../../src/lib'
-import { connectPrinterByBluetooth, printEsPosData } from '../../src/printer'
+import {connectPrinterByBluetooth, printEsPosData, printEsPosImg, printEsPosQR} from '../../src/printer'
 import Button from '@material-ui/core/Button';
 import dynamic from 'next/dynamic'
 import Bluetooth from '@material-ui/icons/Bluetooth';
@@ -39,6 +39,7 @@ const Receipt = React.memo((props) => {
     const { showSnackBar } = props.snackbarActions;
     const receiptRef = useRef(null);
     let [syncData] = useState(data.object&&data.object.syncData?JSON.parse(data.object.syncData):null);
+    let [foundationSyncDataSale] = useState(data.object&&data.object.sale&&data.object.sale.syncData?JSON.parse(data.object.sale.syncData):null);
     let [readyPrint, setReadyPrint] = useState(data.list);
     useEffect(() => {
         setReadyPrint(process.browser&&receiptRef.current&&data.object)
@@ -100,7 +101,7 @@ const Receipt = React.memo((props) => {
                                 marginTop: 20
                             }} ref={receiptRef}>
                                 <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{(data.object.type).toUpperCase()}</h3>
-                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>КАССОВЫЙ ЧЕК №{data.object.number}</span></div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>КОНТРОЛЬНО-КАССОВЫЙ ЧЕК</span></div>
                                 <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(data.object.createdAt)}</span></div>
                                 {
                                     ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
@@ -122,6 +123,7 @@ const Receipt = React.memo((props) => {
                                         :
                                         <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Смена №{data.object.workShift.number}</span></div>
                                 }
+                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Документ №{data.object.number}</span></div>
                                 {
                                     ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
                                         <Link href='/user/[id]' as={`/user/${data.object.cashier._id}`}>
@@ -195,7 +197,10 @@ const Receipt = React.memo((props) => {
                                                     </div>
                                             }
                                             <div style={{textAlign: 'left', marginBottom: 5}}><span
-                                                style={{fontWeight: 400}}>ФМ ОСНОВАНИЯ {data.object.sale.cashbox.fn}</span>
+                                                style={{fontWeight: 400}}>ФМ ОСНОВАНИЯ {foundationSyncDataSale?foundationSyncDataSale.fields[1041]:''}</span>
+                                            </div>
+                                            <div style={{textAlign: 'left', marginBottom: 5}}><span
+                                                style={{fontWeight: 400}}>ФД ОСНОВАНИЯ {foundationSyncDataSale?foundationSyncDataSale.fields[1040]:''}</span>
                                             </div>
                                         </>
                                         :
@@ -336,17 +341,19 @@ const Receipt = React.memo((props) => {
 
                                                         let _data = [
                                                             {message: (data.object.type).toUpperCase(), align: 'center', bold: true},
-                                                            {message: `КАССОВЫЙ ЧЕК №${data.object.number}`, align: 'left'},
+                                                            {message: 'КОНТРОЛЬНО-КАССОВЫЙ ЧЕК', align: 'left'},
                                                             {message: `Дата: ${pdDDMMYYHHMM(data.object.createdAt)}`, align: 'left'},
                                                             {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
                                                             {message: `Смена №${data.object.workShift.number}`, align: 'left'},
+                                                            {message: `Документ №${data.object.number}`, align: 'left'},
                                                             {message: `Кассир: ${data.object.cashier.name}`, align: 'left'},
                                                             {message: data.object.legalObject.name, align: 'left'},
                                                             {message: data.object.branch.name, align: 'left'},
                                                             {message: data.object.branch.address, align: 'left'},
                                                             ...data.object.sale?[
                                                                 {message: `ЧЕК ОСНОВАНИЯ №${data.object.sale.number}`, align: 'left'},
-                                                                {message: `ФМ ОСНОВАНИЯ ${data.object.sale.cashbox.fn}`, align: 'left'},
+                                                                {message: `ФМ ОСНОВАНИЯ ${foundationSyncDataSale?foundationSyncDataSale.fields[1041]:''}`, align: 'left'},
+                                                                {message: `ФД ОСНОВАНИЯ ${foundationSyncDataSale?foundationSyncDataSale.fields[1040]:''}`, align: 'left'},
                                                             ]:[],
                                                             {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
                                                             {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:data.object.legalObject.taxSystemName_v2}`, align: 'left'},
@@ -415,10 +422,7 @@ const Receipt = React.memo((props) => {
                                                         else
                                                             _data.push({message: '********************************', align: 'center'})
                                                         _data.push({message: 'ККМ SALYK.STORE v1.1', align: 'center', bold: true})
-                                                        if(data.object.qrURL)
-                                                            _data.push({QR: data.object.qrURL})
-                                                        else
-                                                            _data.push({image: data.object.qr})
+                                                        _data.push({image: data.object.qr})
                                                         await printEsPosData(_printer, _data)
                                                     }}>
                                                         <Bluetooth/>Печать

@@ -66,7 +66,7 @@ const Receipt = React.memo((props) => {
                                         :
                                         'ЗАКРЫТИЕ ФМ'
                             }</h3>
-                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ЧЕК №{parseInt(router.query.idx)+1}</span></div>
+                            <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Документ №{parseInt(router.query.idx)+1}</span></div>
                             <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {pdDDMMYYHHMM(syncData.date)}</span></div>
                             {
                                 ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
@@ -162,7 +162,7 @@ const Receipt = React.memo((props) => {
                                                                 :
                                                                 'ЗАКРЫТИЕ ФМ'
                                                     }`, align: 'center', bold: true},
-                                                {message: `ЧЕК №${parseInt(router.query.idx)+1}`, align: 'left'},
+                                                {message: `Документ №${parseInt(router.query.idx)+1}`, align: 'left'},
                                                 {message: `Дата: ${pdDDMMYYHHMM(syncData.date)}`, align: 'left'},
                                                 {message: `Касса: ${data.object.name}`, align: 'left'},
                                                 {message: data.object.legalObject.name, align: 'left'},

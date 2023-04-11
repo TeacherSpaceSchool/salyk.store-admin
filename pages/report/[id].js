@@ -96,7 +96,7 @@ const Receipt = React.memo((props) => {
                                 background: 'white',
                                 marginTop: 20
                             }} ref={receiptRef}>
-                                <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{`${data.object.type}-ОТЧЕТ №${data.object.number}`}</h3>
+                                <h3 style={{textAlign: 'center', marginBottom: 10, marginTop: 10}}>{data.object.type}-ОТЧЕТ</h3>
                                 <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Дата: {`${pdDDMMYYHHMM(data.object.start)}${data.object.end?` - ${pdDDMMYYHHMM(data.object.end)}`:''}`}</span></div>
                                 {
                                     ['admin', 'superadmin', 'управляющий', 'супервайзер', 'оператор'].includes(profile.role)?
@@ -118,6 +118,7 @@ const Receipt = React.memo((props) => {
                                         :
                                         <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Смена №{data.object.workShift.number}</span></div>
                                 }
+                                <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>Документ №{data.object.number}</span></div>
                                 {
                                     ['admin', 'superadmin'].includes(profile.role)?
                                         <Link href='/legalobject/[id]' as={`/legalobject/${data.object.legalObject._id}`}>
@@ -151,40 +152,35 @@ const Receipt = React.memo((props) => {
                                 <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>ИНН: {data.object.legalObject.inn}</span></div>
                                 <div style={{textAlign: 'left', marginBottom: 5}}><span style={{fontWeight: 400}}>СНО: {data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:data.object.legalObject.taxSystemName_v2}</span></div>
                                 <div style={{textAlign: 'center', height: 12, marginTop: 10, marginBottom: 10}}>**********************************************</div>
-                                {
-                                    data.object.cashEnd?
-                                        <>
-                                            <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Наличных в кассе</div>
-                                            <div style={{textAlign: 'right', marginBottom: 5}}>Сумма: {data.object.cashEnd.toFixed(2)}</div>
-                                        </>
-                                        :
-                                        null
-                                }
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Внесено</div>
-                                <div style={{textAlign: 'right', marginBottom: 5}}>Сумма: {data.object.deposit.toFixed(2)}</div>
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Изъято</div>
-                                <div style={{textAlign: 'right', marginBottom: 5}}>Сумма: {data.object.withdraw.toFixed(2)}</div>
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Наличными</div>
-                                <div style={{textAlign: 'right', marginBottom: 5}}>Сумма: {data.object.cash.toFixed(2)}</div>
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Безналичными</div>
-                                <div style={{textAlign: 'right', marginBottom: 5}}>Сумма: {data.object.cashless.toFixed(2)}</div>
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Скидка</div>
-                                <div style={{textAlign: 'right', marginBottom: 5}}>Сумма: {data.object.discount.toFixed(2)}</div>
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Наценка</div>
-                                <div style={{textAlign: 'right', marginBottom: 5}}>Сумма: {data.object.extra.toFixed(2)}</div>
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Продажа</div>
-                                <div style={{textAlign: 'right', marginBottom: 5}}>Чеков: {data.object.saleCount} | Сумма: {data.object.sale.toFixed(2)}</div>
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Возврат</div>
-                                <div style={{textAlign: 'right', marginBottom: 5}}>Чеков: {data.object.returnedCount} | Сумма: {data.object.returned.toFixed(2)}</div>
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Покупка</div>
-                                <div style={{textAlign: 'right', marginBottom: 5}}>Чеков: {data.object.buyCount} | Сумма: {data.object.buy.toFixed(2)}</div>
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Возврат покупки</div>
-                                <div style={{textAlign: 'right', marginBottom: 5}}>Чеков: {data.object.returnedBuyCount} | Сумма: {data.object.returnedBuy.toFixed(2)}</div>
-                                {/*<div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Кредит</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Наличных в кассе</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Сумма: {data.object.cashEnd.toFixed(2)}</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Внесено</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Сумма: {data.object.deposit.toFixed(2)}</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Изъято</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Сумма: {data.object.withdraw.toFixed(2)}</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Наличными</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Сумма: {data.object.cash.toFixed(2)}</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Безналичными</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Сумма: {data.object.cashless.toFixed(2)}</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Итоговая сумма</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Сумма: {(data.object.cashless+data.object.cash).toFixed(2)}</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Скидка</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Сумма: {data.object.discount.toFixed(2)}</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Наценка</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Сумма: {data.object.extra.toFixed(2)}</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Продажа</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Чеков: {data.object.saleCount} | Сумма: {data.object.sale.toFixed(2)}</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Возврат</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Чеков: {data.object.returnedCount} | Сумма: {data.object.returned.toFixed(2)}</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Покупка</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Чеков: {data.object.buyCount} | Сумма: {data.object.buy.toFixed(2)}</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Возврат покупки</div>
+                                <div style={{textAlign: 'left', marginBottom: 5}}>Чеков: {data.object.returnedBuyCount} | Сумма: {data.object.returnedBuy.toFixed(2)}</div>
+                                {/*<div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Кредит</div>
                                 <div style={{textAlign: 'right', marginBottom: 5}}>Чеков: {data.object.consignationCount} | Сумма: {data.object.consignation.toFixed(2)}</div>
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Погашение кредита</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Погашение кредита</div>
                                 <div style={{textAlign: 'right', marginBottom: 5}}>Чеков: {data.object.paidConsignationCount} | Сумма: {data.object.paidConsignation.toFixed(2)}</div>
-                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>&nbsp;&nbsp;Аванс</div>
+                                <div style={{textAlign: 'left', marginBottom: 5, fontWeight: 500}}>Аванс</div>
                                 <div style={{textAlign: 'right', marginBottom: 5}}>Чеков: {data.object.prepaymentCount} | Сумма: {data.object.prepayment.toFixed(2)}</div>*/}
                                 {
                                     data.object.syncMsg!=='Фискальный режим отключен'?
@@ -246,46 +242,47 @@ const Receipt = React.memo((props) => {
                                                     setPrinter(_printer)
                                                 }
                                                 let _data = [
-                                                    {message: `${data.object.type}-ОТЧЕТ №${data.object.number}`, align: 'center', bold: true},
+                                                    {message: `${data.object.type}-ОТЧЕТ`, align: 'center', bold: true},
                                                     {message: `Дата: ${`${pdDDMMYYHHMM(data.object.start)}${data.object.end?` - ${pdDDMMYYHHMM(data.object.end)}`:''}`}`, align: 'left'},
                                                     {message: `Касса: ${data.object.cashbox.name}`, align: 'left'},
                                                     {message: `Смена №${data.object.workShift.number}`, align: 'left'},
+                                                    {message: `Документ №${data.object.number}`, align: 'left'},
                                                     {message: data.object.legalObject.name, align: 'left'},
                                                     ...data.object.branch?[{message: data.object.branch.name, align: 'left'}]:[],
                                                     ...data.object.branch?[{message: data.object.branch.address, align: 'left'}]:[],
                                                     {message: `ИНН: ${data.object.legalObject.inn}`, align: 'left'},
                                                     {message: `СНО: ${data.object.legalObject.rateTaxe?data.object.legalObject.rateTaxe:data.object.legalObject.taxSystemName_v2}`, align: 'left'},
                                                     {message: '********************************', align: 'center'},
-                                                    ...data.object.cashEnd?[
-                                                        {message: `  Наличных в кассе`, align: 'left'},
-                                                        {message: `Сумма: ${data.object.cashEnd.toFixed(2)}`, align: 'right'}
-                                                    ]:[],
-                                                    {message: `  Внесено`, align: 'left'},
-                                                    {message: `Сумма: ${data.object.deposit.toFixed(2)}`, align: 'right'},
-                                                    {message: `  Изъято`, align: 'left'},
-                                                    {message: `Сумма: ${data.object.withdraw.toFixed(2)}`, align: 'right'},
-                                                    {message: `  Наличными`, align: 'left'},
-                                                    {message: `Сумма: ${data.object.cash.toFixed(2)}`, align: 'right'},
-                                                    {message: `  Безналичными`, align: 'left'},
-                                                    {message: `Сумма: ${data.object.cashless.toFixed(2)}`, align: 'right'},
-                                                    {message: `  Скидка`, align: 'left'},
-                                                    {message: `Сумма: ${data.object.discount.toFixed(2)}`, align: 'right'},
-                                                    {message: `  Наценка`, align: 'left'},
-                                                    {message: `Сумма: ${data.object.extra.toFixed(2)}`, align: 'right'},
-                                                    {message: `  Продажа`, align: 'left'},
-                                                    {message: `Чеков: ${data.object.saleCount} | Сумма: ${data.object.sale.toFixed(2)}`, align: 'right'},
-                                                    {message: `  Возврат`, align: 'left'},
-                                                    {message: `Чеков: ${data.object.returnedCount} | Сумма: ${data.object.returned.toFixed(2)}`, align: 'right'},
-                                                    /*{message: `  Кредит`, align: 'left'},
-                                                    {message: `Чеков: ${data.object.consignationCount} | Сумма: ${data.object.consignation.toFixed(2)}`, align: 'right'},
-                                                    {message: `  Погашение кредита`, align: 'left'},
-                                                    {message: `Чеков: ${data.object.paidConsignationCount} | Сумма: ${data.object.paidConsignation.toFixed(2)}`, align: 'right'},
-                                                    {message: `  Аванс`, align: 'left'},
-                                                    {message: `Чеков: ${data.object.prepaymentCount} | Сумма: ${data.object.prepayment.toFixed(2)}`, align: 'right'},*/
-                                                    {message: `  Покупка`, align: 'left'},
-                                                    {message: `Чеков: ${data.object.buyCount} | Сумма: ${data.object.buy.toFixed(2)}`, align: 'right'},
-                                                    {message: `  Возврат покупки`, align: 'left'},
-                                                    {message: `Чеков: ${data.object.returnedBuyCount} | Сумма: ${data.object.returnedBuy.toFixed(2)}`, align: 'right'}
+                                                    {message: `Наличных в кассе`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.cashEnd.toFixed(2)}`, align: 'left'},
+                                                    {message: `Внесено`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.deposit.toFixed(2)}`, align: 'left'},
+                                                    {message: `Изъято`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.withdraw.toFixed(2)}`, align: 'left'},
+                                                    {message: `Наличными`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.cash.toFixed(2)}`, align: 'left'},
+                                                    {message: `Безналичными`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.cashless.toFixed(2)}`, align: 'left'},
+                                                    {message: `Итоговая сумма`, align: 'left'},
+                                                    {message: `Сумма: ${(data.object.cashless+data.object.cash).toFixed(2)}`, align: 'left'},
+                                                    {message: `Скидка`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.discount.toFixed(2)}`, align: 'left'},
+                                                    {message: `Наценка`, align: 'left'},
+                                                    {message: `Сумма: ${data.object.extra.toFixed(2)}`, align: 'left'},
+                                                    {message: `Продажа`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.saleCount} | Сумма: ${data.object.sale.toFixed(2)}`, align: 'left'},
+                                                    {message: `Возврат`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.returnedCount} | Сумма: ${data.object.returned.toFixed(2)}`, align: 'left'},
+                                                    /*{message: `Кредит`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.consignationCount} | Сумма: ${data.object.consignation.toFixed(2)}`, align: 'left'},
+                                                    {message: `Погашение кредита`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.paidConsignationCount} | Сумма: ${data.object.paidConsignation.toFixed(2)}`, align: 'left'},
+                                                    {message: `Аванс`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.prepaymentCount} | Сумма: ${data.object.prepayment.toFixed(2)}`, align: 'left'},*/
+                                                    {message: `Покупка`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.buyCount} | Сумма: ${data.object.buy.toFixed(2)}`, align: 'left'},
+                                                    {message: `Возврат покупки`, align: 'left'},
+                                                    {message: `Чеков: ${data.object.returnedBuyCount} | Сумма: ${data.object.returnedBuy.toFixed(2)}`, align: 'left'}
                                                 ]
                                                 if(data.object.syncMsg!=='Фискальный режим отключен') {
                                                     _data.push({

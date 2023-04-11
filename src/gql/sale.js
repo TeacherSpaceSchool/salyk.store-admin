@@ -102,7 +102,7 @@ export const getSale = async({_id, type, cashbox, number}, client)=>{
                             cashbox {_id name rnmNumber fn registrationNumber}
                             workShift {_id number}
                             client {_id name}
-                            sale {_id number cashbox {fn}}
+                            sale {_id number syncData}
                             typePayment
                             type
                             returned
