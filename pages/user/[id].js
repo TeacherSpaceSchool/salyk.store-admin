@@ -459,7 +459,10 @@ const User = React.memo((props) => {
                                             }
                                         />
                                         <div className={classes.geo} onClick={()=>{
-                                            setPassword(randomstring.generate(10))
+                                            if(process.env.URL==='salyk.store')
+                                                setPassword(randomstring.generate(10))
+                                            else
+                                                setPassword('12345678')
                                         }}>
                                             Генерация нового пароля
                                         </div>

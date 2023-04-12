@@ -1,12 +1,15 @@
 import EscPosEncoder from 'esc-pos-encoder'
 const {loadImage} = require('canvas')
 
-const bufferLength = 512
+let bufferLength = 512
+let imageSize = 280
 
-export const connectPrinterByBluetooth = async () => {
+export const connectPrinterByBluetooth = async (isMobileApp) => {
     let device = await navigator.bluetooth.requestDevice({filters: [{services: ['000018f0-0000-1000-8000-00805f9b34fb']}]})
     let server = await device.gatt.connect();
     let service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb')
+    if(isMobileApp)
+        bufferLength = 20
     return await service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb')
 }
 
@@ -25,7 +28,7 @@ export const printEsPosData = async (printer, data) => {
                 await printer.writeValue(data[i].message);
         }
         else if(data[i].QR) {
-            data[i].QR = encoder.initialize().align('center').qrcode(data[i].QR, 1, 8, 'h').encode();
+            data[i].QR = encoder.initialize().align('center').qrcode(data[i].QR, 1, 5, 'l').encode();
             while (data[i].QR.length > bufferLength) {
                 printQR = data[i].QR.slice(0, bufferLength);
                 await printer.writeValue(printQR);
@@ -41,7 +44,7 @@ export const printEsPosData = async (printer, data) => {
             img = encoder
                 .initialize()
                 .align('center')
-                .image(img, 320, 320, 'atkinson')
+                .image(img, imageSize, imageSize, 'atkinson')
                 .encode()
             while (img.length > bufferLength) {
                 printImg = img.slice(0, bufferLength);
@@ -61,7 +64,7 @@ export const printEsPosQR = async (printer, QR) => {
     QR = encoder
         .initialize()
         .align('center')
-        .qrcode(QR, 1, 6, 'h')
+        .qrcode(QR, 1, 1, 'l')
         .encode();
     while (QR.length > bufferLength) {
         printQR = QR.slice(0, bufferLength);
@@ -78,7 +81,7 @@ export const printEsPosImg = async (printer, srcImg) => {
     img = encoder
         .initialize()
         .align('center')
-        .image(img, 320, 320)
+        .image(img, imageSize, imageSize, 'atkinson')
         .encode()
     while (img.length > bufferLength) {
         const printImg = img.slice(0, bufferLength);

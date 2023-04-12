@@ -175,7 +175,7 @@ const Receipt = React.memo((props) => {
                                         <Button color='primary' onClick={async ()=>{
                                             let _printer = printer
                                             if(!_printer) {
-                                                _printer = await connectPrinterByBluetooth()
+                                                _printer = await connectPrinterByBluetooth(isMobileApp)
                                                 setPrinter(_printer)
                                             }
 
