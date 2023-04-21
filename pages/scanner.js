@@ -26,9 +26,9 @@ const Scanner = React.memo((props) => {
         <App pageName='Сканер'>
             <Head>
                 <title>Сканер</title>
-                <meta name='description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
+                <meta name='description' content='SuperKassa(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:title' content='Сканер' />
-                <meta property='og:description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
+                <meta property='og:description' content='SuperKassa(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:type' content='website' />
                 <meta property='og:image' content={`${urlMain}/512x512.png`} />
                 <meta property='og:url' content={`${urlMain}/scanner`} />
@@ -50,13 +50,13 @@ const Scanner = React.memo((props) => {
                             <div className={classes.column}>
                                 <div className={classes.value}>1) <a href='https://play.google.com/store/apps/details?id=com.salyk.scanner' style={{color: '#10183D', fontWeight: 'bold'}}>Скачать SALYK.SCANNER c Google Play</a></div>
                                 <div className={classes.row} style={{alignItems: 'center', marginBottom: 10}}>
-                                    <div className={classes.value} style={{marginBottom: 0}}>2) Во время работы SALYK.STORE, нажмите на иконку:</div>
+                                    <div className={classes.value} style={{marginBottom: 0}}>2) Во время работы SuperKassa, нажмите на иконку:</div>
                                     <ControlCamera style={{height: 30}} onClick={()=>{
                                         openScanner({_idx: 0, path: 'scanner'})
                                     }}/>
                                 </div>
                                 <div className={classes.value}>3) Наведите сканнер на штрихкод</div>
-                                <div className={classes.value}>4) Поставьте галочку напротив "Запомнить выбор" и нажмите на иконку SALYK.STORE</div>
+                                <div className={classes.value}>4) Поставьте галочку напротив "Запомнить выбор" и нажмите на иконку SuperKassa</div>
                                 <img style={{width: 300, objectFit: 'contain'}} src='/usescanner.jpg'
                                      onClick={() => {
                                          setShowAppBar(false)

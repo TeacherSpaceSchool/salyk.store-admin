@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://salyk.store/sitemap.xml
+Sitemap: https://superkassa.kg/sitemap.xml

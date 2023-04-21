@@ -7,7 +7,7 @@
     "dev": "set dev=true&& set URL=localhost&& next -p 80",
     "build": "set URL=localhost&& next build",
     "start": "set URL=localhost&& node server.js",
-    "build-server": "URL=salyk.store next build",
+    "build-server": "URL=superkassa.kg next build",
     "export": "next export"
   },
   "keywords": [],

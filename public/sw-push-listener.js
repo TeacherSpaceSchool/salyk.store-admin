@@ -1,13 +1,13 @@
-let notificationUrl = 'https://salyk.store';
+let notificationUrl = 'https://superkassa.kg';
 //notification registered feature for getting update automatically from server api
 self.addEventListener('push', function (event) {
     let _data = event.data ?
         event.data.json()
         :
-        {title: 'SALYK.STORE', message: 'Не забудьте сделать свой заказ', tag: 'SALYK.STORE', url: 'https://salyk.store', icon: 'https://salyk.store/192x192.png'};
+        {title: 'SuperKassa', message: 'Не забудьте сделать свой заказ', tag: 'SuperKassa', url: 'https://superkassa.kg', icon: 'https://superkassa.kg/192x192.png'};
     event.waitUntil(
         self.registration.showNotification(_data.title, {
-            badge: 'https://salyk.store/192x192.png',
+            badge: 'https://superkassa.kg/192x192.png',
             body: _data.message,
             icon: _data.icon,
             tag: _data.tag,
@@ -22,7 +22,7 @@ self.addEventListener('push', function (event) {
 self.addEventListener('notificationclick', function (event) {
     event.notification.close();
 
-    fetch('https://salyk.store:3000/push/clicknotification', {
+    fetch('https://superkassa.kg:3000/push/clicknotification', {
         method: 'post',
         headers: {
             'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'

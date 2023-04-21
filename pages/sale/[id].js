@@ -57,9 +57,9 @@ const Receipt = React.memo((props) => {
         <App pageName={data.object!==null?`Чек №${data.object.number}`:'Ничего не найдено'}>
             <Head>
                 <title>{data.object!==null?`Чек №${data.object.number}`:'Ничего не найдено'}</title>
-                <meta name='description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
+                <meta name='description' content='SuperKassa(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:title' content={data.object!==null?`Чек №${data.object.number}`:'Ничего не найдено'} />
-                <meta property='og:description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
+                <meta property='og:description' content='SuperKassa(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:type' content='website' />
                 <meta property='og:image' content={`${urlMain}/512x512.png`} />
                 <meta property='og:url' content={`${urlMain}/sale/${router.query.id}`} />
@@ -298,7 +298,7 @@ const Receipt = React.memo((props) => {
                                         :
                                         <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>**********************************************</span></p>
                                 }
-                                <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>ККМ SALYK.STORE v1.1</span></p>
+                                <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>ККМ SuperKassa v1.1</span></p>
                                 {
                                     data.object.qr?
                                         <div style={{display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center'}}>
@@ -421,7 +421,7 @@ const Receipt = React.memo((props) => {
                                                         }
                                                         else
                                                             _data.push({message: '********************************', align: 'center'})
-                                                        _data.push({message: 'ККМ SALYK.STORE v1.1', align: 'center', bold: true})
+                                                        _data.push({message: 'ККМ SuperKassa v1.1', align: 'center', bold: true})
                                                         _data.push({image: data.object.qr})
                                                         await printEsPosData(_printer, _data)
                                                     }}>

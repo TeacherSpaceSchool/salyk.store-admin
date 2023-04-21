@@ -19,5 +19,5 @@ app.prepare()
                 handle(req, res, parsedUrl)
             }
         })
-            .listen(process.env.URL==='salyk.store'?5000:80)
+            .listen(process.env.URL==='localhost'?80:5000)
     })

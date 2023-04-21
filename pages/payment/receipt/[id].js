@@ -37,9 +37,9 @@ const Receipt = React.memo((props) => {
         <App pageName={data.object!==null?`Оплата №${data.object.number}`:'Ничего не найдено'}>
             <Head>
                 <title>{data.object!==null?`Оплата №${data.object.number}`:'Ничего не найдено'}</title>
-                <meta name='description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
+                <meta name='description' content='SuperKassa(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:title' content={data.object!==null?`Оплата №${data.object.number}`:'Ничего не найдено'} />
-                <meta property='og:description' content='SALYK.STORE(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
+                <meta property='og:description' content='SuperKassa(Онлайн ККМ) - это кроссплатформенный виртуальный кассовый аппарат, который представляет собой программное обеспечение скачиваемое в PlayMarket и Appstore и возможностью входа через сайт с браузера (персональный/переносной компьютер, мобильный телефон и другие аналогичные аппараты), принадлежащие субъекту предпринимательства, с помощью которого будут проводится кассовые операции.' />
                 <meta property='og:type' content='website' />
                 <meta property='og:image' content={`${urlMain}/512x512.png`} />
                 <meta property='og:url' content={`${urlMain}/payment/receipt/${router.query.id}`} />
@@ -68,7 +68,7 @@ const Receipt = React.memo((props) => {
                             <div style={{textAlign: 'center', height: 12, marginTop: 10, marginBottom: 10}}>**********************************************</div>
                             <div style={{textAlign: 'right', marginBottom: 5}}>Оплачено: {data.object.paid}</div>
                             <div style={{textAlign: 'right', marginBottom: 5}}>Сдача: {data.object.change}</div>
-                            <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>ККМ SALYK.STORE v1.1</span></p>
+                            <p style={{textAlign: 'center'}}><span style={{fontWeight: 400}}>ККМ SuperKassa v1.1</span></p>
                             {
                                 data.object.qr?
                                     <div style={{display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center'}}>
@@ -126,7 +126,7 @@ const Receipt = React.memo((props) => {
                                                 {message: '********************************', align: 'center'},
                                                 {message: `Оплачено: ${data.object.paid}`, align: 'right'},
                                                 {message: `Сдача: ${data.object.change}`, align: 'right'},
-                                                {message: 'ККМ SALYK.STORE v1.1', align: 'center', bold: true},
+                                                {message: 'ККМ SuperKassa v1.1', align: 'center', bold: true},
                                                 ...isMobileApp?{image: data.object.qr}:{}
                                             ]
                                             printEsPosData(_printer, _data)
