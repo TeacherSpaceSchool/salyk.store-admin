@@ -207,9 +207,9 @@ const Index = React.memo((props) => {
                             </center>
                             <p style={{textAlign: 'center'}}><strong><em>* Первый месяц услуги в тарифном плане "Стандарт" доступны совершенно бесплатно!</em></strong></p>
                             <h2 style={{textAlign: 'center'}}>Как подключиться к ОФД SuperKassa</h2>
-                            <p>Заключить Договор о предоставлении услуг ОФД SuperKassa можно в офисе компании по адресу: проспект Манаса 40, 3-этаж, 317 кабинет.</p>
+                            <p>Заключить Договор о предоставлении услуг ОФД SuperKassa можно в офисе компании по адресу: Лущихина 99Б.</p>
                             <p>Заполнив заявку на сайте <a href='https://www.superkassa.kg'>www.superkassa.kg</a>&nbsp;или скачав мобильное приложение SuperKassa в PlayMarket. Наши специалисты свяжутся по указанным клиентом данным и зарегистрируют онлайн-ККМ. Так же можете связаться с нами по следующим контактам</p>
-                            <p><img src={`${urlMain}/privet/phone-call.png`} width={20} height={20} />&nbsp;Тел: <a href='tel:+996559995197'>+996559995197</a>, <a href='tel:+996554776667'>+996554776667</a>, <a href='tel:+996705604020'>+996705604020</a>, <a href='tel:+996990604020'>+996990604020</a>, <a href='tel:+996774604020'>+996774604020</a></p>
+                            <p><img src={`${urlMain}/privet/phone-call.png`} width={20} height={20} />&nbsp;Тел: <a href='tel:+996559995197'>+996559995197</a>, <a href='tel:+996554776667'>+996554776667</a>, <a href='tel:+996774604020'>+996774604020</a></p>
                             <p><img src={`${urlMain}/privet/mail.png`} width={20} height={20} />&nbsp;Email: <a href='mailto:superkassa@gmail.com'>superkassa@gmail.com</a></p>
                             <h2 style={{textAlign: 'center'}}>Перечень документов для заключения Договора об оказании услуг</h2>
                             <p><img src={`${urlMain}/privet/man-in-suit-and-tie.png`} width={44} height={44} /></p>
